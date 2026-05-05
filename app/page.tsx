@@ -5,6 +5,12 @@ import { supabase } from "@/lib/supabase"
 import { Header } from "@/components/ui/header"
 import { Button } from "@/components/ui/button"
 import { AnimalCard, type Animal } from "@/components/animal-card"
+import {
+  TreatmentCard,
+  UrgentCarousel,
+  FoundHomeCard,
+  FoundHomeCarousel,
+} from "./home-carousels"
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -38,7 +44,8 @@ async function getPageData() {
     supabase
       .from("treatments")
       .select("disease, description, goal_amount, animals!animal_id(id, name, animal_photos(photo_url, is_main))")
-      .eq("is_active", true),
+      .eq("is_active", true)
+      .limit(6),
     supabase
       .from("animals")
       .select(`
@@ -217,13 +224,6 @@ function StatsSection({ stats }: { stats: Stats }) {
 }
 
 function UrgentSection({ treatments }: { treatments: Treatment[] }) {
-  const formatMoney = (n: number) =>
-    new Intl.NumberFormat("ru-RU", {
-      style: "currency",
-      currency: "RUB",
-      maximumFractionDigits: 0,
-    }).format(n)
-
   return (
     <section className="py-20 px-4 bg-white">
       <div className="container mx-auto">
@@ -236,58 +236,21 @@ function UrgentSection({ treatments }: { treatments: Treatment[] }) {
           </p>
         </div>
 
-        <div className="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-4 lg:grid lg:grid-cols-3 lg:gap-6 lg:overflow-visible lg:pb-0">
-          {treatments.map((t, i) => {
-            const animal = t.animals
-            const photos = animal?.animal_photos ?? []
-            const photo = photos.find((p) => p.is_main) ?? photos[0] ?? null
+        {/* Mobile: карусель со стрелками */}
+        <div className="lg:hidden">
+          <UrgentCarousel treatments={treatments} />
+        </div>
+        {/* Desktop: сетка */}
+        <div className="hidden lg:grid lg:grid-cols-3 gap-6">
+          {treatments.slice(0, 6).map((t, i) => (
+            <TreatmentCard key={i} treatment={t} />
+          ))}
+        </div>
 
-            return (
-              <div
-                key={i}
-                className="min-w-[280px] shrink-0 snap-start lg:min-w-0 lg:shrink bg-[#FDF8F3] rounded-3xl overflow-hidden shadow-sm hover:shadow-md transition-shadow"
-              >
-                <div className="relative aspect-[4/3]">
-                  {photo ? (
-                    <Image
-                      src={photo.photo_url}
-                      alt={animal?.name ?? "Животное"}
-                      fill
-                      className="object-cover"
-                      sizes="(max-width: 768px) 100vw, 33vw"
-                    />
-                  ) : (
-                    <div className="flex size-full items-center justify-center bg-stone-100">
-                      <PawPrint className="size-12 text-stone-300" />
-                    </div>
-                  )}
-                </div>
-                <div className="p-5">
-                  <p className="font-bold text-stone-800 text-lg">{animal?.name ?? "—"}</p>
-                  <p className="text-[#E8927C] font-medium text-sm mt-0.5">{t.disease}</p>
-                  {t.description && (
-                    <p className="text-stone-500 text-sm mt-2 leading-relaxed">
-                      {t.description.length > 100
-                        ? `${t.description.slice(0, 100)}...`
-                        : t.description}
-                    </p>
-                  )}
-                  {t.goal_amount != null && (
-                    <p className="mt-3 font-semibold text-stone-800">
-                      Цель: {formatMoney(t.goal_amount)}
-                    </p>
-                  )}
-                  <Button
-                    asChild
-                    size="sm"
-                    className="mt-4 w-full bg-[#E8927C] hover:bg-[#D9806A] text-white rounded-xl"
-                  >
-                    <Link href="/donate">Помочь</Link>
-                  </Button>
-                </div>
-              </div>
-            )
-          })}
+        <div className="mt-8 flex justify-center">
+          <Button asChild variant="outline" className="rounded-2xl border-stone-200">
+            <Link href="/treatments">Смотреть все сборы</Link>
+          </Button>
         </div>
       </div>
     </section>
@@ -515,43 +478,15 @@ function FoundHomeSection({ animals }: { animals: SimpleAnimal[] }) {
           Они уже счастливы — следующий может быть твой!
         </p>
 
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 lg:gap-6">
-          {animals.map((animal) => {
-            const photos = animal.animal_photos ?? []
-            const photo = photos.find((p) => p.is_main) ?? photos[0] ?? null
-
-            return (
-              <div key={animal.id} className="group flex flex-col gap-3">
-                <div className="relative aspect-square rounded-3xl overflow-hidden bg-stone-100">
-                  {photo ? (
-                    <Image
-                      src={photo.photo_url}
-                      alt={animal.name}
-                      fill
-                      className="object-cover group-hover:scale-105 transition-transform duration-300"
-                      sizes="(max-width: 640px) 50vw, 25vw"
-                    />
-                  ) : (
-                    <div className="flex size-full items-center justify-center">
-                      <PawPrint className="size-10 text-stone-300" />
-                    </div>
-                  )}
-                </div>
-                <div>
-                  <p className="font-semibold text-stone-800">{animal.name}</p>
-                  {animal.adopted_at && (
-                    <p className="text-sm text-stone-400">
-                      {new Date(animal.adopted_at).toLocaleDateString("ru-RU", {
-                        day: "numeric",
-                        month: "long",
-                        year: "numeric",
-                      })}
-                    </p>
-                  )}
-                </div>
-              </div>
-            )
-          })}
+        {/* Mobile: карусель со стрелками */}
+        <div className="lg:hidden">
+          <FoundHomeCarousel animals={animals} />
+        </div>
+        {/* Desktop: сетка */}
+        <div className="hidden lg:grid lg:grid-cols-4 gap-4 lg:gap-6">
+          {animals.map((animal) => (
+            <FoundHomeCard key={animal.id} animal={animal} />
+          ))}
         </div>
       </div>
     </section>
