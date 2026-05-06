@@ -1,4 +1,5 @@
 import { Header } from "@/components/ui/header"
+import { Footer } from "@/components/ui/footer"
 import { AnimalsGrid } from "@/components/animals-grid"
 import { supabase } from "@/lib/supabase"
 import type { Animal } from "@/components/animal-card"
@@ -59,6 +60,7 @@ export default async function PetsPage() {
 
         <AnimalsGrid animals={animals} sickAnimalIds={sickAnimalIds} />
       </main>
+      <Footer />
     </>
   )
 }

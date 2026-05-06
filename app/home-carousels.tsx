@@ -5,6 +5,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { ChevronLeft, ChevronRight, PawPrint } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 
 // ── Types ─────────────────────────────────────────────────────────────────────
@@ -67,12 +68,15 @@ export function TreatmentCard({ treatment }: { treatment: Treatment }) {
             <PawPrint className="size-12 text-stone-300" />
           </div>
         )}
+        <Badge className="absolute left-3 top-3 bg-red-500 hover:bg-red-500 text-white">
+          СРОЧНО
+        </Badge>
       </div>
 
       <CardContent className="p-4 flex flex-col gap-2 flex-1">
         <div>
-          <h3 className="text-lg font-semibold">{animal?.name ?? "—"}</h3>
-          <p className="text-[#E8927C] font-medium text-sm">{treatment.disease}</p>
+          <h3 className="text-xl font-bold">{animal?.name ?? "—"}</h3>
+          <p className="text-[#D4849A] font-semibold text-base">{treatment.disease}</p>
         </div>
 
         {treatment.description && (
@@ -84,12 +88,12 @@ export function TreatmentCard({ treatment }: { treatment: Treatment }) {
         )}
 
         {treatment.goal_amount != null && (
-          <p className="font-semibold text-stone-800 text-sm">
+          <p className="font-bold text-stone-800 text-lg">
             Цель: {formatMoney(treatment.goal_amount)}
           </p>
         )}
 
-        <Button asChild className="w-full mt-auto bg-[#E8927C] hover:bg-[#D9806A] text-white">
+        <Button asChild className="w-full mt-auto bg-[#D4849A] hover:bg-[#C4728A] text-white text-base">
           <Link href="/donate">Помочь</Link>
         </Button>
       </CardContent>
@@ -163,10 +167,10 @@ export function FoundHomeCard({ animal }: { animal: SimpleAnimal }) {
         )}
       </div>
       <div>
-        <p className="font-semibold text-stone-800">{animal.name}</p>
-        <p className="text-xs text-stone-400">Забрали домой</p>
+        <p className="text-base font-bold text-stone-800">{animal.name}</p>
+        <p className="text-sm font-medium text-[#D4849A]">Забрали домой</p>
         {animal.adopted_at && (
-          <p className="text-xs text-stone-400">
+          <p className="text-sm text-stone-500">
             {new Date(animal.adopted_at).toLocaleDateString("ru-RU", {
               day: "numeric",
               month: "long",

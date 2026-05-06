@@ -1,6 +1,6 @@
 import Link from "next/link"
 import Image from "next/image"
-import { PawPrint, ShoppingCart, Pill, Heart, Users, Gift, ArrowRight } from "lucide-react"
+import { ShoppingCart, Pill, Heart, Users, Gift, ArrowRight } from "lucide-react"
 import { supabase } from "@/lib/supabase"
 import { Header } from "@/components/ui/header"
 import { Button } from "@/components/ui/button"
@@ -11,6 +11,7 @@ import {
   FoundHomeCard,
   FoundHomeCarousel,
 } from "./home-carousels"
+import { Footer } from "@/components/ui/footer"
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -100,7 +101,7 @@ export default async function HomePage() {
       <HowToHelpSection />
       <RecentAnimalsSection animals={recentAnimals} />
       {foundHomeAnimals.length > 0 && <FoundHomeSection animals={foundHomeAnimals} />}
-      <FooterSection />
+      <Footer />
     </div>
   )
 }
@@ -109,9 +110,9 @@ export default async function HomePage() {
 
 function HeroSection() {
   return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-[#FDF8F3] via-[#FDF0E8] to-[#FAE8DC] min-h-[85vh] flex items-center">
-      <div className="absolute -right-40 -top-40 w-[600px] h-[600px] rounded-full bg-[#E8927C]/10 blur-3xl pointer-events-none" />
-      <div className="absolute -left-20 bottom-0 w-[400px] h-[400px] rounded-full bg-[#E8927C]/8 blur-3xl pointer-events-none" />
+    <section className="relative overflow-hidden bg-gradient-to-br from-[#FDF8F3] via-[#FAF0F3] to-[#FAE8DC] min-h-[85vh] flex items-center">
+      <div className="absolute -right-40 -top-40 w-[600px] h-[600px] rounded-full bg-[#D4849A]/10 blur-3xl pointer-events-none" />
+      <div className="absolute -left-20 bottom-0 w-[400px] h-[400px] rounded-full bg-[#D4849A]/8 blur-3xl pointer-events-none" />
 
       <div className="container mx-auto px-4 py-16 lg:py-24">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
@@ -119,7 +120,7 @@ function HeroSection() {
           <div className="flex flex-col gap-6">
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-stone-800 leading-tight">
               Здесь каждый хвост ждёт{" "}
-              <span className="text-[#E8927C]">своего человека</span>
+              <span className="text-[#D4849A]">своего человека</span>
             </h1>
 
             <p className="text-stone-500 text-lg leading-relaxed max-w-md">
@@ -131,7 +132,7 @@ function HeroSection() {
               <Button
                 asChild
                 size="lg"
-                className="bg-[#E8927C] hover:bg-[#D9806A] text-white rounded-2xl px-8 shadow-lg shadow-[#E8927C]/30"
+                className="bg-[#D4849A] hover:bg-[#C4728A] text-white text-base rounded-xl px-8 shadow-lg shadow-[#D4849A]/30"
               >
                 <Link href="/pets">
                   Найти питомца
@@ -142,7 +143,7 @@ function HeroSection() {
                 asChild
                 size="lg"
                 variant="outline"
-                className="rounded-2xl px-8 border-stone-200 hover:bg-stone-50 text-stone-700"
+                className="rounded-xl px-8 border-stone-200 hover:bg-stone-50 text-stone-700"
               >
                 <Link href="/donate">Помочь приюту</Link>
               </Button>
@@ -159,13 +160,13 @@ function HeroSection() {
                 className="object-cover"
                 priority
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#E8927C]/20 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#D4849A]/20 to-transparent" />
             </div>
 
             {/* Плашка поверх фото */}
-            <div className="absolute -bottom-4 left-4 bg-white rounded-2xl px-4 py-3 shadow-lg flex items-center gap-3">
-              <div className="size-9 rounded-full bg-[#FDF0E8] flex items-center justify-center">
-                <Heart className="size-4 text-[#E8927C] fill-[#E8927C]" />
+            <div className="absolute -bottom-4 left-4 bg-white rounded-xl px-4 py-3 shadow-lg flex items-center gap-3">
+              <div className="size-9 rounded-full bg-[#FAF0F3] flex items-center justify-center">
+                <Heart className="size-4 text-[#D4849A] fill-[#D4849A]" />
               </div>
               <div>
                 <p className="text-xs text-stone-400">Ждут своего дома</p>
@@ -185,27 +186,27 @@ function StatsSection({ stats }: { stats: Stats }) {
       value: stats.inShelter,
       label: "Питомцев в приюте",
       sub: "ждут своего дома",
-      bg: "bg-[#FDF0E8]",
-      text: "text-[#E8927C]",
+      bg: "bg-[#FAF0F3]",
+      text: "text-[#D4849A]",
     },
     {
       value: stats.foundHome,
       label: "Нашли дом",
       sub: "с нашей помощью",
-      bg: "bg-teal-50",
-      text: "text-teal-600",
+      bg: "bg-[#F0FAF5]",
+      text: "text-[#6BBF9A]",
     },
     {
       value: stats.hasGuardian,
       label: "Есть опекун",
       sub: "о них уже заботятся",
-      bg: "bg-rose-50",
-      text: "text-rose-500",
+      bg: "bg-[#F0F5FA]",
+      text: "text-[#7A9FD4]",
     },
   ]
 
   return (
-    <section className="py-16 px-4">
+    <section className="py-16 px-4 bg-[#FDF8F9]">
       <div className="container mx-auto">
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
           {items.map((item, i) => (
@@ -248,8 +249,11 @@ function UrgentSection({ treatments }: { treatments: Treatment[] }) {
         </div>
 
         <div className="mt-8 flex justify-center">
-          <Button asChild variant="outline" className="rounded-2xl border-stone-200">
-            <Link href="/treatments">Смотреть все сборы</Link>
+          <Button asChild variant="outline" className="rounded-xl border-stone-200">
+            <Link href="/treatments">
+              Смотреть все сборы
+              <ArrowRight className="ml-2 size-4" />
+            </Link>
           </Button>
         </div>
       </div>
@@ -259,13 +263,13 @@ function UrgentSection({ treatments }: { treatments: Treatment[] }) {
 
 function AboutSection() {
   return (
-    <section className="py-20 px-4 bg-[#FDF8F3]">
+    <section className="py-20 px-4 bg-[#FDF8F9]">
       <div className="container mx-auto">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <div className="flex flex-col gap-6">
             <div className="flex items-center gap-2">
-              <div className="w-8 h-0.5 bg-[#E8927C]" />
-              <span className="text-sm font-medium text-[#E8927C] uppercase tracking-widest">
+              <div className="w-8 h-0.5 bg-[#D4849A]" />
+              <span className="text-sm font-medium text-[#D4849A] uppercase tracking-widest">
                 О нас
               </span>
             </div>
@@ -292,7 +296,7 @@ function AboutSection() {
               <Button
                 asChild
                 variant="outline"
-                className="rounded-2xl border-[#E8927C] text-[#E8927C] hover:bg-[#E8927C]/10"
+                className="rounded-xl border-[#D4849A] text-[#D4849A] hover:bg-[#D4849A]/10"
               >
                 <Link href="/about">Узнать больше</Link>
               </Button>
@@ -360,7 +364,7 @@ function HowToHelpSection() {
         <Button
           asChild
           size="sm"
-          className="rounded-xl mt-4 w-full bg-[#E8927C] hover:bg-[#D9806A] text-white"
+          className="rounded-xl mt-4 w-full bg-[#D4849A] hover:bg-[#C4728A] text-white text-base"
         >
           <Link href="/pets?guardianship=search">Выбрать питомца</Link>
         </Button>
@@ -390,7 +394,7 @@ function HowToHelpSection() {
         <Button
           asChild
           size="sm"
-          className="rounded-xl mt-4 w-full bg-[#E8927C] hover:bg-[#D9806A] text-white"
+          className="rounded-xl mt-4 w-full bg-[#D4849A] hover:bg-[#C4728A] text-white text-base"
         >
           <Link href="/donate">Пожертвовать</Link>
         </Button>
@@ -417,7 +421,7 @@ function HowToHelpSection() {
               className={`${way.bg} rounded-3xl p-6 flex flex-col hover:-translate-y-1 transition-transform duration-200`}
             >
               <div
-                className={`${way.iconBg} size-12 rounded-2xl flex items-center justify-center mb-4`}
+                className={`${way.iconBg} size-12 rounded-xl flex items-center justify-center mb-4`}
               >
                 {way.icon}
               </div>
@@ -434,7 +438,7 @@ function HowToHelpSection() {
 
 function RecentAnimalsSection({ animals }: { animals: Animal[] }) {
   return (
-    <section className="py-20 px-4 bg-[#FDF8F3]">
+    <section className="py-20 px-4 bg-[#FDF8F9]">
       <div className="container mx-auto">
         <div className="flex flex-wrap items-end justify-between gap-4 mb-10">
           <div>
@@ -443,7 +447,7 @@ function RecentAnimalsSection({ animals }: { animals: Animal[] }) {
             </h2>
             <p className="mt-1 text-stone-500">Познакомьтесь с теми, кто ждёт именно вас</p>
           </div>
-          <Button asChild variant="outline" className="rounded-2xl border-stone-200">
+          <Button asChild variant="outline" className="rounded-xl border-stone-200">
             <Link href="/pets">
               Смотреть всех питомцев
               <ArrowRight className="ml-2 size-4" />
@@ -488,50 +492,17 @@ function FoundHomeSection({ animals }: { animals: SimpleAnimal[] }) {
             <FoundHomeCard key={animal.id} animal={animal} />
           ))}
         </div>
+
+        <div className="mt-8 flex justify-center">
+          <Button asChild variant="outline" className="rounded-xl border-stone-200">
+            <Link href="/adopted">
+              Смотреть все истории
+              <ArrowRight className="ml-2 size-4" />
+            </Link>
+          </Button>
+        </div>
       </div>
     </section>
   )
 }
 
-function FooterSection() {
-  const navLinks = [
-    { href: "/pets", label: "Питомцы" },
-    { href: "/about", label: "О приюте" },
-    { href: "/donate", label: "Помочь" },
-    { href: "/contacts", label: "Контакты" },
-  ]
-
-  return (
-    <footer className="bg-[#2C1A0E] text-stone-300 py-12 px-4">
-      <div className="container mx-auto">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-8">
-          <div className="flex flex-col gap-3">
-            <Link href="/" className="flex items-center gap-2 text-white">
-              <PawPrint className="size-6 text-[#E8927C]" />
-              <span className="text-lg font-bold">Добрые лапки</span>
-            </Link>
-            <p className="text-sm text-stone-400 max-w-xs">
-              Городской приют для кошек и собак. Помогаем найти дом с 2018 года.
-            </p>
-          </div>
-
-          <nav className="flex flex-wrap gap-x-8 gap-y-2">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="text-sm text-stone-400 hover:text-white transition-colors"
-              >
-                {link.label}
-              </Link>
-            ))}
-          </nav>
-        </div>
-
-        <div className="mt-10 pt-6 border-t border-stone-800 text-center text-sm text-stone-600">
-          © {new Date().getFullYear()} Добрые лапки. Все права защищены.
-        </div>
-      </div>
-    </footer>
-  )
-}

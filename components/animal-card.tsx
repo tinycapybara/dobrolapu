@@ -77,15 +77,15 @@ export function AnimalCard({ animal }: { animal: Animal }) {
       {/* Информация */}
       <CardContent className="p-4">
         <div className="mb-3">
-          <h3 className="text-lg font-semibold">{animal.name}</h3>
-          <div className="mt-1 flex flex-wrap gap-2 text-sm text-muted-foreground">
+          <h3 className="text-xl font-bold">{animal.name}</h3>
+          <div className="mt-1 flex flex-wrap gap-2 text-sm font-medium text-stone-600">
             <span>{animal.gender}</span>
             <span>·</span>
             <span>{formatAge(animal.age)}</span>
           </div>
         </div>
         
-        <Button asChild className="w-full">
+        <Button asChild className="w-full text-base">
           <Link href={`/pets/${animal.id}`}>
             Познакомиться
           </Link>

@@ -2,10 +2,17 @@ import { notFound } from "next/navigation"
 import Link from "next/link"
 import { supabase } from "@/lib/supabase"
 import { Header } from "@/components/ui/header"
+import { Footer } from "@/components/ui/footer"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { AnimalGallery } from "./animal-gallery"
-import { ArrowLeft, Heart } from "lucide-react"
+import { ArrowLeft, Heart, Pill } from "lucide-react"
+
+type Treatment = {
+  disease: string
+  description: string | null
+  goal_amount: number | null
+}
 
 type AnimalDetail = {
   id: number
@@ -26,6 +33,9 @@ const SIZE_LABELS: Record<string, string> = {
   medium: "Средний",
   large: "Большой",
 }
+
+const formatMoney = (n: number) =>
+  new Intl.NumberFormat("ru-RU", { style: "currency", currency: "RUB", maximumFractionDigits: 0 }).format(n)
 
 function formatAge(months: number | null): string {
   if (months === null) return "Возраст неизвестен"
@@ -70,21 +80,30 @@ export default async function AnimalPage({ params }: Props) {
 
   if (!Number.isInteger(numericId) || numericId <= 0) notFound()
 
-  const { data, error } = await supabase
-    .from("animals")
-    .select(`
-      id, name, gender, breed, age, size, description,
-      animal_photos(photo_url, is_main),
-      animal_types(type),
-      animal_statuses(status),
-      guardianship_statuses(guardianship)
-    `)
-    .eq("id", numericId)
-    .single()
+  const [{ data, error }, { data: treatmentData }] = await Promise.all([
+    supabase
+      .from("animals")
+      .select(`
+        id, name, gender, breed, age, size, description,
+        animal_photos(photo_url, is_main),
+        animal_types(type),
+        animal_statuses(status),
+        guardianship_statuses(guardianship)
+      `)
+      .eq("id", numericId)
+      .single(),
+    supabase
+      .from("treatments")
+      .select("disease, description, goal_amount")
+      .eq("animal_id", numericId)
+      .eq("is_active", true)
+      .maybeSingle(),
+  ])
 
   if (error || !data) notFound()
 
   const animal = data as unknown as AnimalDetail
+  const treatment = treatmentData as Treatment | null
   const hasGuardian = animal.guardianship_statuses?.guardianship === "Есть опекун"
 
   return (
@@ -166,6 +185,35 @@ export default async function AnimalPage({ params }: Props) {
               </div>
             )}
 
+            {/* Лечение */}
+            {treatment && (
+              <div className="rounded-xl border border-[#D4849A]/30 bg-[#FAF0F3] p-4 flex flex-col gap-3">
+                <div className="flex items-center gap-2">
+                  <Pill className="size-4 text-[#D4849A]" />
+                  <span className="text-sm font-semibold text-[#D4849A]">Нуждается в лечении</span>
+                  <Badge className="ml-auto bg-red-500 hover:bg-red-500 text-white text-xs">
+                    СРОЧНО
+                  </Badge>
+                </div>
+                <div>
+                  <p className="font-bold text-stone-800">{treatment.disease}</p>
+                  {treatment.description && (
+                    <p className="mt-1 text-sm text-stone-500 leading-relaxed">
+                      {treatment.description}
+                    </p>
+                  )}
+                </div>
+                {treatment.goal_amount != null && (
+                  <p className="text-sm font-semibold text-stone-700">
+                    Цель сбора: {formatMoney(treatment.goal_amount)}
+                  </p>
+                )}
+                <Button asChild className="w-full bg-[#D4849A] hover:bg-[#C4728A] text-white text-base">
+                  <Link href="/donate">Помочь {animal.name}</Link>
+                </Button>
+              </div>
+            )}
+
             {/* Кнопки действий */}
             <div className="flex flex-col gap-3 pt-2 sm:flex-row">
               {hasGuardian ? (
@@ -185,6 +233,7 @@ export default async function AnimalPage({ params }: Props) {
           </div>
         </div>
       </main>
+      <Footer />
     </>
   )
 }
