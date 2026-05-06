@@ -56,11 +56,13 @@ export function Header() {
           ))}
         </nav>
 
-        {/* Кнопка "Взять питомца" - десктоп */}
+        {/* Кнопка "Помочь сейчас" - десктоп */}
         <div className="hidden lg:block">
-          <Button className="gap-2">
-            <Heart className="size-4" />
-            Взять питомца
+          <Button asChild className="gap-2 bg-[#D4849A] hover:bg-[#C4728A] text-white">
+            <Link href="/donate">
+              <Heart className="size-4" />
+              Помочь сейчас
+            </Link>
           </Button>
         </div>
 
@@ -96,9 +98,11 @@ export function Header() {
                 ))}
               </nav>
               <div className="mt-auto border-t p-4">
-                <Button className="w-full gap-2" size="lg" onClick={() => setIsOpen(false)}>
-                  <Heart className="size-4" />
-                  Взять питомца
+                <Button asChild className="w-full gap-2 bg-[#D4849A] hover:bg-[#C4728A] text-white" size="lg">
+                  <Link href="/donate" onClick={() => setIsOpen(false)}>
+                    <Heart className="size-4" />
+                    Помочь сейчас
+                  </Link>
                 </Button>
               </div>
             </div>

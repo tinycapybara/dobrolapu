@@ -138,7 +138,7 @@ export function AnimalsGrid({ animals, sickAnimalIds }: { animals: Animal[]; sic
           <>
             <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
               {visibleAnimals.map((animal) => (
-                <AnimalCard key={animal.id} animal={animal} />
+                <AnimalCard key={animal.id} animal={{ ...animal, isSick: sickAnimalIds.includes(animal.id) }} />
               ))}
             </div>
 

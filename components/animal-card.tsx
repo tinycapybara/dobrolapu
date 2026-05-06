@@ -17,6 +17,7 @@ export type Animal = {
   animal_types: { type: string } | null
   animal_statuses: { status: string } | null
   guardianship_statuses: { guardianship: string } | null
+  isSick?: boolean
 }
 
 function formatAge(months: number | null): string {
@@ -44,6 +45,7 @@ function formatAge(months: number | null): string {
 
 export function AnimalCard({ animal }: { animal: Animal }) {
   const hasGuardian = animal.guardianship_statuses?.guardianship === "Есть опекун"
+  const isSick = animal.isSick ?? false
   const photos = animal.animal_photos ?? []
   const mainPhoto = photos.find((p) => p.is_main) ?? photos[0] ?? null
 
@@ -70,6 +72,13 @@ export function AnimalCard({ animal }: { animal: Animal }) {
           <Badge className="absolute left-3 top-3 gap-1 bg-green-500 hover:bg-green-500">
             <Heart className="size-3" />
             Мне помогают
+          </Badge>
+        )}
+
+        {/* Плашка "Нуждается в лечении" */}
+        {isSick && (
+          <Badge className="absolute right-3 top-3 bg-red-500 hover:bg-red-500">
+            Нуждается в лечении
           </Badge>
         )}
       </Link>
