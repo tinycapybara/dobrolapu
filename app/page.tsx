@@ -139,15 +139,14 @@ function HeroSection() {
           </div>
 
           <div className="relative hidden lg:flex lg:justify-end">
-            <div className="relative w-full max-w-[480px] aspect-square rounded-[40px] overflow-hidden shadow-2xl">
+            <div className="relative w-full max-w-[460px] aspect-[3/4] rounded-[40px] overflow-hidden shadow-2xl">
               <Image
-                src="/cat.jpg"
-                alt="Котёнок в приюте"
+                src="/cat3.jpg"
+                alt="Кот в приюте"
                 fill
                 className="object-cover object-top"
                 priority
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#D4849A]/20 to-transparent" />
             </div>
             <div className="absolute -bottom-4 left-4 bg-white rounded-xl px-4 py-3 shadow-lg flex items-center gap-3">
               <div className="size-9 rounded-full bg-[#FAF0F3] flex items-center justify-center">
