@@ -20,13 +20,14 @@ export type RecentDonation = {
   donor_name: string | null
   amount: number
   comment: string | null
-  paid_at: string
+  paid_at: string | null
 }
 
-function formatDate(iso: string): string {
+function formatDate(iso: string | null): string {
+  if (!iso) return "недавно"
   const date = new Date(iso)
-  const now = new Date()
-  const diffDays = Math.floor((now.getTime() - date.getTime()) / 86_400_000)
+  if (isNaN(date.getTime())) return "недавно"
+  const diffDays = Math.floor((Date.now() - date.getTime()) / 86_400_000)
   if (diffDays === 0) return "сегодня"
   if (diffDays === 1) return "вчера"
   return date.toLocaleDateString("ru-RU", { day: "numeric", month: "long" })
