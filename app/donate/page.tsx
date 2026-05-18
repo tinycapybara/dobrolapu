@@ -1,11 +1,11 @@
 import { Heart } from "lucide-react"
-import { supabase } from "@/lib/supabase"
+import { supabaseAdmin } from "@/lib/supabase-admin"
 import { Header } from "@/components/ui/header"
 import { Footer } from "@/components/ui/footer"
 import { DonateForm, type RecentDonation } from "./donate-form"
 
 async function getRecentDonations(): Promise<RecentDonation[]> {
-  const { data } = await supabase
+  const { data } = await supabaseAdmin
     .from("donations")
     .select("id, donor_name, amount, comment, paid_at")
     .eq("status", "completed")
