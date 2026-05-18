@@ -2,14 +2,93 @@ import { NextResponse } from "next/server"
 import crypto from "crypto"
 import { supabaseAdmin } from "@/lib/supabase-admin"
 
+// ── Нормализация текста ───────────────────────────────────────────────────────
+function normalizeText(text: string): string {
+  return text
+    .trim()                        // убираем пробелы по краям
+    .replace(/\s+/g, " ")         // множественные пробелы/табы/переносы → один пробел
+    .replace(/[^\S\n]+\n/g, "\n") // пробелы перед переносом строки
+    .slice(0, 500)                 // жёсткий обрез на случай если клиент обошёл лимит
+}
+
+// ── Ограничения длины полей ────────────────────────────────────────────────────
+const MAX_NAME_LENGTH = 100
+const MAX_COMMENT_LENGTH = 500
+const MIN_AMOUNT = 1
+const MAX_AMOUNT = 500_000
+
+// ── Rate limiting (в памяти процесса) ─────────────────────────────────────────
+// Хранит { timestamp[] } по IP. Для продакшена лучше Redis, но для диплома достаточно.
+const ipRequests = new Map<string, number[]>()
+const RATE_LIMIT_WINDOW_MS = 60_000 // 1 минута
+const RATE_LIMIT_MAX = 5            // не более 5 запросов в минуту с одного IP
+
+function isRateLimited(ip: string): boolean {
+  const now = Date.now()
+  const timestamps = (ipRequests.get(ip) ?? []).filter(t => now - t < RATE_LIMIT_WINDOW_MS)
+  timestamps.push(now)
+  ipRequests.set(ip, timestamps)
+  return timestamps.length > RATE_LIMIT_MAX
+}
+
+// ── Фильтр нецензурных слов ───────────────────────────────────────────────────
+const BAD_WORDS = [
+  "хуй", "пизд", "ебл", "ебат", "еблан", "блядь", "бляд", "сука", "пидор",
+  "пидар", "мудак", "залупа", "ёбан", "ёбнут", "хуес", "пиздец", "ёб твою",
+]
+
+function containsBadWords(text: string): boolean {
+  const lower = text.toLowerCase()
+  return BAD_WORDS.some(word => lower.includes(word))
+}
+
+// ── Роут ──────────────────────────────────────────────────────────────────────
 export async function POST(req: Request) {
-  const { amount, donor_name, comment } = await req.json()
+  // Rate limiting по IP
+  const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown"
+  if (isRateLimited(ip)) {
+    return NextResponse.json(
+      { error: "Слишком много запросов. Попробуйте через минуту." },
+      { status: 429 }
+    )
+  }
+
+  const raw = await req.json()
+
+  // Нормализация текстовых полей
+  const donor_name = raw.donor_name ? normalizeText(String(raw.donor_name)) : null
+  const comment = raw.comment ? normalizeText(String(raw.comment)) : null
+
+  // Валидация суммы
+  const outSum = Number(raw.amount)
+  if (!outSum || outSum < MIN_AMOUNT || outSum > MAX_AMOUNT) {
+    return NextResponse.json({ error: "Некорректная сумма" }, { status: 400 })
+  }
+
+  // Валидация имени
+  if (donor_name) {
+    if (donor_name.length > MAX_NAME_LENGTH) {
+      return NextResponse.json({ error: "Имя слишком длинное" }, { status: 400 })
+    }
+    if (containsBadWords(donor_name)) {
+      return NextResponse.json({ error: "Имя содержит недопустимые слова" }, { status: 400 })
+    }
+  }
+
+  // Валидация комментария
+  if (comment) {
+    if (comment.length > MAX_COMMENT_LENGTH) {
+      return NextResponse.json({ error: "Комментарий слишком длинный" }, { status: 400 })
+    }
+    if (containsBadWords(comment)) {
+      return NextResponse.json({ error: "Комментарий содержит недопустимые слова" }, { status: 400 })
+    }
+  }
 
   const mrh_login = process.env.ROBOKASSA_LOGIN!
   const mrh_pass1 = process.env.ROBOKASSA_PASS1!
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"
 
-  const outSum = amount
   const invId = Math.floor(Math.random() * 1_000_000)
 
   const signature = crypto
@@ -17,7 +96,6 @@ export async function POST(req: Request) {
     .update(`${mrh_login}:${outSum}:${invId}:${mrh_pass1}`)
     .digest("hex")
 
-  // Сначала сохраняем как pending — оплата ещё не подтверждена
   const { error } = await supabaseAdmin.from("donations").insert({
     inv_id: invId,
     amount: outSum,
@@ -28,7 +106,7 @@ export async function POST(req: Request) {
 
   if (error) {
     console.error("Supabase insert error:", error)
-    return NextResponse.json({ error: "DB error" }, { status: 500 })
+    return NextResponse.json({ error: "Ошибка базы данных" }, { status: 500 })
   }
 
   const url =
