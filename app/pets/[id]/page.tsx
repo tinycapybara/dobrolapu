@@ -6,6 +6,7 @@ import { Footer } from "@/components/ui/footer"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { AnimalGallery } from "./animal-gallery"
+import { AdoptionButtons } from "./adoption-request-modal"
 import { ArrowLeft, Heart, Pill } from "lucide-react"
 
 type Treatment = {
@@ -216,21 +217,11 @@ export default async function AnimalPage({ params }: Props) {
               )}
 
               {/* Кнопки действий */}
-              <div className="flex flex-col gap-3">
-                {hasGuardian ? (
-                  <div className="flex h-11 items-center justify-center gap-2 rounded-xl bg-[#9B8EC4] text-white text-sm font-semibold">
-                    <Heart className="size-4" />
-                    Уже есть опекун
-                  </div>
-                ) : (
-                  <Button size="lg" variant="outline" className="w-full rounded-xl border-[#D4849A] text-[#D4849A] hover:bg-[#D4849A]/10">
-                    Стать опекуном
-                  </Button>
-                )}
-                <Button size="lg" className="w-full rounded-xl bg-[#D4849A] hover:bg-[#C4728A] text-white">
-                  Забрать домой
-                </Button>
-              </div>
+              <AdoptionButtons
+                animalId={animal.id}
+                animalName={animal.name}
+                hasGuardian={hasGuardian}
+              />
 
             </div>
           </div>
