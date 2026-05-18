@@ -89,7 +89,7 @@ export function DonateForm({ recentDonations }: { recentDonations: RecentDonatio
   }
 
   return (
-    <div className="grid gap-8 lg:grid-cols-[1fr_320px]">
+    <div className="grid gap-8 lg:grid-cols-[1fr_320px] items-start">
       {/* Форма */}
       <div className="rounded-2xl bg-white border border-stone-100 shadow-sm p-6 lg:p-8 flex flex-col gap-6">
         <div className="space-y-3">

@@ -10,7 +10,7 @@ async function getRecentDonations(): Promise<RecentDonation[]> {
     .select("id, donor_name, amount, comment, paid_at")
     .eq("status", "completed")
     .order("created_at", { ascending: false })
-    .limit(6)
+    .limit(5)
 
   if (error) console.error("getRecentDonations error:", error)
   return (data ?? []) as RecentDonation[]
