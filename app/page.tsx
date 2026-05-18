@@ -139,7 +139,7 @@ function HeroSection() {
           </div>
 
           <div className="relative hidden lg:flex lg:justify-end">
-            <div className="relative w-full max-w-[460px] aspect-[3/4] rounded-[40px] overflow-hidden shadow-2xl">
+            <div className="relative w-full max-w-[420px] aspect-square rounded-[40px] overflow-hidden shadow-2xl">
               <Image
                 src="/cat3.jpg"
                 alt="Кот в приюте"
