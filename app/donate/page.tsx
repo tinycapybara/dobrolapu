@@ -5,14 +5,14 @@ import { Footer } from "@/components/ui/footer"
 import { DonateForm, type RecentDonation } from "./donate-form"
 
 async function getRecentDonations(): Promise<RecentDonation[]> {
-  const { data } = await supabaseAdmin
+  const { data, error } = await supabaseAdmin
     .from("donations")
     .select("id, donor_name, amount, comment, paid_at")
     .eq("status", "completed")
-    .eq("is_visible", true)
-    .order("paid_at", { ascending: false })
+    .order("created_at", { ascending: false })
     .limit(6)
 
+  if (error) console.error("getRecentDonations error:", error)
   return (data ?? []) as RecentDonation[]
 }
 
