@@ -3,6 +3,7 @@ import { Footer } from "@/components/ui/footer"
 import { AnimalsGrid } from "@/components/animals-grid"
 import { supabase } from "@/lib/supabase"
 import type { Animal } from "@/components/animal-card"
+import { PawPrint } from "lucide-react"
 
 export const metadata = {
   title: "Наши питомцы | Добрые лапки",
@@ -48,19 +49,27 @@ export default async function PetsPage() {
   const [animals, sickAnimalIds] = await Promise.all([getAnimals(), getSickAnimalIds()])
 
   return (
-    <>
+    <div className="min-h-screen bg-[#FDF8F9] flex flex-col">
       <Header />
-      <main className="container mx-auto px-4 py-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold">Наши питомцы</h1>
-          <p className="mt-2 text-muted-foreground">
-            Каждый из них ждёт свою семью. Возможно, именно вы станете для кого-то из них лучшим другом.
-          </p>
-        </div>
 
-        <AnimalsGrid animals={animals} sickAnimalIds={sickAnimalIds} />
+      <main className="flex-1 py-12 px-4">
+        <div className="container mx-auto max-w-7xl">
+
+          <div className="mb-10 text-center">
+            <div className="inline-flex size-14 items-center justify-center rounded-full bg-[#FAF0F3] mb-4">
+              <PawPrint className="size-7 text-[#D4849A]" />
+            </div>
+            <h1 className="text-3xl lg:text-4xl font-bold text-stone-800">Наши питомцы</h1>
+            <p className="mt-2 text-stone-500 max-w-md mx-auto">
+              Каждый из них ждёт свою семью. Возможно, именно вы станете для кого-то из них лучшим другом.
+            </p>
+          </div>
+
+          <AnimalsGrid animals={animals} sickAnimalIds={sickAnimalIds} />
+        </div>
       </main>
+
       <Footer />
-    </>
+    </div>
   )
 }

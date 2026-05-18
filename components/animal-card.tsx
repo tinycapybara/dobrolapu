@@ -2,7 +2,6 @@ import Image from "next/image"
 import Link from "next/link"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
 import { Heart } from "lucide-react"
 
 export type Animal = {
@@ -50,9 +49,9 @@ export function AnimalCard({ animal }: { animal: Animal }) {
   const mainPhoto = photos.find((p) => p.is_main) ?? photos[0] ?? null
 
   return (
-    <Card className="group overflow-hidden p-0 transition-shadow hover:shadow-lg">
+    <div className="group rounded-2xl bg-white border border-stone-100 shadow-sm overflow-hidden transition-shadow hover:shadow-md flex flex-col">
       {/* Фото */}
-      <Link href={`/pets/${animal.id}`} className="relative block aspect-[4/3] overflow-hidden">
+      <Link href={`/pets/${animal.id}`} className="relative block aspect-[4/3] overflow-hidden shrink-0">
         {mainPhoto ? (
           <Image
             src={mainPhoto.photo_url}
@@ -62,44 +61,48 @@ export function AnimalCard({ animal }: { animal: Animal }) {
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           />
         ) : (
-          <div className="flex size-full items-center justify-center bg-muted">
-            <span className="text-muted-foreground">Нет фото</span>
+          <div className="flex size-full items-center justify-center bg-stone-100">
+            <span className="text-stone-400 text-sm">Нет фото</span>
           </div>
         )}
 
-        {/* Плашка "Мне помогают" */}
         {hasGuardian && (
-          <Badge className="absolute left-3 top-3 gap-1 bg-green-500 hover:bg-green-500">
+          <Badge className="absolute left-3 top-3 gap-1 bg-[#9B8EC4] hover:bg-[#9B8EC4] text-white text-xs font-semibold px-2.5 py-1">
             <Heart className="size-3" />
             Мне помогают
           </Badge>
         )}
 
-        {/* Плашка "Нуждается в лечении" */}
         {isSick && (
-          <Badge className="absolute right-3 top-3 bg-red-500 hover:bg-red-500">
+          <Badge className="absolute right-3 top-3 bg-red-500 hover:bg-red-500 text-white text-xs font-semibold px-2.5 py-1">
             Нуждается в лечении
           </Badge>
         )}
       </Link>
-      
+
       {/* Информация */}
-      <CardContent className="p-4">
-        <div className="mb-3">
-          <h3 className="text-xl font-bold">{animal.name}</h3>
-          <div className="mt-1 flex flex-wrap gap-2 text-sm font-medium text-stone-600">
+      <div className="p-4 flex flex-col gap-3 flex-1">
+        <div>
+          <h3 className="text-lg font-bold text-stone-800">{animal.name}</h3>
+          <div className="mt-1 flex flex-wrap gap-1.5 text-sm text-stone-500">
             <span>{animal.gender}</span>
             <span>·</span>
             <span>{formatAge(animal.age)}</span>
+            {animal.animal_types && (
+              <>
+                <span>·</span>
+                <span>{animal.animal_types.type}</span>
+              </>
+            )}
           </div>
         </div>
-        
-        <Button asChild className="w-full text-base">
+
+        <Button asChild size="lg" className="w-full mt-auto bg-[#D4849A] hover:bg-[#C4728A] text-white rounded-xl">
           <Link href={`/pets/${animal.id}`}>
             Познакомиться
           </Link>
         </Button>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   )
 }

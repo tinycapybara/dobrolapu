@@ -119,18 +119,18 @@ export function AnimalsGrid({ animals, sickAnimalIds }: { animals: Animal[]; sic
       {/* Сетка карточек */}
       <div className="flex-1">
         {/* Счётчик */}
-        <div className="mb-4 text-sm text-muted-foreground">
-          Найдено: {filteredAnimals.length} {filteredAnimals.length === 1 ? "питомец" : 
+        <div className="mb-4 text-sm text-stone-400 font-medium">
+          Найдено: {filteredAnimals.length} {filteredAnimals.length === 1 ? "питомец" :
             filteredAnimals.length < 5 ? "питомца" : "питомцев"}
         </div>
 
         {filteredAnimals.length === 0 ? (
-          <div className="flex flex-col items-center justify-center rounded-lg border border-dashed py-16 text-center">
-            <p className="text-lg font-medium">Ничего не найдено</p>
-            <p className="mt-1 text-sm text-muted-foreground">
+          <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-stone-200 bg-white py-16 text-center">
+            <p className="text-lg font-semibold text-stone-800">Ничего не найдено</p>
+            <p className="mt-1 text-sm text-stone-400">
               Попробуйте изменить параметры фильтра
             </p>
-            <Button variant="outline" onClick={handleReset} className="mt-4">
+            <Button variant="outline" onClick={handleReset} className="mt-4 rounded-xl border-[#D4849A] text-[#D4849A] hover:bg-[#D4849A]/10">
               Сбросить фильтры
             </Button>
           </div>
@@ -142,14 +142,14 @@ export function AnimalsGrid({ animals, sickAnimalIds }: { animals: Animal[]; sic
               ))}
             </div>
 
-            {/* Кнопка "Показать ещё" */}
             {hasMore && (
               <div className="mt-8 flex justify-center">
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   size="lg"
                   onClick={handleShowMore}
                   disabled={isLoading}
+                  className="rounded-xl border-[#D4849A] text-[#D4849A] hover:bg-[#D4849A]/10"
                 >
                   {isLoading ? (
                     <>

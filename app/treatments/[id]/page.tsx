@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation"
 import Link from "next/link"
-import { Heart, Pill } from "lucide-react"
+import { ArrowLeft, Heart, Pill } from "lucide-react"
 import { supabase } from "@/lib/supabase"
 import { Header } from "@/components/ui/header"
 import { Footer } from "@/components/ui/footer"
@@ -41,11 +41,18 @@ export default async function TreatmentPage({ params }: { params: Promise<{ id: 
   const photos = animal?.animal_photos ?? []
 
   return (
-    <div className="min-h-screen bg-[#FDF8F9] flex flex-col font-[Nunito,sans-serif]">
+    <div className="min-h-screen bg-[#FDF8F9] flex flex-col">
       <Header />
 
       <main className="flex-1 py-12 px-4">
         <div className="container mx-auto max-w-5xl">
+
+          <Button asChild variant="ghost" className="mb-6 -ml-3 gap-2 text-stone-500 hover:text-stone-800">
+            <Link href="/treatments">
+              <ArrowLeft className="size-4" />
+              Назад к сборам
+            </Link>
+          </Button>
 
           <div className="grid gap-8 lg:grid-cols-[1fr_320px]">
 
@@ -69,7 +76,7 @@ export default async function TreatmentPage({ params }: { params: Promise<{ id: 
               {/* Имя и болезнь */}
               <div className="flex flex-col gap-1">
                 {animal && (
-                  <h1 className="text-3xl font-bold text-stone-800 flex items-center gap-2">
+                  <h1 className="text-3xl lg:text-4xl font-bold text-stone-800 flex items-center gap-2">
                     <Pill className="size-6 text-[#D4849A] shrink-0" />
                     {animal.name}
                   </h1>

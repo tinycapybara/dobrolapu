@@ -59,37 +59,39 @@ export function AnimalsFilter({ filters, onFilterChange, onReset }: AnimalsFilte
     filters.health !== "all"
 
   return (
-    <div className="space-y-6 rounded-lg border bg-card p-4 lg:p-6">
+    <div className="space-y-5 rounded-2xl bg-white border border-stone-100 shadow-sm p-5 lg:p-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-lg font-semibold">Фильтры</h2>
+        <h2 className="text-base font-bold text-stone-800">Фильтры</h2>
         {hasActiveFilters && (
-          <Button variant="ghost" size="sm" onClick={onReset} className="h-8 gap-1 text-muted-foreground">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onReset}
+            className="h-8 gap-1 text-stone-400 hover:text-[#D4849A] hover:bg-transparent px-2"
+          >
             <X className="size-4" />
             Сбросить
           </Button>
         )}
       </div>
 
-      {/* Поиск по кличке */}
       <div className="space-y-2">
-        <Label htmlFor="search">Поиск по кличке</Label>
+        <Label className="text-sm font-semibold text-stone-700">Поиск по кличке</Label>
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+          <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-stone-400" />
           <Input
-            id="search"
             placeholder="Введите кличку..."
             value={filters.search}
             onChange={(e) => updateFilter("search", e.target.value)}
-            className="pl-9"
+            className="pl-9 rounded-xl border-stone-200 focus:border-[#D4849A] focus:ring-[#D4849A]/20"
           />
         </div>
       </div>
 
-      {/* Тип животного */}
       <div className="space-y-2">
-        <Label>Тип животного</Label>
+        <Label className="text-sm font-semibold text-stone-700">Тип животного</Label>
         <Select value={filters.type} onValueChange={(value) => updateFilter("type", value)}>
-          <SelectTrigger className="w-full">
+          <SelectTrigger className="w-full rounded-xl border-stone-200">
             <SelectValue placeholder="Все животные" />
           </SelectTrigger>
           <SelectContent>
@@ -100,11 +102,10 @@ export function AnimalsFilter({ filters, onFilterChange, onReset }: AnimalsFilte
         </Select>
       </div>
 
-      {/* Пол */}
       <div className="space-y-2">
-        <Label>Пол</Label>
+        <Label className="text-sm font-semibold text-stone-700">Пол</Label>
         <Select value={filters.gender} onValueChange={(value) => updateFilter("gender", value)}>
-          <SelectTrigger className="w-full">
+          <SelectTrigger className="w-full rounded-xl border-stone-200">
             <SelectValue placeholder="Любой пол" />
           </SelectTrigger>
           <SelectContent>
@@ -115,11 +116,10 @@ export function AnimalsFilter({ filters, onFilterChange, onReset }: AnimalsFilte
         </Select>
       </div>
 
-      {/* Возраст */}
       <div className="space-y-2">
-        <Label>Возраст</Label>
+        <Label className="text-sm font-semibold text-stone-700">Возраст</Label>
         <Select value={filters.age} onValueChange={(value) => updateFilter("age", value)}>
-          <SelectTrigger className="w-full">
+          <SelectTrigger className="w-full rounded-xl border-stone-200">
             <SelectValue placeholder="Любой возраст" />
           </SelectTrigger>
           <SelectContent>
@@ -132,11 +132,10 @@ export function AnimalsFilter({ filters, onFilterChange, onReset }: AnimalsFilte
         </Select>
       </div>
 
-      {/* Размер */}
       <div className="space-y-2">
-        <Label>Размер</Label>
+        <Label className="text-sm font-semibold text-stone-700">Размер</Label>
         <Select value={filters.size} onValueChange={(value) => updateFilter("size", value)}>
-          <SelectTrigger className="w-full">
+          <SelectTrigger className="w-full rounded-xl border-stone-200">
             <SelectValue placeholder="Любой размер" />
           </SelectTrigger>
           <SelectContent>
@@ -149,11 +148,10 @@ export function AnimalsFilter({ filters, onFilterChange, onReset }: AnimalsFilte
         </Select>
       </div>
 
-      {/* Опекунство */}
       <div className="space-y-2">
-        <Label>Опекунство</Label>
+        <Label className="text-sm font-semibold text-stone-700">Опекунство</Label>
         <Select value={filters.guardianship} onValueChange={(value) => updateFilter("guardianship", value)}>
-          <SelectTrigger className="w-full">
+          <SelectTrigger className="w-full rounded-xl border-stone-200">
             <SelectValue placeholder="Все" />
           </SelectTrigger>
           <SelectContent>
@@ -164,11 +162,10 @@ export function AnimalsFilter({ filters, onFilterChange, onReset }: AnimalsFilte
         </Select>
       </div>
 
-      {/* Здоровье */}
       <div className="space-y-2">
-        <Label>Здоровье</Label>
+        <Label className="text-sm font-semibold text-stone-700">Здоровье</Label>
         <Select value={filters.health} onValueChange={(value) => updateFilter("health", value)}>
-          <SelectTrigger className="w-full">
+          <SelectTrigger className="w-full rounded-xl border-stone-200">
             <SelectValue placeholder="Все" />
           </SelectTrigger>
           <SelectContent>

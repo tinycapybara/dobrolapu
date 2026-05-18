@@ -6,7 +6,6 @@ import Link from "next/link"
 import { ChevronLeft, ChevronRight, PawPrint } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { Card, CardContent } from "@/components/ui/card"
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -55,7 +54,7 @@ export function TreatmentCard({ treatment }: { treatment: Treatment }) {
 
   return (
     <Link href={`/treatments/${treatment.id}`} className="block h-full">
-      <Card className="group overflow-hidden p-0 transition-shadow hover:shadow-lg h-full flex flex-col">
+      <div className="group rounded-2xl bg-white border border-stone-100 shadow-sm overflow-hidden transition-shadow hover:shadow-md h-full flex flex-col">
         <div className="relative aspect-[4/3] overflow-hidden shrink-0">
           {photo ? (
             <Image
@@ -66,36 +65,36 @@ export function TreatmentCard({ treatment }: { treatment: Treatment }) {
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
             />
           ) : (
-            <div className="flex size-full items-center justify-center bg-muted">
+            <div className="flex size-full items-center justify-center bg-stone-100">
               <PawPrint className="size-12 text-stone-300" />
             </div>
           )}
-          <Badge className="absolute left-3 top-3 bg-red-500 hover:bg-red-500 text-white">
+          <Badge className="absolute left-3 top-3 bg-red-500 hover:bg-red-500 text-white text-xs font-semibold px-2.5 py-1">
             СРОЧНО
           </Badge>
         </div>
 
-        <CardContent className="p-4 flex flex-col gap-2 flex-1">
+        <div className="p-4 flex flex-col gap-2 flex-1">
           <div>
-            <h3 className="text-xl font-bold">{animal?.name ?? "—"}</h3>
+            <h3 className="text-lg font-bold text-stone-800">{animal?.name ?? "—"}</h3>
             <p className="text-[#D4849A] font-semibold text-base">{treatment.disease}</p>
           </div>
 
           {treatment.description && (
-            <p className="text-stone-500 text-sm leading-relaxed">{treatment.description}</p>
+            <p className="text-stone-500 text-sm leading-relaxed line-clamp-2">{treatment.description}</p>
           )}
 
           {treatment.goal_amount != null && (
-            <p className="font-bold text-stone-800 text-lg">
+            <p className="font-bold text-stone-800">
               Цель: {formatMoney(treatment.goal_amount)}
             </p>
           )}
 
-          <Button asChild className="w-full mt-auto bg-[#D4849A] hover:bg-[#C4728A] text-white text-base">
+          <Button asChild size="lg" className="w-full mt-auto bg-[#D4849A] hover:bg-[#C4728A] text-white rounded-xl">
             <span>Помочь</span>
           </Button>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </Link>
   )
 }
@@ -150,7 +149,7 @@ export function FoundHomeCard({ animal }: { animal: SimpleAnimal }) {
 
   return (
     <div className="group flex flex-col gap-2">
-      <div className="relative aspect-square rounded-3xl overflow-hidden bg-stone-100">
+      <div className="relative aspect-square rounded-2xl overflow-hidden bg-stone-100">
         {photo ? (
           <Image
             src={photo.photo_url}

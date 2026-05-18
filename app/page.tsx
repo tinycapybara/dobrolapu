@@ -13,8 +13,6 @@ import {
 } from "./home-carousels"
 import { Footer } from "@/components/ui/footer"
 
-// ── Types ─────────────────────────────────────────────────────────────────────
-
 type Stats = { inShelter: number; foundHome: number; hasGuardian: number }
 
 type Treatment = {
@@ -35,8 +33,6 @@ type SimpleAnimal = {
   adopted_at: string | null
   animal_photos: { photo_url: string; is_main: boolean }[]
 }
-
-// ── Data ──────────────────────────────────────────────────────────────────────
 
 async function getPageData() {
   const [s1, s2, s3, tr, ra, fh] = await Promise.all([
@@ -79,21 +75,17 @@ async function getPageData() {
   }
 }
 
-// ── Metadata ──────────────────────────────────────────────────────────────────
-
 export const metadata = {
   title: "Добрые лапки — Городской приют для животных",
   description:
     "Помогаем кошкам и собакам найти любящий дом. Познакомьтесь с нашими питомцами или поддержите приют.",
 }
 
-// ── Page ──────────────────────────────────────────────────────────────────────
-
 export default async function HomePage() {
   const { stats, treatments, recentAnimals, foundHomeAnimals } = await getPageData()
 
   return (
-    <div className="min-h-screen bg-[#FDF8F3]">
+    <div className="min-h-screen bg-[#FDF8F9] flex flex-col">
       <Header />
       <HeroSection />
       <StatsSection stats={stats} />
@@ -107,8 +99,6 @@ export default async function HomePage() {
   )
 }
 
-// ── Sections ──────────────────────────────────────────────────────────────────
-
 function HeroSection() {
   return (
     <section className="relative overflow-hidden bg-gradient-to-br from-[#FDF8F3] via-[#FAF0F3] to-[#FAE8DC] min-h-[85vh] flex items-center">
@@ -117,23 +107,20 @@ function HeroSection() {
 
       <div className="container mx-auto px-4 py-16 lg:py-24">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
-          {/* Текст */}
           <div className="flex flex-col gap-6">
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-stone-800 leading-tight">
               Здесь каждый хвостик ждёт{" "}
               <span className="text-[#D4849A]">своего человека</span>
             </h1>
-
             <p className="text-stone-500 text-lg leading-relaxed max-w-md">
               Мы помогаем кошкам и собакам найти любящий дом. Каждый питомец в нашем приюте
               заслуживает тепла, заботы и настоящей семьи.
             </p>
-
             <div className="flex flex-col sm:flex-row gap-3">
               <Button
                 asChild
                 size="lg"
-                className="bg-[#D4849A] hover:bg-[#C4728A] text-white text-base rounded-xl px-8 shadow-lg shadow-[#D4849A]/30"
+                className="bg-[#D4849A] hover:bg-[#C4728A] text-white text-base rounded-xl px-8 shadow-lg shadow-[#D4849A]/25"
               >
                 <Link href="/pets">
                   Найти питомца
@@ -151,7 +138,6 @@ function HeroSection() {
             </div>
           </div>
 
-          {/* Фото */}
           <div className="relative hidden lg:flex lg:justify-end">
             <div className="relative w-full max-w-[480px] aspect-square rounded-[40px] overflow-hidden shadow-2xl">
               <Image
@@ -163,8 +149,6 @@ function HeroSection() {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-[#D4849A]/20 to-transparent" />
             </div>
-
-            {/* Плашка поверх фото */}
             <div className="absolute -bottom-4 left-4 bg-white rounded-xl px-4 py-3 shadow-lg flex items-center gap-3">
               <div className="size-9 rounded-full bg-[#FAF0F3] flex items-center justify-center">
                 <Heart className="size-4 text-[#D4849A] fill-[#D4849A]" />
@@ -207,11 +191,11 @@ function StatsSection({ stats }: { stats: Stats }) {
   ]
 
   return (
-    <section className="py-16 px-4 bg-[#FDF8F9]">
+    <section className="py-16 px-4 bg-white">
       <div className="container mx-auto">
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
           {items.map((item, i) => (
-            <div key={i} className={`${item.bg} rounded-3xl p-8 text-center`}>
+            <div key={i} className={`${item.bg} rounded-2xl p-8 text-center shadow-sm`}>
               <p className={`${item.text} text-5xl lg:text-6xl font-bold tabular-nums mb-2`}>
                 {item.value.toLocaleString("ru-RU")}
               </p>
@@ -232,9 +216,12 @@ function StatsSection({ stats }: { stats: Stats }) {
 
 function UrgentSection({ treatments }: { treatments: Treatment[] }) {
   return (
-    <section className="py-20 px-4 bg-white">
+    <section className="py-20 px-4 bg-[#FDF8F9]">
       <div className="container mx-auto">
         <div className="mb-10 text-center">
+          <div className="inline-flex size-12 items-center justify-center rounded-full bg-[#FAF0F3] mb-4">
+            <Pill className="size-6 text-[#D4849A]" />
+          </div>
           <h2 className="text-3xl lg:text-4xl font-bold text-stone-800">
             Им нужна помощь прямо сейчас
           </h2>
@@ -243,11 +230,9 @@ function UrgentSection({ treatments }: { treatments: Treatment[] }) {
           </p>
         </div>
 
-        {/* Mobile: карусель со стрелками */}
         <div className="lg:hidden">
           <UrgentCarousel treatments={treatments} />
         </div>
-        {/* Desktop: сетка */}
         <div className="hidden lg:grid lg:grid-cols-3 gap-6">
           {treatments.slice(0, 6).map((t, i) => (
             <TreatmentCard key={i} treatment={t} />
@@ -255,7 +240,7 @@ function UrgentSection({ treatments }: { treatments: Treatment[] }) {
         </div>
 
         <div className="mt-8 flex justify-center">
-          <Button asChild variant="outline" className="rounded-xl border-stone-200">
+          <Button asChild variant="outline" className="rounded-xl border-[#D4849A] text-[#D4849A] hover:bg-[#D4849A]/10">
             <Link href="/treatments">
               Смотреть все сборы
               <ArrowRight className="ml-2 size-4" />
@@ -275,7 +260,7 @@ function AboutSection() {
           <div className="flex flex-col gap-6">
             <div className="flex items-center gap-2">
               <div className="w-8 h-0.5 bg-[#D4849A]" />
-              <span className="text-sm font-medium text-[#D4849A] uppercase tracking-widest">
+              <span className="text-sm font-semibold text-[#D4849A] uppercase tracking-widest">
                 О нас
               </span>
             </div>
@@ -336,77 +321,77 @@ function AboutSection() {
 function HowToHelpSection() {
   const ways = [
     {
-      icon: <ShoppingCart className="size-6" />,
+      icon: <ShoppingCart className="size-6 text-amber-600" />,
       title: "Помочь с кормом",
       description:
         "Питомцы приюта нуждаются в качественном питании каждый день. Любая помощь важна.",
+      bg: "bg-amber-50",
+      iconBg: "bg-amber-100",
       action: (
-        <Button variant="outline" size="default" className="rounded-xl mt-4 w-full text-base">
+        <Button variant="outline" size="default" className="rounded-xl mt-4 w-full border-amber-200 text-amber-700 hover:bg-amber-100">
           Помочь с кормом
         </Button>
       ),
-      bg: "bg-amber-50",
-      iconBg: "bg-amber-100 text-amber-600",
     },
     {
-      icon: <Pill className="size-6" />,
+      icon: <Pill className="size-6 text-teal-600" />,
       title: "Помочь с лекарствами",
       description:
         "Многие наши питомцы нуждаются в постоянном лечении. Помогите приобрести нужные препараты.",
+      bg: "bg-teal-50",
+      iconBg: "bg-teal-100",
       action: (
-        <Button variant="outline" size="default" className="rounded-xl mt-4 w-full text-base">
+        <Button variant="outline" size="default" className="rounded-xl mt-4 w-full border-teal-200 text-teal-700 hover:bg-teal-100">
           Помочь с лекарствами
         </Button>
       ),
-      bg: "bg-teal-50",
-      iconBg: "bg-teal-100 text-teal-600",
     },
     {
-      icon: <Heart className="size-6" />,
+      icon: <Heart className="size-6 text-rose-500" />,
       title: "Стать опекуном",
       description:
         "Опекун помогает конкретному питомцу финансово, пока тот живёт в приюте и ждёт дом.",
+      bg: "bg-rose-50",
+      iconBg: "bg-rose-100",
       action: (
         <Button
           asChild
           size="default"
-          className="rounded-xl mt-4 w-full bg-[#D4849A] hover:bg-[#C4728A] text-white text-base"
+          className="rounded-xl mt-4 w-full bg-rose-400 hover:bg-rose-500 text-white"
         >
           <Link href="/pets?guardianship=search">Выбрать питомца</Link>
         </Button>
       ),
-      bg: "bg-rose-50",
-      iconBg: "bg-rose-100 text-rose-500",
     },
     {
-      icon: <Users className="size-6" />,
+      icon: <Users className="size-6 text-purple-600" />,
       title: "Стать волонтёром",
       description:
         "Помогайте кормить, выгуливать питомцев и участвовать в жизни приюта вместе с нами.",
+      bg: "bg-purple-50",
+      iconBg: "bg-purple-100",
       action: (
-        <Button variant="outline" size="default" className="rounded-xl mt-4 w-full text-base">
+        <Button variant="outline" size="default" className="rounded-xl mt-4 w-full border-purple-200 text-purple-700 hover:bg-purple-100">
           Хочу помогать
         </Button>
       ),
-      bg: "bg-purple-50",
-      iconBg: "bg-purple-100 text-purple-600",
     },
     {
-      icon: <Gift className="size-6" />,
+      icon: <Gift className="size-6 text-orange-500" />,
       title: "Пожертвовать",
       description:
         "Любая сумма помогает нам содержать приют, лечить животных и искать им любящий дом.",
+      bg: "bg-orange-50",
+      iconBg: "bg-orange-100",
       action: (
         <Button
           asChild
           size="default"
-          className="rounded-xl mt-4 w-full bg-[#D4849A] hover:bg-[#C4728A] text-white text-base"
+          className="rounded-xl mt-4 w-full bg-orange-400 hover:bg-orange-500 text-white"
         >
           <Link href="/donate">Пожертвовать</Link>
         </Button>
       ),
-      bg: "bg-orange-50",
-      iconBg: "bg-orange-100 text-orange-600",
     },
   ]
 
@@ -424,11 +409,9 @@ function HowToHelpSection() {
           {ways.map((way, i) => (
             <div
               key={i}
-              className={`${way.bg} rounded-3xl p-6 flex flex-col hover:-translate-y-1 transition-transform duration-200`}
+              className={`${way.bg} rounded-2xl p-6 flex flex-col hover:-translate-y-1 transition-transform duration-200`}
             >
-              <div
-                className={`${way.iconBg} size-12 rounded-xl flex items-center justify-center mb-4`}
-              >
+              <div className={`${way.iconBg} size-12 rounded-xl flex items-center justify-center mb-4`}>
                 {way.icon}
               </div>
               <h3 className="font-bold text-stone-800 text-lg mb-2">{way.title}</h3>
@@ -444,7 +427,7 @@ function HowToHelpSection() {
 
 function RecentAnimalsSection({ animals }: { animals: Animal[] }) {
   return (
-    <section className="py-20 px-4 bg-[#FDF8F9]">
+    <section className="py-20 px-4 bg-white">
       <div className="container mx-auto">
         <div className="flex flex-wrap items-end justify-between gap-4 mb-10">
           <div>
@@ -453,7 +436,7 @@ function RecentAnimalsSection({ animals }: { animals: Animal[] }) {
             </h2>
             <p className="mt-1 text-stone-500">Познакомьтесь с теми, кто ждёт именно вас</p>
           </div>
-          <Button asChild variant="outline" className="rounded-xl border-stone-200">
+          <Button asChild variant="outline" className="rounded-xl border-[#D4849A] text-[#D4849A] hover:bg-[#D4849A]/10">
             <Link href="/pets">
               Смотреть всех питомцев
               <ArrowRight className="ml-2 size-4" />
@@ -479,20 +462,18 @@ function RecentAnimalsSection({ animals }: { animals: Animal[] }) {
 
 function FoundHomeSection({ animals }: { animals: SimpleAnimal[] }) {
   return (
-    <section className="py-20 px-4 bg-white">
+    <section className="py-20 px-4 bg-[#FDF8F9]">
       <div className="container mx-auto">
-        <div className="text-center mb-3">
+        <div className="text-center mb-10">
           <h2 className="text-3xl lg:text-4xl font-bold text-stone-800">Уже нашли дом</h2>
+          <p className="mt-2 text-stone-500 text-lg">
+            Они уже счастливы — следующий может быть твой!
+          </p>
         </div>
-        <p className="text-center text-stone-500 mb-10 text-lg">
-          Они уже счастливы — следующий может быть твой!
-        </p>
 
-        {/* Mobile: карусель со стрелками */}
         <div className="lg:hidden">
           <FoundHomeCarousel animals={animals} />
         </div>
-        {/* Desktop: сетка */}
         <div className="hidden lg:grid lg:grid-cols-4 gap-4 lg:gap-6">
           {animals.map((animal) => (
             <FoundHomeCard key={animal.id} animal={animal} />
@@ -500,7 +481,7 @@ function FoundHomeSection({ animals }: { animals: SimpleAnimal[] }) {
         </div>
 
         <div className="mt-8 flex justify-center">
-          <Button asChild variant="outline" className="rounded-xl border-stone-200">
+          <Button asChild variant="outline" className="rounded-xl border-[#D4849A] text-[#D4849A] hover:bg-[#D4849A]/10">
             <Link href="/adopted">
               Смотреть все истории
               <ArrowRight className="ml-2 size-4" />
@@ -511,4 +492,3 @@ function FoundHomeSection({ animals }: { animals: SimpleAnimal[] }) {
     </section>
   )
 }
-

@@ -18,11 +18,13 @@ import {
   Users,
   HandHeart,
   Phone,
+  Pill,
 } from "lucide-react"
 
 const navItems = [
   { href: "/", label: "Главная", icon: Home },
   { href: "/pets", label: "Наши питомцы", icon: PawPrint },
+  { href: "/treatments", label: "Срочные сборы", icon: Pill },
   { href: "/about", label: "О приюте", icon: Users },
   { href: "/help", label: "Как помочь", icon: HandHeart },
   { href: "/contacts", label: "Контакты", icon: Phone },

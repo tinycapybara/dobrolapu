@@ -106,134 +106,138 @@ export default async function AnimalPage({ params }: Props) {
   const treatment = treatmentData as Treatment | null
   const hasGuardian = animal.guardianship_statuses?.guardianship === "Есть опекун"
 
+  const characteristics = [
+    { label: "Пол", value: animal.gender },
+    { label: "Возраст", value: formatAge(animal.age) },
+    animal.breed ? { label: "Порода", value: animal.breed } : null,
+    { label: "Размер", value: SIZE_LABELS[animal.size] ?? animal.size },
+    animal.animal_statuses ? { label: "Статус", value: animal.animal_statuses.status } : null,
+    animal.guardianship_statuses ? { label: "Опекунство", value: animal.guardianship_statuses.guardianship } : null,
+  ].filter(Boolean) as { label: string; value: string }[]
+
   return (
-    <>
+    <div className="min-h-screen bg-[#FDF8F9] flex flex-col">
       <Header />
-      <main className="container mx-auto px-4 py-8">
-        <Button asChild variant="ghost" className="mb-6 -ml-3 gap-2">
-          <Link href="/pets">
-            <ArrowLeft className="size-4" />
-            Назад к списку
-          </Link>
-        </Button>
 
-        <div className="grid gap-10 lg:grid-cols-2">
-          <AnimalGallery photos={animal.animal_photos} name={animal.name} />
+      <main className="flex-1 py-12 px-4">
+        <div className="container mx-auto max-w-5xl">
 
-          <div className="flex flex-col gap-6">
-            {/* Название + бейджи */}
-            <div>
-              <div className="mb-3 flex flex-wrap gap-2">
-                {animal.animal_types && (
-                  <Badge variant="secondary">{animal.animal_types.type}</Badge>
-                )}
-                {hasGuardian && (
-                  <Badge className="gap-1 bg-green-500 hover:bg-green-500">
-                    <Heart className="size-3" />
-                    Мне помогают
-                  </Badge>
-                )}
-              </div>
-              <h1 className="text-3xl font-bold">{animal.name}</h1>
+          {/* Навигация */}
+          <Button asChild variant="ghost" className="mb-6 -ml-3 gap-2 text-stone-500 hover:text-stone-800">
+            <Link href="/pets">
+              <ArrowLeft className="size-4" />
+              Назад к списку
+            </Link>
+          </Button>
+
+          <div className="grid gap-8 lg:grid-cols-[1fr_340px] items-start">
+
+            {/* Галерея */}
+            <div className="rounded-2xl bg-white border border-stone-100 shadow-sm p-6">
+              <AnimalGallery photos={animal.animal_photos} name={animal.name} />
             </div>
 
-            {/* Характеристики */}
-            <dl className="grid grid-cols-2 gap-x-6 gap-y-4 text-sm">
-              <div>
-                <dt className="text-muted-foreground">Пол</dt>
-                <dd className="mt-0.5 font-medium">{animal.gender}</dd>
-              </div>
-              <div>
-                <dt className="text-muted-foreground">Возраст</dt>
-                <dd className="mt-0.5 font-medium">{formatAge(animal.age)}</dd>
-              </div>
-              {animal.breed && (
-                <div>
-                  <dt className="text-muted-foreground">Порода</dt>
-                  <dd className="mt-0.5 font-medium">{animal.breed}</dd>
-                </div>
-              )}
-              <div>
-                <dt className="text-muted-foreground">Размер</dt>
-                <dd className="mt-0.5 font-medium">
-                  {SIZE_LABELS[animal.size] ?? animal.size}
-                </dd>
-              </div>
-              {animal.animal_statuses && (
-                <div>
-                  <dt className="text-muted-foreground">Статус</dt>
-                  <dd className="mt-0.5 font-medium">{animal.animal_statuses.status}</dd>
-                </div>
-              )}
-              {animal.guardianship_statuses && (
-                <div>
-                  <dt className="text-muted-foreground">Опекунство</dt>
-                  <dd className="mt-0.5 font-medium">
-                    {animal.guardianship_statuses.guardianship}
-                  </dd>
-                </div>
-              )}
-            </dl>
+            {/* Информация */}
+            <div className="flex flex-col gap-4">
 
-            {/* Описание */}
-            {animal.description && (
-              <div>
-                <h2 className="mb-2 text-xs font-semibold uppercase tracking-widest text-muted-foreground">
-                  О животном
-                </h2>
-                <p className="leading-relaxed text-sm">{animal.description}</p>
-              </div>
-            )}
-
-            {/* Лечение */}
-            {treatment && (
-              <div className="rounded-xl border border-[#D4849A]/30 bg-[#FAF0F3] p-4 flex flex-col gap-3">
-                <div className="flex items-center gap-2">
-                  <Pill className="size-4 text-[#D4849A]" />
-                  <span className="text-sm font-semibold text-[#D4849A]">Нуждается в лечении</span>
-                  <Badge className="ml-auto bg-red-500 hover:bg-red-500 text-white text-xs">
-                    СРОЧНО
-                  </Badge>
-                </div>
-                <div>
-                  <p className="font-bold text-stone-800">{treatment.disease}</p>
-                  {treatment.description && (
-                    <p className="mt-1 text-sm text-stone-500 leading-relaxed">
-                      {treatment.description}
-                    </p>
+              {/* Имя + бейджи */}
+              <div className="flex flex-col gap-2">
+                <div className="flex items-center gap-3 flex-wrap">
+                  <h1 className="text-3xl lg:text-4xl font-bold text-stone-800">{animal.name}</h1>
+                  {animal.animal_types && (
+                    <Badge className="bg-[#FAF0F3] text-[#D4849A] hover:bg-[#FAF0F3] border border-[#D4849A]/20 text-sm">
+                      {animal.animal_types.type}
+                    </Badge>
+                  )}
+                  {hasGuardian && (
+                    <Badge className="gap-1 bg-[#9B8EC4] hover:bg-[#9B8EC4] text-white text-xs font-semibold px-2.5 py-1">
+                      <Heart className="size-3" />
+                      Мне помогают
+                    </Badge>
                   )}
                 </div>
-                {treatment.goal_amount != null && (
-                  <p className="text-sm font-semibold text-stone-700">
-                    Цель сбора: {formatMoney(treatment.goal_amount)}
-                  </p>
+              </div>
+
+              {/* Характеристики */}
+              <div className="rounded-2xl bg-white border border-stone-100 shadow-sm p-5">
+                <h2 className="text-sm font-semibold text-stone-400 uppercase tracking-widest mb-4">
+                  Характеристики
+                </h2>
+                <dl className="grid grid-cols-2 gap-x-6 gap-y-4">
+                  {characteristics.map((c) => (
+                    <div key={c.label}>
+                      <dt className="text-xs text-stone-400 mb-0.5">{c.label}</dt>
+                      <dd className="text-sm font-semibold text-stone-800">{c.value}</dd>
+                    </div>
+                  ))}
+                </dl>
+              </div>
+
+              {/* Описание */}
+              {animal.description && (
+                <div className="rounded-2xl bg-white border border-stone-100 shadow-sm p-5">
+                  <h2 className="text-sm font-semibold text-stone-400 uppercase tracking-widest mb-3">
+                    О животном
+                  </h2>
+                  <p className="text-sm text-stone-600 leading-relaxed">{animal.description}</p>
+                </div>
+              )}
+
+              {/* Блок лечения */}
+              {treatment && (
+                <div className="rounded-2xl border border-[#D4849A]/20 bg-[#FAF0F3] p-5 flex flex-col gap-3">
+                  <div className="flex items-center gap-2">
+                    <Pill className="size-4 text-[#D4849A]" />
+                    <span className="text-sm font-semibold text-[#D4849A]">Нуждается в лечении</span>
+                    <Badge className="ml-auto bg-red-500 hover:bg-red-500 text-white text-xs font-semibold px-2.5 py-1">
+                      СРОЧНО
+                    </Badge>
+                  </div>
+                  <div>
+                    <p className="font-bold text-stone-800">{treatment.disease}</p>
+                    {treatment.description && (
+                      <p className="mt-1 text-sm text-stone-500 leading-relaxed">
+                        {treatment.description}
+                      </p>
+                    )}
+                  </div>
+                  {treatment.goal_amount != null && (
+                    <p className="text-sm font-semibold text-stone-700">
+                      Цель сбора: {formatMoney(treatment.goal_amount)}
+                    </p>
+                  )}
+                  <Button asChild className="w-full bg-[#D4849A] hover:bg-[#C4728A] text-white rounded-xl">
+                    <Link href="/donate">
+                      <Heart className="mr-2 size-4" />
+                      Помочь {animal.name}
+                    </Link>
+                  </Button>
+                </div>
+              )}
+
+              {/* Кнопки действий */}
+              <div className="flex flex-col gap-3">
+                {hasGuardian ? (
+                  <div className="flex h-11 items-center justify-center gap-2 rounded-xl bg-[#9B8EC4] text-white text-sm font-semibold">
+                    <Heart className="size-4" />
+                    Уже есть опекун
+                  </div>
+                ) : (
+                  <Button size="lg" variant="outline" className="w-full rounded-xl border-[#D4849A] text-[#D4849A] hover:bg-[#D4849A]/10">
+                    Стать опекуном
+                  </Button>
                 )}
-                <Button asChild className="w-full bg-[#D4849A] hover:bg-[#C4728A] text-white text-base">
-                  <Link href="/donate">Помочь {animal.name}</Link>
+                <Button size="lg" className="w-full rounded-xl bg-[#D4849A] hover:bg-[#C4728A] text-white">
+                  Забрать домой
                 </Button>
               </div>
-            )}
 
-            {/* Кнопки действий */}
-            <div className="flex flex-col gap-3 pt-2 sm:flex-row">
-              {hasGuardian ? (
-                <Badge className="flex h-11 flex-1 items-center justify-center gap-1 bg-green-500 text-sm hover:bg-green-500">
-                  <Heart className="size-4" />
-                  Есть опекун
-                </Badge>
-              ) : (
-                <Button size="lg" variant="outline" className="flex-1">
-                  Стать опекуном
-                </Button>
-              )}
-              <Button size="lg" className="flex-1">
-                Забрать домой
-              </Button>
             </div>
           </div>
         </div>
       </main>
+
       <Footer />
-    </>
+    </div>
   )
 }
