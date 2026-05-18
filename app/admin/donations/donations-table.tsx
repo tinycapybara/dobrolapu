@@ -60,7 +60,8 @@ export function DonationsTable({ donations, total }: { donations: Donation[]; to
       </div>
 
       <div className="rounded-2xl bg-white border border-stone-100 shadow-sm overflow-hidden">
-        <table className="w-full text-sm">
+        <div className="overflow-x-auto">
+        <table className="w-full text-sm min-w-[640px]">
           <thead>
             <tr className="border-b border-stone-100 bg-stone-50">
               <th className="text-left px-4 py-3 font-semibold text-stone-500">Дата</th>
@@ -80,7 +81,7 @@ export function DonationsTable({ donations, total }: { donations: Donation[]; to
                 <td className="px-4 py-3 font-medium text-stone-800">
                   {d.donor_name ?? <span className="text-stone-400">Анонимно</span>}
                 </td>
-                <td className="px-4 py-3 font-bold text-[#D4849A]">{formatAmount(d.amount)}</td>
+                <td className="px-4 py-3 font-bold text-[#D4849A] whitespace-nowrap">{formatAmount(d.amount)}</td>
                 <td className="px-4 py-3">
                   {d.status === "completed"
                     ? <Badge className="bg-green-100 text-green-700 hover:bg-green-100 border-0 text-xs">Завершён</Badge>
@@ -100,8 +101,9 @@ export function DonationsTable({ donations, total }: { donations: Donation[]; to
             ))}
           </tbody>
         </table>
+        </div>
         {donations.length === 0 && (
-          <div className="py-16 text-center text-stone-400 text-sm">Донатов пока нет</div>
+          <div className="py-16 text-center text-stone-400 text-sm">Пожертвований пока нет</div>
         )}
       </div>
 

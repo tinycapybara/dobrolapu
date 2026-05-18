@@ -3,6 +3,7 @@ import { notFound } from "next/navigation"
 import { ArrowLeft, ExternalLink } from "lucide-react"
 import { supabaseAdmin } from "@/lib/supabase-admin"
 import { TreatmentForm } from "../treatment-form"
+import { DeleteTreatmentButton } from "../delete-button"
 
 async function getAnimals() {
   const { data } = await supabaseAdmin
@@ -40,7 +41,7 @@ export default async function EditTreatmentPage({ params }: Props) {
           <ArrowLeft className="size-4" />
           Назад к сборам
         </Link>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 flex-wrap">
           <h1 className="text-2xl font-bold text-stone-800">{treatment.disease}</h1>
           <Link
             href={`/treatments/${numericId}`}
@@ -50,6 +51,9 @@ export default async function EditTreatmentPage({ params }: Props) {
             <ExternalLink className="size-3.5" />
             На сайте
           </Link>
+          <div className="ml-auto">
+            <DeleteTreatmentButton id={numericId} disease={treatment.disease} />
+          </div>
         </div>
       </div>
 

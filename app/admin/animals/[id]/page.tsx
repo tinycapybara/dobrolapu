@@ -4,6 +4,7 @@ import { ArrowLeft, ExternalLink } from "lucide-react"
 import { supabaseAdmin } from "@/lib/supabase-admin"
 import { AnimalForm } from "../animal-form"
 import { PhotoManager } from "../photo-manager"
+import { DeleteAnimalButton } from "../delete-button"
 
 async function getLookups() {
   const [{ data: types }, { data: statuses }, { data: guardianships }] = await Promise.all([
@@ -49,7 +50,7 @@ export default async function EditAnimalPage({ params }: Props) {
           <ArrowLeft className="size-4" />
           Назад к списку
         </Link>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 flex-wrap">
           <h1 className="text-2xl font-bold text-stone-800">{animal.name}</h1>
           <Link
             href={`/pets/${numericId}`}
@@ -59,6 +60,9 @@ export default async function EditAnimalPage({ params }: Props) {
             <ExternalLink className="size-3.5" />
             На сайте
           </Link>
+          <div className="ml-auto">
+            <DeleteAnimalButton animalId={numericId} animalName={animal.name} />
+          </div>
         </div>
       </div>
 

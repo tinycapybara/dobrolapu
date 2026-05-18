@@ -38,3 +38,12 @@ export async function updateTreatment(id: number, payload: TreatmentPayload) {
   revalidatePath("/treatments")
   revalidatePath(`/treatments/${id}`)
 }
+
+export async function deleteTreatment(id: number) {
+  const { error } = await supabaseAdmin.from("treatments").delete().eq("id", id)
+  if (error) throw new Error(error.message)
+
+  revalidatePath("/admin/treatments")
+  revalidatePath("/treatments")
+  redirect("/admin/treatments")
+}

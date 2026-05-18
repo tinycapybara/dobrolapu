@@ -141,10 +141,10 @@ function HeroSection() {
           <div className="relative hidden lg:flex lg:justify-end">
             <div className="relative w-full max-w-[480px] aspect-square rounded-[40px] overflow-hidden shadow-2xl">
               <Image
-                src="https://picsum.photos/seed/dobryelapki-hero/700/700"
-                alt="Питомцы приюта"
+                src="/cat.jpg"
+                alt="Котёнок в приюте"
                 fill
-                className="object-cover"
+                className="object-cover object-top"
                 priority
               />
               <div className="absolute inset-0 bg-gradient-to-t from-[#D4849A]/20 to-transparent" />

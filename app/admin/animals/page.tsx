@@ -3,6 +3,8 @@ import { supabaseAdmin } from "@/lib/supabase-admin"
 import { PawPrint, Plus, Pencil } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
+import { AnimalFilters } from "./animal-filters"
+import { FoundHomeButton } from "./animals-actions-client"
 
 type Animal = {
   id: number
@@ -10,18 +12,36 @@ type Animal = {
   gender: string
   age: number | null
   size: string
+  adopted_at: string | null
   animal_types: { type: string } | null
   animal_statuses: { status: string } | null
   guardianship_statuses: { guardianship: string } | null
   animal_photos: { photo_url: string; is_main: boolean }[]
 }
 
-async function getAnimals(): Promise<Animal[]> {
-  const { data, error } = await supabaseAdmin
+type Props = { searchParams: Promise<{ type?: string; status?: string }> }
+
+async function getLookups() {
+  const [{ data: types }, { data: statuses }] = await Promise.all([
+    supabaseAdmin.from("animal_types").select("id, type").order("id"),
+    supabaseAdmin.from("animal_statuses").select("id, status").order("id"),
+  ])
+  return {
+    types: (types ?? []).map((t) => ({ id: t.id, label: t.type })),
+    statuses: (statuses ?? []).map((s) => ({ id: s.id, label: s.status })),
+  }
+}
+
+async function getAnimals(typeId?: string, statusId?: string): Promise<Animal[]> {
+  let query = supabaseAdmin
     .from("animals")
-    .select("id, name, gender, age, size, animal_types(type), animal_statuses(status), guardianship_statuses(guardianship), animal_photos(photo_url, is_main)")
+    .select("id, name, gender, age, size, adopted_at, animal_types(type), animal_statuses(status), guardianship_statuses(guardianship), animal_photos(photo_url, is_main)")
     .order("id", { ascending: false })
 
+  if (typeId) query = query.eq("type_id", typeId)
+  if (statusId) query = query.eq("status_id", statusId)
+
+  const { data, error } = await query
   if (error) { console.error(error); return [] }
   return (data ?? []) as unknown as Animal[]
 }
@@ -32,15 +52,19 @@ function getMainPhoto(photos: { photo_url: string; is_main: boolean }[]): string
 
 const SIZE_LABELS: Record<string, string> = { small: "Маленький", medium: "Средний", large: "Большой" }
 
-export default async function AdminAnimalsPage() {
-  const animals = await getAnimals()
+export default async function AdminAnimalsPage({ searchParams }: Props) {
+  const { type, status } = await searchParams
+  const [animals, { types, statuses }] = await Promise.all([
+    getAnimals(type, status),
+    getLookups(),
+  ])
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between flex-wrap gap-4">
         <div>
           <h1 className="text-2xl font-bold text-stone-800">Животные</h1>
-          <p className="text-sm text-stone-400 mt-0.5">{animals.length} питомцев в базе</p>
+          <p className="text-sm text-stone-400 mt-0.5">{animals.length} питомцев</p>
         </div>
         <Button asChild size="lg" className="rounded-xl bg-[#D4849A] hover:bg-[#C4728A] text-white gap-2">
           <Link href="/admin/animals/new">
@@ -50,8 +74,11 @@ export default async function AdminAnimalsPage() {
         </Button>
       </div>
 
+      <AnimalFilters types={types} statuses={statuses} />
+
       <div className="rounded-2xl bg-white border border-stone-100 shadow-sm overflow-hidden">
-        <table className="w-full text-sm">
+        <div className="overflow-x-auto">
+        <table className="w-full text-sm min-w-[700px]">
           <thead>
             <tr className="border-b border-stone-100 bg-stone-50">
               <th className="text-left px-4 py-3 font-semibold text-stone-500 w-12"></th>
@@ -69,8 +96,9 @@ export default async function AdminAnimalsPage() {
               const photo = getMainPhoto(animal.animal_photos)
               const hasGuardian = animal.guardianship_statuses?.guardianship === "Есть опекун"
               const isSick = animal.animal_statuses?.status === "Нуждается в лечении"
+              const foundHome = !!animal.adopted_at
               return (
-                <tr key={animal.id} className="hover:bg-stone-50/50 transition-colors">
+                <tr key={animal.id} className={`hover:bg-stone-50/50 transition-colors ${foundHome ? "opacity-60" : ""}`}>
                   <td className="px-4 py-3">
                     <div className="size-10 rounded-lg overflow-hidden bg-stone-100 shrink-0">
                       {photo
@@ -79,7 +107,10 @@ export default async function AdminAnimalsPage() {
                       }
                     </div>
                   </td>
-                  <td className="px-4 py-3 font-semibold text-stone-800">{animal.name}</td>
+                  <td className="px-4 py-3 font-semibold text-stone-800">
+                    {animal.name}
+                    {foundHome && <span className="ml-2 text-xs text-green-600 font-normal">Нашёл дом</span>}
+                  </td>
                   <td className="px-4 py-3 text-stone-600">{animal.animal_types?.type ?? "—"}</td>
                   <td className="px-4 py-3 text-stone-600">{animal.gender}</td>
                   <td className="px-4 py-3 text-stone-600">{SIZE_LABELS[animal.size] ?? animal.size}</td>
@@ -96,23 +127,27 @@ export default async function AdminAnimalsPage() {
                     }
                   </td>
                   <td className="px-4 py-3">
-                    <Link
-                      href={`/admin/animals/${animal.id}`}
-                      className="inline-flex items-center gap-1.5 text-xs font-medium text-stone-400 hover:text-[#D4849A] transition-colors"
-                    >
-                      <Pencil className="size-3.5" />
-                      Изменить
-                    </Link>
+                    <div className="flex items-center gap-3">
+                      <Link
+                        href={`/admin/animals/${animal.id}`}
+                        className="inline-flex items-center gap-1.5 text-xs font-medium text-stone-400 hover:text-[#D4849A] transition-colors"
+                      >
+                        <Pencil className="size-3.5" />
+                        Изменить
+                      </Link>
+                      {!foundHome && <FoundHomeButton animalId={animal.id} />}
+                    </div>
                   </td>
                 </tr>
               )
             })}
           </tbody>
         </table>
+        </div>
         {animals.length === 0 && (
           <div className="py-16 text-center text-stone-400">
             <PawPrint className="size-8 mx-auto mb-3 text-stone-200" />
-            <p>Животных пока нет</p>
+            <p>Животных не найдено</p>
           </div>
         )}
       </div>

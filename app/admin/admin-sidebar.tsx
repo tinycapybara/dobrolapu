@@ -2,9 +2,10 @@
 
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
-import { PawPrint, ClipboardList, Users, Heart, LogOut, Pill } from "lucide-react"
+import { PawPrint, ClipboardList, Users, Heart, LogOut, Pill, LayoutDashboard } from "lucide-react"
 
 const navItems = [
+  { href: "/admin", label: "Обзор", icon: LayoutDashboard },
   { href: "/admin/animals", label: "Животные", icon: PawPrint },
   { href: "/admin/treatments", label: "Срочные сборы", icon: Pill },
   { href: "/admin/requests", label: "Заявки", icon: ClipboardList },
@@ -37,7 +38,7 @@ export function AdminSidebar() {
 
       <nav className="flex-1 p-3 flex flex-col gap-0.5">
         {navItems.map((item) => {
-          const active = pathname.startsWith(item.href)
+          const active = item.href === "/admin" ? pathname === "/admin" : pathname.startsWith(item.href)
           return (
             <Link
               key={item.href}

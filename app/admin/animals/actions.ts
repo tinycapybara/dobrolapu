@@ -71,6 +71,29 @@ export async function setMainPhoto(photoId: number, animalId: number) {
   revalidatePath(`/pets/${animalId}`)
 }
 
+export async function markFoundHome(animalId: number) {
+  const { error } = await supabaseAdmin
+    .from("animals")
+    .update({ adopted_at: new Date().toISOString() })
+    .eq("id", animalId)
+
+  if (error) throw new Error(error.message)
+
+  revalidatePath("/admin/animals")
+  revalidatePath(`/pets/${animalId}`)
+}
+
+export async function deleteAnimal(animalId: number) {
+  await supabaseAdmin.from("animal_photos").delete().eq("animal_id", animalId)
+
+  const { error } = await supabaseAdmin.from("animals").delete().eq("id", animalId)
+  if (error) throw new Error(error.message)
+
+  revalidatePath("/admin/animals")
+  revalidatePath("/pets")
+  redirect("/admin/animals")
+}
+
 export async function addPhoto(animalId: number, photoUrl: string, isMain: boolean) {
   if (isMain) {
     await supabaseAdmin

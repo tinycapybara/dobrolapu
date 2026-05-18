@@ -47,7 +47,8 @@ export default async function AdminTreatmentsPage() {
       </div>
 
       <div className="rounded-2xl bg-white border border-stone-100 shadow-sm overflow-hidden">
-        <table className="w-full text-sm">
+        <div className="overflow-x-auto">
+        <table className="w-full text-sm min-w-[500px]">
           <thead>
             <tr className="border-b border-stone-100 bg-stone-50">
               <th className="text-left px-4 py-3 font-semibold text-stone-500">Питомец</th>
@@ -67,7 +68,7 @@ export default async function AdminTreatmentsPage() {
                   }
                 </td>
                 <td className="px-4 py-3 text-stone-700">{t.disease}</td>
-                <td className="px-4 py-3 text-stone-600">{formatAmount(t.goal_amount)}</td>
+                <td className="px-4 py-3 text-stone-600 whitespace-nowrap">{formatAmount(t.goal_amount)}</td>
                 <td className="px-4 py-3">
                   {t.is_active
                     ? <Badge className="bg-red-100 text-red-600 hover:bg-red-100 border-0 text-xs">Активный</Badge>
@@ -87,6 +88,7 @@ export default async function AdminTreatmentsPage() {
             ))}
           </tbody>
         </table>
+        </div>
         {treatments.length === 0 && (
           <div className="py-16 text-center text-stone-400">
             <Pill className="size-8 mx-auto mb-3 text-stone-200" />
