@@ -11,6 +11,7 @@ import { Card, CardContent } from "@/components/ui/card"
 // ── Types ─────────────────────────────────────────────────────────────────────
 
 type Treatment = {
+  id: number
   disease: string
   description: string | null
   goal_amount: number | null
@@ -53,51 +54,49 @@ export function TreatmentCard({ treatment }: { treatment: Treatment }) {
   const animal = treatment.animals
 
   return (
-    <Card className="group overflow-hidden p-0 transition-shadow hover:shadow-lg h-full flex flex-col">
-      <div className="relative aspect-[4/3] overflow-hidden shrink-0">
-        {photo ? (
-          <Image
-            src={photo.photo_url}
-            alt={animal?.name ?? "Животное"}
-            fill
-            className="object-cover transition-transform duration-300 group-hover:scale-105"
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-          />
-        ) : (
-          <div className="flex size-full items-center justify-center bg-muted">
-            <PawPrint className="size-12 text-stone-300" />
-          </div>
-        )}
-        <Badge className="absolute left-3 top-3 bg-red-500 hover:bg-red-500 text-white">
-          СРОЧНО
-        </Badge>
-      </div>
-
-      <CardContent className="p-4 flex flex-col gap-2 flex-1">
-        <div>
-          <h3 className="text-xl font-bold">{animal?.name ?? "—"}</h3>
-          <p className="text-[#D4849A] font-semibold text-base">{treatment.disease}</p>
+    <Link href={`/treatments/${treatment.id}`} className="block h-full">
+      <Card className="group overflow-hidden p-0 transition-shadow hover:shadow-lg h-full flex flex-col">
+        <div className="relative aspect-[4/3] overflow-hidden shrink-0">
+          {photo ? (
+            <Image
+              src={photo.photo_url}
+              alt={animal?.name ?? "Животное"}
+              fill
+              className="object-cover transition-transform duration-300 group-hover:scale-105"
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            />
+          ) : (
+            <div className="flex size-full items-center justify-center bg-muted">
+              <PawPrint className="size-12 text-stone-300" />
+            </div>
+          )}
+          <Badge className="absolute left-3 top-3 bg-red-500 hover:bg-red-500 text-white">
+            СРОЧНО
+          </Badge>
         </div>
 
-        {treatment.description && (
-          <p className="text-stone-500 text-sm leading-relaxed">
-            {treatment.description.length > 80
-              ? `${treatment.description.slice(0, 80)}...`
-              : treatment.description}
-          </p>
-        )}
+        <CardContent className="p-4 flex flex-col gap-2 flex-1">
+          <div>
+            <h3 className="text-xl font-bold">{animal?.name ?? "—"}</h3>
+            <p className="text-[#D4849A] font-semibold text-base">{treatment.disease}</p>
+          </div>
 
-        {treatment.goal_amount != null && (
-          <p className="font-bold text-stone-800 text-lg">
-            Цель: {formatMoney(treatment.goal_amount)}
-          </p>
-        )}
+          {treatment.description && (
+            <p className="text-stone-500 text-sm leading-relaxed">{treatment.description}</p>
+          )}
 
-        <Button asChild className="w-full mt-auto bg-[#D4849A] hover:bg-[#C4728A] text-white text-base">
-          <Link href="/donate">Помочь</Link>
-        </Button>
-      </CardContent>
-    </Card>
+          {treatment.goal_amount != null && (
+            <p className="font-bold text-stone-800 text-lg">
+              Цель: {formatMoney(treatment.goal_amount)}
+            </p>
+          )}
+
+          <Button asChild className="w-full mt-auto bg-[#D4849A] hover:bg-[#C4728A] text-white text-base">
+            <span>Помочь</span>
+          </Button>
+        </CardContent>
+      </Card>
+    </Link>
   )
 }
 

@@ -18,6 +18,7 @@ import { Footer } from "@/components/ui/footer"
 type Stats = { inShelter: number; foundHome: number; hasGuardian: number }
 
 type Treatment = {
+  id: number
   disease: string
   description: string | null
   goal_amount: number | null
@@ -44,7 +45,7 @@ async function getPageData() {
     supabase.from("animals").select("*", { count: "exact", head: true }).eq("guardianship_id", 2),
     supabase
       .from("treatments")
-      .select("disease, description, goal_amount, animals!animal_id(id, name, animal_photos(photo_url, is_main))")
+      .select("id, disease, description, goal_amount, animals!animal_id(id, name, animal_photos(photo_url, is_main))")
       .eq("is_active", true)
       .limit(6),
     supabase
@@ -119,7 +120,7 @@ function HeroSection() {
           {/* Текст */}
           <div className="flex flex-col gap-6">
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-stone-800 leading-tight">
-              Здесь каждый хвост ждёт{" "}
+              Здесь каждый хвостик ждёт{" "}
               <span className="text-[#D4849A]">своего человека</span>
             </h1>
 
@@ -143,7 +144,7 @@ function HeroSection() {
                 asChild
                 size="lg"
                 variant="outline"
-                className="rounded-xl px-8 border-stone-200 hover:bg-stone-50 text-stone-700"
+                className="rounded-xl px-8 text-base border-stone-200 hover:bg-stone-50 text-stone-700"
               >
                 <Link href="/donate">Помочь приюту</Link>
               </Button>
@@ -218,6 +219,11 @@ function StatsSection({ stats }: { stats: Stats }) {
               <p className="text-stone-400 text-sm mt-1">{item.sub}</p>
             </div>
           ))}
+        </div>
+        <div className="flex justify-center mt-10">
+          <Button asChild size="lg" className="bg-[#D4849A] hover:bg-[#C4728A] text-white text-base px-12 rounded-xl">
+            <Link href="/pets">Стать опекуном</Link>
+          </Button>
         </div>
       </div>
     </section>
@@ -331,12 +337,12 @@ function HowToHelpSection() {
   const ways = [
     {
       icon: <ShoppingCart className="size-6" />,
-      title: "Купить корм",
+      title: "Помочь с кормом",
       description:
         "Питомцы приюта нуждаются в качественном питании каждый день. Любая помощь важна.",
       action: (
-        <Button variant="outline" size="sm" className="rounded-xl mt-4 w-full border-stone-200">
-          Купить корм
+        <Button variant="outline" size="default" className="rounded-xl mt-4 w-full text-base">
+          Помочь с кормом
         </Button>
       ),
       bg: "bg-amber-50",
@@ -344,12 +350,12 @@ function HowToHelpSection() {
     },
     {
       icon: <Pill className="size-6" />,
-      title: "Купить лекарства",
+      title: "Помочь с лекарствами",
       description:
-        "Многие наши питомцы нуждаются в постоянном лечении. Помогите купить нужные препараты.",
+        "Многие наши питомцы нуждаются в постоянном лечении. Помогите приобрести нужные препараты.",
       action: (
-        <Button variant="outline" size="sm" className="rounded-xl mt-4 w-full border-stone-200">
-          Купить лекарства
+        <Button variant="outline" size="default" className="rounded-xl mt-4 w-full text-base">
+          Помочь с лекарствами
         </Button>
       ),
       bg: "bg-teal-50",
@@ -363,7 +369,7 @@ function HowToHelpSection() {
       action: (
         <Button
           asChild
-          size="sm"
+          size="default"
           className="rounded-xl mt-4 w-full bg-[#D4849A] hover:bg-[#C4728A] text-white text-base"
         >
           <Link href="/pets?guardianship=search">Выбрать питомца</Link>
@@ -378,7 +384,7 @@ function HowToHelpSection() {
       description:
         "Помогайте кормить, выгуливать питомцев и участвовать в жизни приюта вместе с нами.",
       action: (
-        <Button variant="outline" size="sm" className="rounded-xl mt-4 w-full border-stone-200">
+        <Button variant="outline" size="default" className="rounded-xl mt-4 w-full text-base">
           Хочу помогать
         </Button>
       ),
@@ -393,7 +399,7 @@ function HowToHelpSection() {
       action: (
         <Button
           asChild
-          size="sm"
+          size="default"
           className="rounded-xl mt-4 w-full bg-[#D4849A] hover:bg-[#C4728A] text-white text-base"
         >
           <Link href="/donate">Пожертвовать</Link>
