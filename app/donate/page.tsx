@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic"
+
 import { Heart } from "lucide-react"
 import { supabaseAdmin } from "@/lib/supabase-admin"
 import { Header } from "@/components/ui/header"
@@ -9,6 +11,7 @@ async function getRecentDonations(): Promise<RecentDonation[]> {
     .from("donations")
     .select("id, donor_name, amount, comment, paid_at")
     .eq("status", "completed")
+    .eq("is_visible", true)
     .order("created_at", { ascending: false })
     .limit(5)
 
