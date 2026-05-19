@@ -327,8 +327,8 @@ function HowToHelpSection() {
       bg: "bg-amber-50",
       iconBg: "bg-amber-100",
       action: (
-        <Button variant="outline" size="default" className="rounded-xl mt-4 w-full border-amber-200 text-amber-700 hover:bg-amber-100">
-          Помочь с кормом
+        <Button asChild variant="outline" size="default" className="rounded-xl mt-4 w-full border-amber-200 text-amber-700 hover:bg-amber-100">
+          <Link href="/help/food">Помочь с кормом</Link>
         </Button>
       ),
     },
@@ -340,8 +340,8 @@ function HowToHelpSection() {
       bg: "bg-teal-50",
       iconBg: "bg-teal-100",
       action: (
-        <Button variant="outline" size="default" className="rounded-xl mt-4 w-full border-teal-200 text-teal-700 hover:bg-teal-100">
-          Помочь с лекарствами
+        <Button asChild variant="outline" size="default" className="rounded-xl mt-4 w-full border-teal-200 text-teal-700 hover:bg-teal-100">
+          <Link href="/help/medicine">Помочь с лекарствами</Link>
         </Button>
       ),
     },
@@ -370,8 +370,8 @@ function HowToHelpSection() {
       bg: "bg-purple-50",
       iconBg: "bg-purple-100",
       action: (
-        <Button variant="outline" size="default" className="rounded-xl mt-4 w-full border-purple-200 text-purple-700 hover:bg-purple-100">
-          Хочу помогать
+        <Button asChild variant="outline" size="default" className="rounded-xl mt-4 w-full border-purple-200 text-purple-700 hover:bg-purple-100">
+          <Link href="/help/volunteer">Хочу помогать</Link>
         </Button>
       ),
     },
