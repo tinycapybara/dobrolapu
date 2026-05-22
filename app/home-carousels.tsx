@@ -14,6 +14,7 @@ type Treatment = {
   disease: string
   description: string | null
   goal_amount: number | null
+  collected?: number
   animals: {
     id: number
     name: string
@@ -53,49 +54,61 @@ export function TreatmentCard({ treatment }: { treatment: Treatment }) {
   const animal = treatment.animals
 
   return (
-    <Link href={`/treatments/${treatment.id}`} className="block h-full">
-      <div className="group rounded-2xl bg-white border border-stone-100 shadow-sm overflow-hidden transition-shadow hover:shadow-md h-full flex flex-col">
-        <div className="relative aspect-[4/3] overflow-hidden shrink-0">
-          {photo ? (
-            <Image
-              src={photo.photo_url}
-              alt={animal?.name ?? "Животное"}
-              fill
-              className="object-cover transition-transform duration-300 group-hover:scale-105"
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-            />
-          ) : (
-            <div className="flex size-full items-center justify-center bg-stone-100">
-              <PawPrint className="size-12 text-stone-300" />
-            </div>
-          )}
-          <Badge className="absolute left-3 top-3 bg-red-500 hover:bg-red-500 text-white text-xs font-semibold px-2.5 py-1">
-            СРОЧНО
-          </Badge>
-        </div>
+    <div className="group rounded-2xl bg-white border border-stone-100 shadow-sm overflow-hidden transition-shadow hover:shadow-md h-full flex flex-col">
+      <Link href={`/treatments/${treatment.id}`} className="relative aspect-[4/3] overflow-hidden shrink-0 block">
+        {photo ? (
+          <Image
+            src={photo.photo_url}
+            alt={animal?.name ?? "Животное"}
+            fill
+            className="object-cover transition-transform duration-300 group-hover:scale-105"
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+          />
+        ) : (
+          <div className="flex size-full items-center justify-center bg-stone-100">
+            <PawPrint className="size-12 text-stone-300" />
+          </div>
+        )}
+        <Badge className="absolute left-3 top-3 bg-red-500 hover:bg-red-500 text-white text-xs font-semibold px-2.5 py-1">
+          СРОЧНО
+        </Badge>
+      </Link>
 
         <div className="p-4 flex flex-col gap-2 flex-1">
-          <div>
-            <h3 className="text-lg font-bold text-stone-800">{animal?.name ?? "—"}</h3>
+          <Link href={`/treatments/${treatment.id}`} className="block">
+            <h3 className="text-lg font-bold text-stone-800 hover:text-[#D4849A] transition-colors">{animal?.name ?? "—"}</h3>
             <p className="text-[#D4849A] font-semibold text-base">{treatment.disease}</p>
-          </div>
+          </Link>
 
           {treatment.description && (
             <p className="text-stone-500 text-sm leading-relaxed line-clamp-2">{treatment.description}</p>
           )}
 
-          {treatment.goal_amount != null && (
-            <p className="font-bold text-stone-800">
-              Цель: {formatMoney(treatment.goal_amount)}
-            </p>
-          )}
+          {treatment.goal_amount != null && (() => {
+            const goal = treatment.goal_amount as number
+            const collected = treatment.collected ?? 0
+            const percent = Math.min(Math.round((collected / goal) * 100), 100)
+            const reached = collected >= goal
+            return reached ? (
+              <p className="text-sm font-semibold text-green-600">✓ Цель достигнута!</p>
+            ) : (
+              <div className="flex flex-col gap-1.5">
+                <div className="h-2 w-full rounded-full bg-[#D4849A]/20 overflow-hidden">
+                  <div className="h-full rounded-full bg-[#D4849A]" style={{ width: `${percent}%` }} />
+                </div>
+                <div className="flex justify-between text-xs text-stone-500">
+                  <span>Собрано: <span className="font-semibold text-[#D4849A]">{formatMoney(collected)}</span></span>
+                  <span>из {formatMoney(goal)}</span>
+                </div>
+              </div>
+            )
+          })()}
 
           <Button asChild size="lg" className="w-full mt-auto bg-[#D4849A] hover:bg-[#C4728A] text-white rounded-xl">
-            <span>Помочь</span>
+            <Link href={`/donate?for=${treatment.id}`}>Помочь</Link>
           </Button>
         </div>
-      </div>
-    </Link>
+    </div>
   )
 }
 

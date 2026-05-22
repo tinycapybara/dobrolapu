@@ -1,7 +1,8 @@
 import { notFound } from "next/navigation"
 import Link from "next/link"
-import { ArrowLeft, Heart, Pill } from "lucide-react"
+import { ArrowLeft, CheckCircle2, Heart, Pill } from "lucide-react"
 import { supabase } from "@/lib/supabase"
+import { supabaseAdmin } from "@/lib/supabase-admin"
 import { Header } from "@/components/ui/header"
 import { Footer } from "@/components/ui/footer"
 import { Button } from "@/components/ui/button"
@@ -15,16 +16,29 @@ const formatMoney = (n: number) =>
     maximumFractionDigits: 0,
   }).format(n)
 
+async function getCollected(treatmentId: number): Promise<number> {
+  const { data } = await supabaseAdmin
+    .from("donations")
+    .select("amount")
+    .eq("treatment_id", treatmentId)
+    .eq("status", "completed")
+
+  return (data ?? []).reduce((sum, d) => sum + (d.amount as number), 0)
+}
+
 export default async function TreatmentPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
 
-  const { data } = await supabase
-    .from("treatments")
-    .select(
-      "id, disease, description, goal_amount, animals!animal_id(id, name, gender, breed, age, description, animal_photos(photo_url, is_main))"
-    )
-    .eq("id", id)
-    .single()
+  const [{ data }, collected] = await Promise.all([
+    supabase
+      .from("treatments")
+      .select(
+        "id, disease, description, goal_amount, animals!animal_id(id, name, gender, breed, age, description, animal_photos(photo_url, is_main))"
+      )
+      .eq("id", id)
+      .single(),
+    getCollected(Number(id)),
+  ])
 
   if (!data) notFound()
 
@@ -92,38 +106,72 @@ export default async function TreatmentPage({ params }: { params: Promise<{ id: 
                 </div>
               )}
 
-              {/* Сумма сбора */}
-              {data.goal_amount != null && (
-                <div className="rounded-2xl bg-[#FAF0F3] border border-[#D4849A]/20 p-6 flex flex-col gap-1">
-                  <p className="text-sm text-stone-500">Необходимая сумма</p>
-                  <p className="text-3xl font-bold text-stone-800">{formatMoney(data.goal_amount)}</p>
-                </div>
-              )}
+              {/* Прогресс сбора */}
+              {data.goal_amount != null && (() => {
+                const goal = data.goal_amount as number
+                const goalReached = collected >= goal
+                const percent = Math.min(Math.round((collected / goal) * 100), 100)
+
+                return goalReached ? (
+                  <div className="rounded-2xl bg-green-50 border border-green-200 p-5 flex flex-col gap-2">
+                    <div className="flex items-center gap-2 text-green-700">
+                      <CheckCircle2 className="size-5 shrink-0" />
+                      <span className="font-bold text-base">Цель достигнута!</span>
+                    </div>
+                    <p className="text-sm text-green-600">
+                      Собрали {formatMoney(collected)} — спасибо всем, кто помог!
+                    </p>
+                  </div>
+                ) : (
+                  <div className="rounded-2xl bg-[#FAF0F3] border border-[#D4849A]/20 p-5 flex flex-col gap-3">
+                    <div className="flex justify-between text-sm">
+                      <span className="text-stone-500">Собрано</span>
+                      <span className="font-semibold text-stone-800">{percent}%</span>
+                    </div>
+                    <div className="h-2.5 w-full rounded-full bg-[#D4849A]/20 overflow-hidden">
+                      <div
+                        className="h-full rounded-full bg-[#D4849A] transition-all"
+                        style={{ width: `${percent}%` }}
+                      />
+                    </div>
+                    <div className="flex justify-between text-sm font-semibold">
+                      <span className="text-[#D4849A]">{formatMoney(collected)}</span>
+                      <span className="text-stone-400">из {formatMoney(goal)}</span>
+                    </div>
+                  </div>
+                )
+              })()}
 
               {/* Кнопки */}
-              <div className="flex flex-col gap-3">
-                <Button
-                  asChild
-                  size="lg"
-                  className="w-full bg-[#D4849A] hover:bg-[#C4728A] text-white rounded-xl text-base"
-                >
-                  <Link href="/donate">
-                    <Heart className="mr-2 size-4" />
-                    Помочь сейчас
-                  </Link>
-                </Button>
-
-                {animal && (
-                  <Button
-                    asChild
-                    size="lg"
-                    variant="outline"
-                    className="w-full rounded-xl border-[#D4849A] text-[#D4849A] hover:bg-[#D4849A]/10"
-                  >
-                    <Link href={`/pets/${animal.id}`}>Забрать домой</Link>
-                  </Button>
-                )}
-              </div>
+              {(() => {
+                const goalReached = data.goal_amount != null && collected >= (data.goal_amount as number)
+                return (
+                  <div className="flex flex-col gap-3">
+                    {!goalReached && (
+                      <Button
+                        asChild
+                        size="lg"
+                        className="w-full bg-[#D4849A] hover:bg-[#C4728A] text-white rounded-xl text-base"
+                      >
+                        <Link href={`/donate?for=${data.id}`}>
+                          <Heart className="mr-2 size-4" />
+                          Помочь сейчас
+                        </Link>
+                      </Button>
+                    )}
+                    {animal && (
+                      <Button
+                        asChild
+                        size="lg"
+                        variant="outline"
+                        className="w-full rounded-xl border-[#D4849A] text-[#D4849A] hover:bg-[#D4849A]/10"
+                      >
+                        <Link href={`/pets/${animal.id}`}>Забрать домой</Link>
+                      </Button>
+                    )}
+                  </div>
+                )
+              })()}
 
               {/* Пометка о безопасности */}
               <div className="rounded-2xl bg-white border border-stone-100 p-5 text-center">

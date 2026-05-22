@@ -2,6 +2,7 @@ import Link from "next/link"
 import Image from "next/image"
 import { ShoppingCart, Pill, Heart, Users, Gift, ArrowRight } from "lucide-react"
 import { supabase } from "@/lib/supabase"
+import { supabaseAdmin } from "@/lib/supabase-admin"
 import { Header } from "@/components/ui/header"
 import { Button } from "@/components/ui/button"
 import { AnimalCard, type Animal } from "@/components/animal-card"
@@ -20,6 +21,7 @@ type Treatment = {
   disease: string
   description: string | null
   goal_amount: number | null
+  collected?: number
   animals: {
     id: number
     name: string
@@ -63,13 +65,32 @@ async function getPageData() {
       .limit(4),
   ])
 
+  const rawTreatments = (tr.data ?? []) as unknown as Treatment[]
+  const treatmentIds = rawTreatments.map((t) => t.id)
+
+  const collectedMap: Record<number, number> = {}
+  if (treatmentIds.length > 0) {
+    const { data: donationRows } = await supabaseAdmin
+      .from("donations")
+      .select("treatment_id, amount")
+      .in("treatment_id", treatmentIds)
+      .eq("status", "completed")
+
+    for (const row of donationRows ?? []) {
+      const tid = row.treatment_id as number
+      collectedMap[tid] = (collectedMap[tid] ?? 0) + (row.amount as number)
+    }
+  }
+
+  const treatments = rawTreatments.map((t) => ({ ...t, collected: collectedMap[t.id] ?? 0 }))
+
   return {
     stats: {
       inShelter: s1.count ?? 0,
       foundHome: s2.count ?? 0,
       hasGuardian: s3.count ?? 0,
     },
-    treatments: (tr.data ?? []) as unknown as Treatment[],
+    treatments,
     recentAnimals: (ra.data ?? []) as unknown as Animal[],
     foundHomeAnimals: (fh.data ?? []) as unknown as SimpleAnimal[],
   }
@@ -94,6 +115,7 @@ export default async function HomePage() {
       <HowToHelpSection />
       <RecentAnimalsSection animals={recentAnimals} />
       {foundHomeAnimals.length > 0 && <FoundHomeSection animals={foundHomeAnimals} />}
+      <FaqSection />
       <Footer />
     </div>
   )
@@ -486,6 +508,54 @@ function FoundHomeSection({ animals }: { animals: SimpleAnimal[] }) {
               <ArrowRight className="ml-2 size-4" />
             </Link>
           </Button>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+const faqItems = [
+  {
+    q: "Все ли животные привиты?",
+    a: "Да. Каждый питомец в нашем приюте проходит полный курс вакцинации, стерилизации и обработки от паразитов до того, как мы предлагаем его для усыновления.",
+  },
+  {
+    q: "Как проходит процесс усыновления?",
+    a: "Выберите питомца в каталоге, нажмите «Хочу забрать домой» и заполните короткую анкету. Мы свяжемся с вами, чтобы назначить встречу и познакомить вас с животным.",
+  },
+  {
+    q: "Можно ли приехать и посмотреть животных вживую?",
+    a: "Конечно! Мы работаем ежедневно. Лучше заранее позвонить или написать — тогда мы сможем уделить вам время и правильно познакомить с питомцами.",
+  },
+  {
+    q: "Что такое опекунство?",
+    a: "Опекун финансово поддерживает конкретного питомца, пока тот живёт в приюте. Это не усыновление — животное остаётся у нас, но вы помогаете ему регулярно. Взамен мы присылаем фото и новости о вашем подопечном.",
+  },
+  {
+    q: "Принимаете ли вы животных с улицы?",
+    a: "Мы стараемся помочь всем, но наши возможности ограничены. Позвоните нам — вместе найдём решение: временная передержка, помощь с поиском хозяев или другие варианты.",
+  },
+  {
+    q: "Куда идут пожертвования?",
+    a: "Исключительно на нужды приюта: корм, ветеринарное лечение, содержание помещений и поиск хозяев для животных. Мы публикуем отчёты об использовании средств.",
+  },
+]
+
+function FaqSection() {
+  return (
+    <section className="py-20 px-4 bg-white">
+      <div className="container mx-auto max-w-3xl">
+        <div className="text-center mb-12">
+          <h2 className="text-3xl lg:text-4xl font-bold text-stone-800">Частые вопросы</h2>
+          <p className="mt-2 text-stone-500">Отвечаем на то, что спрашивают чаще всего</p>
+        </div>
+        <div className="flex flex-col gap-3">
+          {faqItems.map((item) => (
+            <div key={item.q} className="rounded-2xl bg-[#FDF8F9] border border-stone-100 p-5 flex flex-col gap-2">
+              <p className="font-semibold text-stone-800">{item.q}</p>
+              <p className="text-sm text-stone-500 leading-relaxed">{item.a}</p>
+            </div>
+          ))}
         </div>
       </div>
     </section>

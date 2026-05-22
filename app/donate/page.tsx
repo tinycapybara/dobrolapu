@@ -19,8 +19,29 @@ async function getRecentDonations(): Promise<RecentDonation[]> {
   return (data ?? []) as RecentDonation[]
 }
 
-export default async function DonatePage() {
-  const recentDonations = await getRecentDonations()
+async function getTreatmentLabel(id: number): Promise<string | null> {
+  const { data } = await supabaseAdmin
+    .from("treatments")
+    .select("disease, animals!animal_id(name)")
+    .eq("id", id)
+    .single()
+
+  if (!data) return null
+  const animalName = (data.animals as unknown as { name: string } | null)?.name
+  return animalName ? `${animalName} — ${data.disease}` : data.disease
+}
+
+type Props = { searchParams: Promise<Record<string, string>> }
+
+export default async function DonatePage({ searchParams }: Props) {
+  const params = await searchParams
+  const forId = params["for"] ? Number(params["for"]) : null
+  const treatmentId = forId && Number.isInteger(forId) && forId > 0 ? forId : null
+
+  const [recentDonations, treatmentLabel] = await Promise.all([
+    getRecentDonations(),
+    treatmentId ? getTreatmentLabel(treatmentId) : Promise.resolve(null),
+  ])
 
   return (
     <div className="min-h-screen bg-[#FDF8F9] flex flex-col">
@@ -39,7 +60,11 @@ export default async function DonatePage() {
             </p>
           </div>
 
-          <DonateForm recentDonations={recentDonations} />
+          <DonateForm
+            recentDonations={recentDonations}
+            treatmentId={treatmentId ?? undefined}
+            treatmentLabel={treatmentLabel ?? undefined}
+          />
 
         </div>
       </main>

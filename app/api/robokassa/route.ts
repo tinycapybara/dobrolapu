@@ -65,6 +65,12 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Некорректная сумма" }, { status: 400 })
   }
 
+  // Валидация treatment_id
+  const treatment_id = raw.treatment_id != null ? Number(raw.treatment_id) : null
+  if (treatment_id !== null && (!Number.isInteger(treatment_id) || treatment_id <= 0)) {
+    return NextResponse.json({ error: "Некорректный treatment_id" }, { status: 400 })
+  }
+
   // Валидация имени
   if (donor_name) {
     if (donor_name.length > MAX_NAME_LENGTH) {
@@ -102,6 +108,7 @@ export async function POST(req: Request) {
     donor_name: donor_name || null,
     comment: comment || null,
     status: "pending",
+    treatment_id: treatment_id,
   })
 
   if (error) {

@@ -37,7 +37,13 @@ function formatAmount(n: number): string {
   return n.toLocaleString("ru-RU") + " ₽"
 }
 
-export function DonateForm({ recentDonations }: { recentDonations: RecentDonation[] }) {
+type DonateFormProps = {
+  recentDonations: RecentDonation[]
+  treatmentId?: number
+  treatmentLabel?: string
+}
+
+export function DonateForm({ recentDonations, treatmentId, treatmentLabel }: DonateFormProps) {
   const [amount, setAmount] = useState<string>("")
   const [preset, setPreset] = useState<number | null>(null)
   const [donorName, setDonorName] = useState("")
@@ -73,6 +79,7 @@ export function DonateForm({ recentDonations }: { recentDonations: RecentDonatio
           amount: numAmount,
           donor_name: donorName.trim() || null,
           comment: comment.trim() || null,
+          treatment_id: treatmentId ?? null,
         }),
       })
       const data = await res.json()
@@ -89,6 +96,20 @@ export function DonateForm({ recentDonations }: { recentDonations: RecentDonatio
   }
 
   return (
+    <div className="flex flex-col gap-6">
+      {treatmentLabel && (
+        <div className="flex items-center gap-4 rounded-2xl bg-[#FAF0F3] border-2 border-[#D4849A]/30 px-6 py-5">
+          <div className="flex size-12 shrink-0 items-center justify-center rounded-full bg-[#D4849A]/15">
+            <Pill className="size-6 text-[#D4849A]" />
+          </div>
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-widest text-[#D4849A] mb-0.5">Целевое пожертвование</p>
+            <p className="text-base font-bold text-stone-800">{treatmentLabel}</p>
+            <p className="text-sm text-stone-500 mt-0.5">Ваш донат пойдёт напрямую на лечение этого питомца</p>
+          </div>
+        </div>
+      )}
+
     <div className="grid gap-8 lg:grid-cols-[1fr_320px] items-start">
       {/* Форма */}
       <div className="rounded-2xl bg-white border border-stone-100 shadow-sm p-6 lg:p-8 flex flex-col gap-6">
@@ -276,6 +297,7 @@ export function DonateForm({ recentDonations }: { recentDonations: RecentDonatio
           </p>
         </div>
       </div>
+    </div>
     </div>
   )
 }

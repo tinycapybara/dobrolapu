@@ -1,6 +1,7 @@
 import Link from "next/link"
 import { Pill } from "lucide-react"
 import { supabase } from "@/lib/supabase"
+import { supabaseAdmin } from "@/lib/supabase-admin"
 import { Header } from "@/components/ui/header"
 import { Footer } from "@/components/ui/footer"
 import { TreatmentCard } from "@/app/home-carousels"
@@ -15,6 +16,7 @@ type Treatment = {
   disease: string
   description: string | null
   goal_amount: number | null
+  collected?: number
   animals: {
     id: number
     name: string
@@ -34,7 +36,24 @@ async function getTreatments(): Promise<Treatment[]> {
     return []
   }
 
-  return (data ?? []) as unknown as Treatment[]
+  const raw = (data ?? []) as unknown as Treatment[]
+  const ids = raw.map((t) => t.id)
+
+  if (ids.length === 0) return raw
+
+  const { data: donationRows } = await supabaseAdmin
+    .from("donations")
+    .select("treatment_id, amount")
+    .in("treatment_id", ids)
+    .eq("status", "completed")
+
+  const collectedMap: Record<number, number> = {}
+  for (const row of donationRows ?? []) {
+    const tid = row.treatment_id as number
+    collectedMap[tid] = (collectedMap[tid] ?? 0) + (row.amount as number)
+  }
+
+  return raw.map((t) => ({ ...t, collected: collectedMap[t.id] ?? 0 }))
 }
 
 export default async function TreatmentsPage() {

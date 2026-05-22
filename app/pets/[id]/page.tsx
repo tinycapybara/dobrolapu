@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { AnimalGallery } from "./animal-gallery"
 import { AdoptionButtons } from "./adoption-request-modal"
-import { ArrowLeft, Heart, Pill } from "lucide-react"
+import { ArrowLeft, CheckCircle2, Heart, Pill } from "lucide-react"
 
 type Treatment = {
   disease: string
@@ -81,7 +81,7 @@ export default async function AnimalPage({ params }: Props) {
 
   if (!Number.isInteger(numericId) || numericId <= 0) notFound()
 
-  const [{ data, error }, { data: treatmentData }] = await Promise.all([
+  const [{ data, error }, { data: treatmentData }, { data: pastTreatmentsData }] = await Promise.all([
     supabase
       .from("animals")
       .select(`
@@ -99,12 +99,18 @@ export default async function AnimalPage({ params }: Props) {
       .eq("animal_id", numericId)
       .eq("is_active", true)
       .maybeSingle(),
+    supabase
+      .from("treatments")
+      .select("id, disease")
+      .eq("animal_id", numericId)
+      .eq("is_active", false),
   ])
 
   if (error || !data) notFound()
 
   const animal = data as unknown as AnimalDetail
   const treatment = treatmentData as Treatment | null
+  const pastTreatments = (pastTreatmentsData ?? []) as { id: number; disease: string }[]
   const hasGuardian = animal.guardianship_statuses?.guardianship === "Есть опекун"
 
   const characteristics = [
@@ -213,6 +219,40 @@ export default async function AnimalPage({ params }: Props) {
                       Помочь {animal.name}
                     </Link>
                   </Button>
+                </div>
+              )}
+
+              {/* История болезней */}
+              {pastTreatments.length > 0 && (
+                <div className="rounded-2xl bg-white border border-stone-100 shadow-sm p-5 flex flex-col gap-3">
+                  <h2 className="text-sm font-semibold text-stone-400 uppercase tracking-widest">
+                    История здоровья
+                  </h2>
+                  <div className="flex flex-col gap-2">
+                    <div className="flex items-center gap-2 text-sm text-stone-500">
+                      <CheckCircle2 className="size-4 text-green-500 shrink-0" />
+                      Вакцинирован, стерилизован, обработан от паразитов
+                    </div>
+                    {pastTreatments.map((t) => (
+                      <div key={t.id} className="flex items-center gap-2 text-sm text-stone-500">
+                        <CheckCircle2 className="size-4 text-green-500 shrink-0" />
+                        Перенёс и вылечился: {t.disease}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Блок здоровья без истории болезней */}
+              {pastTreatments.length === 0 && !treatment && (
+                <div className="rounded-2xl bg-white border border-stone-100 shadow-sm p-5 flex flex-col gap-2">
+                  <h2 className="text-sm font-semibold text-stone-400 uppercase tracking-widest mb-1">
+                    История здоровья
+                  </h2>
+                  <div className="flex items-center gap-2 text-sm text-stone-500">
+                    <CheckCircle2 className="size-4 text-green-500 shrink-0" />
+                    Вакцинирован, стерилизован, обработан от паразитов
+                  </div>
                 </div>
               )}
 

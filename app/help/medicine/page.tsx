@@ -1,6 +1,7 @@
 import Link from "next/link"
-import { Pill, ArrowLeft, Heart, ArrowRight } from "lucide-react"
+import { Pill, ArrowLeft, ArrowRight } from "lucide-react"
 import { supabase } from "@/lib/supabase"
+import { supabaseAdmin } from "@/lib/supabase-admin"
 import { Header } from "@/components/ui/header"
 import { Footer } from "@/components/ui/footer"
 import { Button } from "@/components/ui/button"
@@ -15,6 +16,7 @@ type Treatment = {
   disease: string
   description: string | null
   goal_amount: number | null
+  collected?: number
   animals: {
     id: number
     name: string
@@ -34,7 +36,23 @@ async function getActiveTreatments(): Promise<Treatment[]> {
     return []
   }
 
-  return (data ?? []) as unknown as Treatment[]
+  const raw = (data ?? []) as unknown as Treatment[]
+  const ids = raw.map((t) => t.id)
+  if (ids.length === 0) return raw
+
+  const { data: donationRows } = await supabaseAdmin
+    .from("donations")
+    .select("treatment_id, amount")
+    .in("treatment_id", ids)
+    .eq("status", "completed")
+
+  const collectedMap: Record<number, number> = {}
+  for (const row of donationRows ?? []) {
+    const tid = row.treatment_id as number
+    collectedMap[tid] = (collectedMap[tid] ?? 0) + (row.amount as number)
+  }
+
+  return raw.map((t) => ({ ...t, collected: collectedMap[t.id] ?? 0 }))
 }
 
 function getMainPhoto(treatment: Treatment): string | null {
@@ -119,11 +137,25 @@ export default async function MedicinePage() {
                           {treatment.description}
                         </p>
                       )}
-                      {treatment.goal_amount && (
-                        <p className="text-sm font-semibold text-teal-600 mt-auto">
-                          Цель: {treatment.goal_amount.toLocaleString("ru-RU")} ₽
-                        </p>
-                      )}
+                      {treatment.goal_amount != null && (() => {
+                        const goal = treatment.goal_amount as number
+                        const collected = treatment.collected ?? 0
+                        const percent = Math.min(Math.round((collected / goal) * 100), 100)
+                        const reached = collected >= goal
+                        return reached ? (
+                          <p className="text-sm font-semibold text-green-600 mt-auto">✓ Цель достигнута!</p>
+                        ) : (
+                          <div className="flex flex-col gap-1 mt-auto">
+                            <div className="h-1.5 w-full rounded-full bg-teal-100 overflow-hidden">
+                              <div className="h-full rounded-full bg-teal-500" style={{ width: `${percent}%` }} />
+                            </div>
+                            <p className="text-xs text-stone-400">
+                              Собрано: <span className="font-semibold text-teal-600">{collected.toLocaleString("ru-RU")} ₽</span>
+                              {" "}из {goal.toLocaleString("ru-RU")} ₽
+                            </p>
+                          </div>
+                        )
+                      })()}
                     </div>
 
                     <ArrowRight className="size-5 text-stone-300 group-hover:text-stone-500 transition-colors shrink-0 self-center" />

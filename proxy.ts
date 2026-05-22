@@ -1,11 +1,18 @@
 import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl
+  const token = request.cookies.get("admin_token")
 
-  if (pathname.startsWith("/admin") && pathname !== "/admin/login") {
-    const token = request.cookies.get("admin_token")
+  if (pathname === "/admin/login") {
+    if (token?.value) {
+      return NextResponse.redirect(new URL("/admin", request.url))
+    }
+    return NextResponse.next()
+  }
+
+  if (pathname.startsWith("/admin")) {
     if (!token?.value) {
       return NextResponse.redirect(new URL("/admin/login", request.url))
     }
