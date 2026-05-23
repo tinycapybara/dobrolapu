@@ -84,22 +84,21 @@ function buildUrl(answers: Answers): string {
   const params = new URLSearchParams()
   params.set("quiz", "1")
 
-  // Тип: суммируем сигналы из вопросов 2, 5, 6
-  let catScore = 0
-  let dogScore = 0
-
-  if (answers.saturday === "book") catScore += 2
-  if (answers.saturday === "walk") dogScore += 2
-
-  if (answers.evening === "couch") catScore += 1
-  if (answers.evening === "play") dogScore += 1
-  if (answers.evening === "independent") catScore += 1
-
-  if (answers.goal === "loyal") dogScore += 1
-  if (answers.goal === "soul") catScore += 1
-
-  if (catScore > dogScore) params.set("type", "Кошка")
-  else if (dogScore > catScore) params.set("type", "Собака")
+  // При "особенно нужен" — показываем всех, без фильтра по типу
+  if (answers.goal !== "special") {
+    // Q2 — главный сигнал (вес 3), Q5 и Q6 — дополнительные (вес 1)
+    let catScore = 0
+    let dogScore = 0
+    if (answers.saturday === "book") catScore += 3
+    if (answers.saturday === "walk") dogScore += 3
+    if (answers.evening === "couch") catScore += 1
+    if (answers.evening === "play") dogScore += 1
+    if (answers.evening === "independent") catScore += 1
+    if (answers.goal === "loyal") dogScore += 1
+    if (answers.goal === "soul") catScore += 1
+    if (catScore > dogScore) params.set("type", "Кошка")
+    else if (dogScore > catScore) params.set("type", "Собака")
+  }
 
   // Размер из вопроса 1
   if (answers.home === "small") params.set("size", "small")
@@ -108,7 +107,7 @@ function buildUrl(answers: Answers): string {
   if (answers.experience === "ready") {
     params.set("age", "0-6")
   } else if (answers.experience === "first") {
-    params.set("age", "12-36")
+    params.set("age", "36-84") // первый питомец → спокойный взрослый
   } else if (answers.energy === "calm") {
     params.set("age", "36-84")
   } else if (answers.energy === "active") {
@@ -305,13 +304,37 @@ export default function QuizPage() {
                   )}
                 </div>
 
+                {/* Баннер «особенно нужен» — внутри карточки */}
+                {isSpecial && (
+                  <div className="w-full rounded-xl bg-[#FDF5E4] border border-amber-200 p-4 flex gap-3 items-start text-left">
+                    <div className="size-9 rounded-lg bg-amber-100 flex items-center justify-center shrink-0 mt-0.5">
+                      <Heart className="size-4 text-amber-500" />
+                    </div>
+                    <div className="flex flex-col gap-1.5">
+                      <p className="font-semibold text-stone-800 text-sm">
+                        Мы покажем всех — и тех, кто давно ждёт дом
+                      </p>
+                      <p className="text-xs text-stone-500 leading-relaxed">
+                        Ты сказал(а), что хочешь помочь тому, кому труднее всего. Мы не применяем фильтр по типу — пусть сам питомец выберет тебя.
+                      </p>
+                      <Link
+                        href="/treatments"
+                        className="inline-flex items-center gap-1 text-xs font-semibold text-amber-700 hover:underline underline-offset-2 mt-0.5"
+                      >
+                        Посмотреть срочные сборы на лечение
+                        <ArrowRight className="size-3" />
+                      </Link>
+                    </div>
+                  </div>
+                )}
+
                 <Button
                   onClick={() => router.push(buildUrl(answers))}
                   size="lg"
                   className="w-full rounded-xl bg-[#D4849A] hover:bg-[#C4728A] text-white"
                 >
                   <PawPrint className="mr-2 size-5" />
-                  Смотреть подходящих питомцев
+                  {isSpecial ? "Смотреть всех питомцев" : "Смотреть подходящих питомцев"}
                 </Button>
 
                 <button
@@ -321,40 +344,6 @@ export default function QuizPage() {
                   Пройти заново
                 </button>
               </div>
-
-              {/* Баннер для тех кто выбрал "кому я особенно нужен" */}
-              {isSpecial && (
-                <div className="rounded-2xl bg-[#FDF5E4] border border-amber-200 p-5 flex gap-4 items-start">
-                  <div className="size-10 rounded-xl bg-amber-100 flex items-center justify-center shrink-0 mt-0.5">
-                    <Heart className="size-5 text-amber-500" />
-                  </div>
-                  <div className="flex flex-col gap-2">
-                    <p className="font-semibold text-stone-800">
-                      А ещё посмотри на тех, кто особенно долго ждёт дом
-                    </p>
-                    <p className="text-sm text-stone-500 leading-relaxed">
-                      Некоторые питомцы живут в приюте уже очень давно или нуждаются в лечении.
-                      Возможно, именно ты станешь для кого-то из них главным человеком.
-                    </p>
-                    <div className="flex flex-wrap gap-2 mt-1">
-                      <Link
-                        href="/treatments"
-                        className="inline-flex items-center gap-1.5 text-sm font-semibold text-amber-700 bg-amber-100 hover:bg-amber-200 px-3 py-1.5 rounded-lg transition-colors"
-                      >
-                        Срочные сборы на лечение
-                        <ArrowRight className="size-3.5" />
-                      </Link>
-                      <Link
-                        href="/pets"
-                        className="inline-flex items-center gap-1.5 text-sm font-semibold text-stone-600 bg-stone-100 hover:bg-stone-200 px-3 py-1.5 rounded-lg transition-colors"
-                      >
-                        Все питомцы
-                        <ArrowRight className="size-3.5" />
-                      </Link>
-                    </div>
-                  </div>
-                </div>
-              )}
             </div>
           )}
 
