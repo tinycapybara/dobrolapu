@@ -15,6 +15,7 @@ import {
   Menu,
   Home,
   Heart,
+  Gift,
   Users,
   HandHeart,
   Phone,
@@ -36,7 +37,7 @@ const helpSubItems = [
   { href: "/help/medicine", label: "Помочь с лекарствами", icon: Pill },
   { href: "/help/volunteer", label: "Стать волонтёром", icon: Users },
   { href: "/help/guardian", label: "Стать опекуном / Забрать домой", icon: Heart },
-  { href: "/donate", label: "Пожертвовать", icon: Heart },
+  { href: "/donate", label: "Пожертвовать", icon: Gift },
 ]
 
 export function Header() {
