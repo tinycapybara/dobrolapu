@@ -8,8 +8,6 @@ import { Header } from "@/components/ui/header"
 import { Footer } from "@/components/ui/footer"
 import { Button } from "@/components/ui/button"
 
-export const metadata = undefined
-
 type Answers = {
   type?: "Кошка" | "Собака" | "any"
   housing?: "small" | "large" | "house"
