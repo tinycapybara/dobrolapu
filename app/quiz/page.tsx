@@ -3,56 +3,79 @@
 import { useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { ArrowLeft, ArrowRight, PawPrint, CheckCircle2 } from "lucide-react"
+import { ArrowLeft, ArrowRight, PawPrint, CheckCircle2, Heart } from "lucide-react"
 import { Header } from "@/components/ui/header"
 import { Footer } from "@/components/ui/footer"
 import { Button } from "@/components/ui/button"
 
 type Answers = {
-  type?: "Кошка" | "Собака" | "any"
-  housing?: "small" | "large" | "house"
-  time?: "active" | "medium" | "busy"
-  kids?: "yes" | "no"
+  home?: "small" | "large" | "house"
+  saturday?: "book" | "walk" | "sleep"
+  energy?: "active" | "calm" | "mixed"
+  experience?: "first" | "experienced" | "ready"
+  evening?: "couch" | "play" | "independent"
+  goal?: "loyal" | "soul" | "special"
 }
 
 const questions = [
   {
-    id: "type" as const,
-    question: "Кто тебе ближе?",
-    hint: "Это поможет нам подобрать идеального питомца",
+    id: "home" as const,
+    question: "Расскажи про свой дом",
+    hint: "Это поможет подобрать питомца нужного размера",
     options: [
-      { value: "Кошка" as const, label: "Кошки", desc: "Независимые, уютные и ласковые", emoji: "🐱" },
-      { value: "Собака" as const, label: "Собаки", desc: "Преданные, активные, любят прогулки", emoji: "🐶" },
-      { value: "any" as const, label: "Мне всё равно!", desc: "Открыт к любому питомцу", emoji: "💕" },
+      { value: "small" as const, label: "Уютная небольшая квартира — мой маленький мир", desc: "Студия, однушка или небольшая двушка", emoji: "🏠" },
+      { value: "large" as const, label: "Просторная квартира, есть где разгуляться", desc: "Много комнат, высокие потолки", emoji: "🏢" },
+      { value: "house" as const, label: "Свой дом с двором", desc: "Загородный дом, дача или коттедж", emoji: "🌳" },
     ],
   },
   {
-    id: "housing" as const,
-    question: "Где ты живёшь?",
-    hint: "Размер жилья влияет на комфорт питомца",
+    id: "saturday" as const,
+    question: "Идеальное субботнее утро — это…",
+    hint: "Отвечай честно — твой питомец тоже будет частью этого утра",
     options: [
-      { value: "small" as const, label: "Небольшая квартира", desc: "Студия или однокомнатная", emoji: "🏠" },
-      { value: "large" as const, label: "Просторная квартира", desc: "Двухкомнатная или больше", emoji: "🏡" },
-      { value: "house" as const, label: "Частный дом", desc: "Есть двор или сад", emoji: "🏘️" },
+      { value: "book" as const, label: "Длинный завтрак, плед, книга или сериал", desc: "Никуда не спешить, просто наслаждаться", emoji: "☕" },
+      { value: "walk" as const, label: "Прогулка в парке, свежий воздух, движение", desc: "Встать пораньше и отправиться на улицу", emoji: "🌳" },
+      { value: "sleep" as const, label: "Поспать подольше, а дальше — куда настроение", desc: "Каждая суббота разная", emoji: "🛌" },
     ],
   },
   {
-    id: "time" as const,
-    question: "Сколько времени ты готов(а) уделять питомцу?",
-    hint: "Молодым животным нужно больше внимания и игр",
+    id: "energy" as const,
+    question: "Что больше про тебя?",
+    hint: "Питомцу нужен человек, который совпадает с ним по темпераменту",
     options: [
-      { value: "active" as const, label: "Много времени", desc: "Обожаю играть и возиться", emoji: "🎉" },
-      { value: "medium" as const, label: "Умеренно", desc: "Буду уделять время, но не постоянно", emoji: "😊" },
-      { value: "busy" as const, label: "Немного", desc: "Хочу спокойного взрослого питомца", emoji: "💼" },
+      { value: "active" as const, label: "Я в постоянном движении, не могу сидеть на месте", desc: "Спорт, прогулки, новые места — мой стиль", emoji: "🏃" },
+      { value: "calm" as const, label: "Ценю спокойствие и предсказуемость", desc: "Размеренная жизнь — это счастье", emoji: "🧘" },
+      { value: "mixed" as const, label: "По-разному, зависит от дня", desc: "Бываю и активным, и очень ленивым", emoji: "🎭" },
     ],
   },
   {
-    id: "kids" as const,
-    question: "Есть ли в доме маленькие дети?",
-    hint: "Учтём это при подборе",
+    id: "experience" as const,
+    question: "У тебя уже был питомец?",
+    hint: "Опыт важен — малыши требуют особого внимания",
     options: [
-      { value: "yes" as const, label: "Да, есть", desc: "Дети до 7 лет", emoji: "👶" },
-      { value: "no" as const, label: "Нет", desc: "Только взрослые в доме", emoji: "🙅" },
+      { value: "first" as const, label: "Это будет мой первый", desc: "Волнуюсь, но очень хочу", emoji: "🐾" },
+      { value: "experienced" as const, label: "Да, я знаю, как это бывает", desc: "Уже проходил(а) через это", emoji: "💛" },
+      { value: "ready" as const, label: "Готов(а) даже к малышу с его сюрпризами", desc: "Бессонные ночи? Не пугают!", emoji: "🏆" },
+    ],
+  },
+  {
+    id: "evening" as const,
+    question: "Идеальный вечер с питомцем выглядит так…",
+    hint: "Представь это — и питомец уже ждёт тебя",
+    options: [
+      { value: "couch" as const, label: "Лежим вдвоём, я листаю телефон, он рядом", desc: "Тепло, тихо, уютно", emoji: "🛋️" },
+      { value: "play" as const, label: "Играем, бегаем, веселимся", desc: "Мячик, игрушки, беготня по квартире", emoji: "🎾" },
+      { value: "independent" as const, label: "Каждый занят своим, иногда обнимаемся", desc: "Уважаем личное пространство друг друга", emoji: "👋" },
+    ],
+  },
+  {
+    id: "goal" as const,
+    question: "Кого ты больше всего хочешь найти?",
+    hint: "Честный ответ поможет нам подобрать именно твоего питомца",
+    options: [
+      { value: "loyal" as const, label: "Преданного друга, который всегда рядом", desc: "Встречает у двери, скучает без тебя", emoji: "💛" },
+      { value: "soul" as const, label: "Независимую душу, которая выберет меня сама", desc: "Придёт когда захочет — и это особенно ценно", emoji: "🌸" },
+      { value: "special" as const, label: "Того, кому я особенно нужен", desc: "Хочу помочь тому, кому труднее всего", emoji: "✨" },
     ],
   },
 ]
@@ -61,20 +84,53 @@ function buildUrl(answers: Answers): string {
   const params = new URLSearchParams()
   params.set("quiz", "1")
 
-  if (answers.type && answers.type !== "any") {
-    params.set("type", answers.type)
-  }
-  if (answers.housing === "small") {
-    params.set("size", "small")
-  }
-  if (answers.time === "busy") {
+  // Тип: суммируем сигналы из вопросов 2, 5, 6
+  let catScore = 0
+  let dogScore = 0
+
+  if (answers.saturday === "book") catScore += 2
+  if (answers.saturday === "walk") dogScore += 2
+
+  if (answers.evening === "couch") catScore += 1
+  if (answers.evening === "play") dogScore += 1
+  if (answers.evening === "independent") catScore += 1
+
+  if (answers.goal === "loyal") dogScore += 1
+  if (answers.goal === "soul") catScore += 1
+
+  if (catScore > dogScore) params.set("type", "Кошка")
+  else if (dogScore > catScore) params.set("type", "Собака")
+
+  // Размер из вопроса 1
+  if (answers.home === "small") params.set("size", "small")
+
+  // Возраст: опыт перекрывает темперамент
+  if (answers.experience === "ready") {
+    params.set("age", "0-6")
+  } else if (answers.experience === "first") {
+    params.set("age", "12-36")
+  } else if (answers.energy === "calm") {
     params.set("age", "36-84")
-  }
-  if (answers.kids === "yes") {
-    params.set("health", "healthy")
+  } else if (answers.energy === "active") {
+    params.set("age", "12-36")
   }
 
   return `/pets?${params.toString()}`
+}
+
+function getTypeSummary(answers: Answers): string | null {
+  let catScore = 0
+  let dogScore = 0
+  if (answers.saturday === "book") catScore += 2
+  if (answers.saturday === "walk") dogScore += 2
+  if (answers.evening === "couch") catScore += 1
+  if (answers.evening === "play") dogScore += 1
+  if (answers.evening === "independent") catScore += 1
+  if (answers.goal === "loyal") dogScore += 1
+  if (answers.goal === "soul") catScore += 1
+  if (catScore > dogScore) return "Кошки"
+  if (dogScore > catScore) return "Собаки"
+  return null
 }
 
 export default function QuizPage() {
@@ -86,6 +142,8 @@ export default function QuizPage() {
   const isResult = step >= questions.length
   const current = !isResult ? questions[step] : null
   const progress = isResult ? 100 : (step / questions.length) * 100
+  const typeSummary = getTypeSummary(answers)
+  const isSpecial = answers.goal === "special"
 
   function handleNext() {
     if (!current || !selected) return
@@ -106,7 +164,7 @@ export default function QuizPage() {
       <Header />
 
       <main className="flex-1 py-12 px-4">
-        <div className="container mx-auto max-w-2xl">
+        <div className="container mx-auto max-w-3xl">
 
           <Link
             href="/pets"
@@ -122,7 +180,7 @@ export default function QuizPage() {
             </div>
             <h1 className="text-3xl font-bold text-stone-800">Найди своего питомца</h1>
             <p className="mt-2 text-stone-500">
-              Ответь на {questions.length} вопроса — мы подберём подходящих животных
+              Ответь на {questions.length} вопросов — мы подберём подходящих животных
             </p>
           </div>
 
@@ -195,70 +253,108 @@ export default function QuizPage() {
 
           {/* Результат */}
           {isResult && (
-            <div className="rounded-2xl bg-white border border-stone-100 shadow-sm p-8 flex flex-col items-center gap-6 text-center">
-              <div className="size-20 rounded-full bg-[#FAF0F3] flex items-center justify-center">
-                <PawPrint className="size-10 text-[#D4849A]" />
-              </div>
-              <div>
-                <h2 className="text-2xl font-bold text-stone-800">Готово!</h2>
-                <p className="mt-2 text-stone-500">
-                  Мы подобрали питомцев на основе твоих ответов
-                </p>
+            <div className="flex flex-col gap-4">
+              <div className="rounded-2xl bg-white border border-stone-100 shadow-sm p-8 flex flex-col items-center gap-6 text-center">
+                <div className="size-20 rounded-full bg-[#FAF0F3] flex items-center justify-center">
+                  <PawPrint className="size-10 text-[#D4849A]" />
+                </div>
+                <div>
+                  <h2 className="text-2xl font-bold text-stone-800">Готово!</h2>
+                  <p className="mt-2 text-stone-500">
+                    Мы подобрали питомцев на основе твоих ответов
+                  </p>
+                </div>
+
+                <div className="w-full rounded-xl bg-[#FDF8F9] p-4 flex flex-col gap-2 text-left">
+                  <p className="text-xs font-semibold text-stone-400 uppercase tracking-wider mb-1">
+                    Твои предпочтения
+                  </p>
+                  {typeSummary && (
+                    <div className="flex items-center gap-2 text-sm text-stone-600">
+                      <CheckCircle2 className="size-4 text-[#D4849A] shrink-0" />
+                      {typeSummary}
+                    </div>
+                  )}
+                  {answers.home && (
+                    <div className="flex items-center gap-2 text-sm text-stone-600">
+                      <CheckCircle2 className="size-4 text-[#D4849A] shrink-0" />
+                      {answers.home === "small"
+                        ? "Небольшая квартира — подбираем компактных питомцев"
+                        : answers.home === "large"
+                        ? "Просторная квартира"
+                        : "Свой дом с двором"}
+                    </div>
+                  )}
+                  {answers.experience === "first" && (
+                    <div className="flex items-center gap-2 text-sm text-stone-600">
+                      <CheckCircle2 className="size-4 text-[#D4849A] shrink-0" />
+                      Первый питомец — рекомендуем взрослых (1–3 года)
+                    </div>
+                  )}
+                  {answers.experience === "ready" && (
+                    <div className="flex items-center gap-2 text-sm text-stone-600">
+                      <CheckCircle2 className="size-4 text-[#D4849A] shrink-0" />
+                      Готов(а) к малышу — покажем котят и щенков
+                    </div>
+                  )}
+                  {answers.energy === "calm" && answers.experience !== "first" && answers.experience !== "ready" && (
+                    <div className="flex items-center gap-2 text-sm text-stone-600">
+                      <CheckCircle2 className="size-4 text-[#D4849A] shrink-0" />
+                      Спокойный взрослый питомец (3–7 лет)
+                    </div>
+                  )}
+                </div>
+
+                <Button
+                  onClick={() => router.push(buildUrl(answers))}
+                  size="lg"
+                  className="w-full rounded-xl bg-[#D4849A] hover:bg-[#C4728A] text-white"
+                >
+                  <PawPrint className="mr-2 size-5" />
+                  Смотреть подходящих питомцев
+                </Button>
+
+                <button
+                  onClick={() => { setStep(0); setAnswers({}); setSelected(null) }}
+                  className="text-sm text-stone-400 hover:text-stone-600 transition-colors underline underline-offset-2"
+                >
+                  Пройти заново
+                </button>
               </div>
 
-              <div className="w-full rounded-xl bg-[#FDF8F9] p-4 flex flex-col gap-2 text-left">
-                <p className="text-xs font-semibold text-stone-400 uppercase tracking-wider mb-1">
-                  Твои предпочтения
-                </p>
-                {answers.type && (
-                  <div className="flex items-center gap-2 text-sm text-stone-600">
-                    <CheckCircle2 className="size-4 text-[#D4849A] shrink-0" />
-                    {answers.type === "any" ? "Любой питомец" : answers.type === "Кошка" ? "Кошки" : "Собаки"}
+              {/* Баннер для тех кто выбрал "кому я особенно нужен" */}
+              {isSpecial && (
+                <div className="rounded-2xl bg-[#FDF5E4] border border-amber-200 p-5 flex gap-4 items-start">
+                  <div className="size-10 rounded-xl bg-amber-100 flex items-center justify-center shrink-0 mt-0.5">
+                    <Heart className="size-5 text-amber-500" />
                   </div>
-                )}
-                {answers.housing && (
-                  <div className="flex items-center gap-2 text-sm text-stone-600">
-                    <CheckCircle2 className="size-4 text-[#D4849A] shrink-0" />
-                    {answers.housing === "small"
-                      ? "Небольшая квартира — подбираем маленьких питомцев"
-                      : answers.housing === "large"
-                      ? "Просторная квартира"
-                      : "Частный дом"}
+                  <div className="flex flex-col gap-2">
+                    <p className="font-semibold text-stone-800">
+                      А ещё посмотри на тех, кто особенно долго ждёт дом
+                    </p>
+                    <p className="text-sm text-stone-500 leading-relaxed">
+                      Некоторые питомцы живут в приюте уже очень давно или нуждаются в лечении.
+                      Возможно, именно ты станешь для кого-то из них главным человеком.
+                    </p>
+                    <div className="flex flex-wrap gap-2 mt-1">
+                      <Link
+                        href="/treatments"
+                        className="inline-flex items-center gap-1.5 text-sm font-semibold text-amber-700 bg-amber-100 hover:bg-amber-200 px-3 py-1.5 rounded-lg transition-colors"
+                      >
+                        Срочные сборы на лечение
+                        <ArrowRight className="size-3.5" />
+                      </Link>
+                      <Link
+                        href="/pets"
+                        className="inline-flex items-center gap-1.5 text-sm font-semibold text-stone-600 bg-stone-100 hover:bg-stone-200 px-3 py-1.5 rounded-lg transition-colors"
+                      >
+                        Все питомцы
+                        <ArrowRight className="size-3.5" />
+                      </Link>
+                    </div>
                   </div>
-                )}
-                {answers.time && (
-                  <div className="flex items-center gap-2 text-sm text-stone-600">
-                    <CheckCircle2 className="size-4 text-[#D4849A] shrink-0" />
-                    {answers.time === "active"
-                      ? "Хочешь активного питомца"
-                      : answers.time === "medium"
-                      ? "Умеренная активность"
-                      : "Спокойный взрослый питомец (3–7 лет)"}
-                  </div>
-                )}
-                {answers.kids === "yes" && (
-                  <div className="flex items-center gap-2 text-sm text-stone-600">
-                    <CheckCircle2 className="size-4 text-[#D4849A] shrink-0" />
-                    Учтено: маленькие дети в доме
-                  </div>
-                )}
-              </div>
-
-              <Button
-                onClick={() => router.push(buildUrl(answers))}
-                size="lg"
-                className="w-full rounded-xl bg-[#D4849A] hover:bg-[#C4728A] text-white"
-              >
-                <PawPrint className="mr-2 size-5" />
-                Смотреть подходящих питомцев
-              </Button>
-
-              <button
-                onClick={() => { setStep(0); setAnswers({}); setSelected(null) }}
-                className="text-sm text-stone-400 hover:text-stone-600 transition-colors underline underline-offset-2"
-              >
-                Пройти заново
-              </button>
+                </div>
+              )}
             </div>
           )}
 
