@@ -1,4 +1,4 @@
-import { supabaseAdmin } from "@/lib/supabase-admin"
+import { supabase } from "@/lib/supabase"
 import { cookies } from "next/headers"
 
 export async function POST(req: Request) {
@@ -8,7 +8,7 @@ export async function POST(req: Request) {
     return Response.json({ error: "Введите email и пароль" }, { status: 400 })
   }
 
-  const { data, error } = await supabaseAdmin.auth.signInWithPassword({ email, password })
+  const { data, error } = await supabase.auth.signInWithPassword({ email, password })
 
   if (error || !data.session) {
     return Response.json({ error: "Неверный email или пароль" }, { status: 401 })

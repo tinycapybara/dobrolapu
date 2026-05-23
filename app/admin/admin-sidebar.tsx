@@ -23,7 +23,7 @@ export function AdminSidebar() {
   }
 
   return (
-    <aside className="w-56 shrink-0 border-r border-stone-100 bg-white flex flex-col min-h-screen">
+    <aside className="w-56 shrink-0 border-r border-stone-100 bg-white flex flex-col h-full">
       <div className="p-5 border-b border-stone-100">
         <Link href="/" className="flex items-center gap-2.5">
           <div className="flex size-8 items-center justify-center rounded-full bg-[#D4849A]">

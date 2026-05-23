@@ -1,6 +1,6 @@
 import Link from "next/link"
 import Image from "next/image"
-import { ShoppingCart, Pill, Heart, Users, Gift, ArrowRight } from "lucide-react"
+import { ShoppingCart, Pill, Heart, Users, Gift, ArrowRight, Sparkles, PawPrint } from "lucide-react"
 import { supabase } from "@/lib/supabase"
 import { supabaseAdmin } from "@/lib/supabase-admin"
 import { Header } from "@/components/ui/header"
@@ -110,6 +110,7 @@ export default async function HomePage() {
       <Header />
       <HeroSection />
       <StatsSection stats={stats} />
+      <QuizCtaSection />
       {treatments.length > 0 && <UrgentSection treatments={treatments} />}
       <AboutSection />
       <HowToHelpSection />
@@ -448,7 +449,7 @@ function HowToHelpSection() {
 
 function RecentAnimalsSection({ animals }: { animals: Animal[] }) {
   return (
-    <section className="py-20 px-4 bg-white">
+    <section className="py-20 px-4 bg-[#FDF8F9]">
       <div className="container mx-auto">
         <div className="flex flex-wrap items-end justify-between gap-4 mb-10">
           <div>
@@ -540,6 +541,36 @@ const faqItems = [
     a: "Исключительно на нужды приюта: корм, ветеринарное лечение, содержание помещений и поиск хозяев для животных. Мы публикуем отчёты об использовании средств.",
   },
 ]
+
+function QuizCtaSection() {
+  return (
+    <section className="py-16 px-4 bg-[#FAF0F3]">
+      <div className="container mx-auto max-w-4xl">
+        <div className="flex flex-col sm:flex-row items-center gap-6 text-center sm:text-left">
+          <div className="flex-1">
+            <div className="flex items-center gap-3 justify-center sm:justify-start mb-2">
+              <div className="size-10 rounded-xl bg-[#D4849A]/15 flex items-center justify-center shrink-0">
+                <PawPrint className="size-5 text-[#D4849A]" />
+              </div>
+              <h2 className="text-2xl lg:text-3xl font-bold text-stone-800">
+                Кто твой идеальный питомец?
+              </h2>
+            </div>
+            <p className="text-stone-500 leading-relaxed max-w-md">
+              Ответь на 6 коротких вопросов — подберём животных, которые подходят тебе по характеру и образу жизни
+            </p>
+          </div>
+          <Button asChild size="lg" className="rounded-xl bg-[#D4849A] hover:bg-[#C4728A] text-white px-8 shrink-0">
+            <Link href="/quiz">
+              <Sparkles className="size-5 mr-2" />
+              Пройти тест
+            </Link>
+          </Button>
+        </div>
+      </div>
+    </section>
+  )
+}
 
 function FaqSection() {
   return (

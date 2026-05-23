@@ -2,6 +2,7 @@ import Link from "next/link"
 import { Header } from "@/components/ui/header"
 import { Footer } from "@/components/ui/footer"
 import { AnimalsGrid } from "@/components/animals-grid"
+import { Button } from "@/components/ui/button"
 import { supabase } from "@/lib/supabase"
 import type { Animal } from "@/components/animal-card"
 import type { FilterValues } from "@/components/animals-filter"
@@ -82,16 +83,26 @@ export default async function PetsPage({ searchParams }: { searchParams?: Search
             <p className="mt-2 text-stone-500 max-w-md mx-auto">
               Каждый из них ждёт свою семью. Возможно, именно вы станете для кого-то из них лучшим другом.
             </p>
-            {!fromQuiz && (
-              <Link
-                href="/quiz"
-                className="mt-4 inline-flex items-center gap-2 rounded-full bg-[#FAF0F3] border border-[#D4849A]/20 px-5 py-2 text-sm font-semibold text-[#D4849A] hover:bg-[#D4849A]/10 transition-colors"
-              >
-                <Sparkles className="size-4" />
-                Не знаешь, кого выбрать? Пройди квиз
-              </Link>
-            )}
           </div>
+
+          {!fromQuiz && (
+            <div className="mb-8 rounded-2xl bg-[#FAF0F3] border border-[#D4849A]/15 p-5 flex flex-col sm:flex-row items-center gap-4">
+              <div className="size-11 rounded-xl bg-[#D4849A]/15 flex items-center justify-center shrink-0">
+                <Sparkles className="size-5 text-[#D4849A]" />
+              </div>
+              <div className="flex-1 text-center sm:text-left">
+                <p className="font-bold text-stone-800">Не знаешь, кого выбрать?</p>
+                <p className="text-sm text-stone-500 mt-0.5">
+                  Пройди короткий тест — подберём питомца под твой характер и образ жизни
+                </p>
+              </div>
+              <Button asChild className="rounded-xl bg-[#D4849A] hover:bg-[#C4728A] text-white shrink-0">
+                <Link href="/quiz">
+                  Пройти тест
+                </Link>
+              </Button>
+            </div>
+          )}
 
           <AnimalsGrid
             animals={animals}
