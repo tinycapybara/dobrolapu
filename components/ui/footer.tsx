@@ -3,6 +3,7 @@ import { PawPrint } from "lucide-react"
 
 const navLinks = [
   { href: "/pets", label: "Питомцы" },
+  { href: "/quiz", label: "Подобрать питомца" },
   { href: "/treatments", label: "Срочные сборы" },
   { href: "/about", label: "О приюте" },
   { href: "/donate", label: "Помочь" },

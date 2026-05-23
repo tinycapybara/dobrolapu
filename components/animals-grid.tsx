@@ -1,10 +1,11 @@
 "use client"
 
 import { useState, useMemo } from "react"
+import Link from "next/link"
 import { AnimalCard, type Animal } from "@/components/animal-card"
 import { AnimalsFilter, type FilterValues } from "@/components/animals-filter"
 import { Button } from "@/components/ui/button"
-import { Loader2 } from "lucide-react"
+import { Loader2, PawPrint, X } from "lucide-react"
 
 const ITEMS_PER_PAGE = 6
 
@@ -26,8 +27,19 @@ function parseAgeRange(ageValue: string): { min: number; max: number } | null {
   return { min, max }
 }
 
-export function AnimalsGrid({ animals, sickAnimalIds }: { animals: Animal[]; sickAnimalIds: number[] }) {
-  const [filters, setFilters] = useState<FilterValues>(defaultFilters)
+export function AnimalsGrid({
+  animals,
+  sickAnimalIds,
+  initialFilters,
+  fromQuiz,
+}: {
+  animals: Animal[]
+  sickAnimalIds: number[]
+  initialFilters?: Partial<FilterValues>
+  fromQuiz?: boolean
+}) {
+  const [filters, setFilters] = useState<FilterValues>({ ...defaultFilters, ...initialFilters })
+  const [quizBannerDismissed, setQuizBannerDismissed] = useState(false)
   const [visibleCount, setVisibleCount] = useState(ITEMS_PER_PAGE)
   const [isLoading, setIsLoading] = useState(false)
 
@@ -106,7 +118,34 @@ export function AnimalsGrid({ animals, sickAnimalIds }: { animals: Animal[]; sic
   }
 
   return (
-    <div className="flex flex-col gap-6 lg:flex-row">
+    <div className="flex flex-col gap-6">
+      {/* Баннер результатов квиза */}
+      {fromQuiz && !quizBannerDismissed && (
+        <div className="flex items-center justify-between gap-4 rounded-2xl bg-[#FAF0F3] border border-[#D4849A]/20 px-5 py-4">
+          <div className="flex items-center gap-3">
+            <div className="size-9 rounded-xl bg-[#D4849A]/15 flex items-center justify-center shrink-0">
+              <PawPrint className="size-5 text-[#D4849A]" />
+            </div>
+            <div>
+              <p className="font-semibold text-stone-800 text-sm">Подбор по квизу</p>
+              <p className="text-xs text-stone-500">Показываем питомцев, которые подходят именно тебе. Фильтры можно скорректировать.</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-3 shrink-0">
+            <Link href="/quiz" className="text-xs text-[#D4849A] hover:underline underline-offset-2">
+              Пройти заново
+            </Link>
+            <button
+              onClick={() => setQuizBannerDismissed(true)}
+              className="text-stone-400 hover:text-stone-600 transition-colors"
+            >
+              <X className="size-4" />
+            </button>
+          </div>
+        </div>
+      )}
+
+      <div className="flex flex-col gap-6 lg:flex-row">
       {/* Фильтры - сбоку на десктопе, сверху на мобильном */}
       <aside className="w-full shrink-0 lg:w-72">
         <AnimalsFilter 
@@ -165,6 +204,7 @@ export function AnimalsGrid({ animals, sickAnimalIds }: { animals: Animal[]; sic
           </>
         )}
       </div>
+    </div>
     </div>
   )
 }

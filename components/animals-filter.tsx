@@ -39,9 +39,9 @@ const ageOptions = [
 
 const sizeOptions = [
   { value: "all", label: "Любой размер" },
-  { value: "Маленький", label: "Маленький" },
-  { value: "Средний", label: "Средний" },
-  { value: "Большой", label: "Большой" },
+  { value: "small", label: "Маленький" },
+  { value: "medium", label: "Средний" },
+  { value: "large", label: "Большой" },
 ]
 
 export function AnimalsFilter({ filters, onFilterChange, onReset }: AnimalsFilterProps) {

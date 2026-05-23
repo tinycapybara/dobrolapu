@@ -1,14 +1,24 @@
+import Link from "next/link"
 import { Header } from "@/components/ui/header"
 import { Footer } from "@/components/ui/footer"
 import { AnimalsGrid } from "@/components/animals-grid"
 import { supabase } from "@/lib/supabase"
 import type { Animal } from "@/components/animal-card"
-import { PawPrint } from "lucide-react"
+import type { FilterValues } from "@/components/animals-filter"
+import { PawPrint, Sparkles } from "lucide-react"
 
 export const metadata = {
   title: "Наши питомцы | Добрые лапки",
   description: "Найдите своего нового друга среди наших питомцев",
 }
+
+type SearchParams = Promise<{
+  type?: string
+  size?: string
+  age?: string
+  health?: string
+  quiz?: string
+}>
 
 async function getAnimals(): Promise<Animal[]> {
   const { data, error } = await supabase
@@ -45,7 +55,16 @@ async function getSickAnimalIds(): Promise<number[]> {
   return (data ?? []).map((row) => row.animal_id)
 }
 
-export default async function PetsPage() {
+export default async function PetsPage({ searchParams }: { searchParams?: SearchParams }) {
+  const sp = searchParams ? await searchParams : {}
+  const fromQuiz = sp.quiz === "1"
+
+  const initialFilters: Partial<FilterValues> = {}
+  if (sp.type) initialFilters.type = sp.type
+  if (sp.size) initialFilters.size = sp.size
+  if (sp.age) initialFilters.age = sp.age
+  if (sp.health) initialFilters.health = sp.health
+
   const [animals, sickAnimalIds] = await Promise.all([getAnimals(), getSickAnimalIds()])
 
   return (
@@ -63,9 +82,23 @@ export default async function PetsPage() {
             <p className="mt-2 text-stone-500 max-w-md mx-auto">
               Каждый из них ждёт свою семью. Возможно, именно вы станете для кого-то из них лучшим другом.
             </p>
+            {!fromQuiz && (
+              <Link
+                href="/quiz"
+                className="mt-4 inline-flex items-center gap-2 rounded-full bg-[#FAF0F3] border border-[#D4849A]/20 px-5 py-2 text-sm font-semibold text-[#D4849A] hover:bg-[#D4849A]/10 transition-colors"
+              >
+                <Sparkles className="size-4" />
+                Не знаешь, кого выбрать? Пройди квиз
+              </Link>
+            )}
           </div>
 
-          <AnimalsGrid animals={animals} sickAnimalIds={sickAnimalIds} />
+          <AnimalsGrid
+            animals={animals}
+            sickAnimalIds={sickAnimalIds}
+            initialFilters={initialFilters}
+            fromQuiz={fromQuiz}
+          />
         </div>
       </main>
 
