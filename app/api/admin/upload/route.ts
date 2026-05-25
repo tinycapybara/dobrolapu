@@ -17,17 +17,19 @@ export async function POST(req: Request) {
   const ext = file.name.split(".").pop() ?? "jpg"
   const filename = `animals/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`
 
+  const arrayBuffer = await file.arrayBuffer()
+
   const { data, error } = await supabaseAdmin.storage
-    .from("photos")
-    .upload(filename, file, { contentType: file.type, upsert: false })
+    .from("animal-photos")
+    .upload(filename, arrayBuffer, { contentType: file.type, upsert: false })
 
   if (error) {
-    console.error("Storage upload error:", error)
-    return Response.json({ error: "Ошибка загрузки" }, { status: 500 })
+    console.error("Storage upload error:", error.message, error)
+    return Response.json({ error: `Ошибка загрузки: ${error.message}` }, { status: 500 })
   }
 
   const { data: { publicUrl } } = supabaseAdmin.storage
-    .from("photos")
+    .from("animal-photos")
     .getPublicUrl(data.path)
 
   return Response.json({ url: publicUrl })
