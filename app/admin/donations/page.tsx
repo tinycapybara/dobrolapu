@@ -1,6 +1,8 @@
 import { supabaseAdmin } from "@/lib/supabase-admin"
 import { DonationsTable } from "./donations-table"
 
+export const dynamic = "force-dynamic"
+
 type Donation = {
   id: string
   donor_name: string | null
