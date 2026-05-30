@@ -31,17 +31,6 @@ function isRateLimited(ip: string): boolean {
   return timestamps.length > RATE_LIMIT_MAX
 }
 
-// ── Фильтр нецензурных слов ───────────────────────────────────────────────────
-const BAD_WORDS = [
-  "хуй", "пизд", "ебл", "ебат", "еблан", "блядь", "бляд", "сука", "пидор",
-  "пидар", "мудак", "залупа", "ёбан", "ёбнут", "хуес", "пиздец", "ёб твою",
-]
-
-function containsBadWords(text: string): boolean {
-  const lower = text.toLowerCase()
-  return BAD_WORDS.some(word => lower.includes(word))
-}
-
 // ── Роут ──────────────────────────────────────────────────────────────────────
 export async function POST(req: Request) {
   // Rate limiting по IP
@@ -72,23 +61,13 @@ export async function POST(req: Request) {
   }
 
   // Валидация имени
-  if (donor_name) {
-    if (donor_name.length > MAX_NAME_LENGTH) {
-      return NextResponse.json({ error: "Имя слишком длинное" }, { status: 400 })
-    }
-    if (containsBadWords(donor_name)) {
-      return NextResponse.json({ error: "Имя содержит недопустимые слова" }, { status: 400 })
-    }
+  if (donor_name && donor_name.length > MAX_NAME_LENGTH) {
+    return NextResponse.json({ error: "Имя слишком длинное" }, { status: 400 })
   }
 
   // Валидация комментария
-  if (comment) {
-    if (comment.length > MAX_COMMENT_LENGTH) {
-      return NextResponse.json({ error: "Комментарий слишком длинный" }, { status: 400 })
-    }
-    if (containsBadWords(comment)) {
-      return NextResponse.json({ error: "Комментарий содержит недопустимые слова" }, { status: 400 })
-    }
+  if (comment && comment.length > MAX_COMMENT_LENGTH) {
+    return NextResponse.json({ error: "Комментарий слишком длинный" }, { status: 400 })
   }
 
   const mrh_login = process.env.ROBOKASSA_LOGIN!

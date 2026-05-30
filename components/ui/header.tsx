@@ -22,6 +22,7 @@ import {
   Pill,
   ShoppingCart,
   ChevronDown,
+  UserCircle,
 } from "lucide-react"
 
 const navItems = [
@@ -97,9 +98,19 @@ export function Header() {
           </div>
         </nav>
 
-        {/* Кнопка "Помочь сейчас" - десктоп */}
-        <div className="hidden lg:block">
-          <Button asChild className="gap-2 bg-[#D4849A] hover:bg-[#C4728A] text-white">
+        {/* Войти + кнопка "Помочь сейчас" - десктоп */}
+        <div className="hidden lg:flex items-center gap-2">
+          <Button
+            asChild
+            variant="outline"
+            className="gap-2 rounded-full border-[#D4849A] text-[#D4849A] hover:bg-[#FAF0F3] hover:text-[#C4728A] hover:border-[#C4728A]"
+          >
+            <Link href="/login">
+              <UserCircle className="size-4" />
+              Войти
+            </Link>
+          </Button>
+          <Button asChild className="gap-2 bg-[#D4849A] hover:bg-[#C4728A] text-white rounded-full">
             <Link href="/donate">
               <Heart className="size-4" />
               Помочь сейчас
@@ -173,8 +184,19 @@ export function Header() {
                   </div>
                 )}
               </nav>
-              <div className="mt-auto border-t p-4">
-                <Button asChild className="w-full gap-2 bg-[#D4849A] hover:bg-[#C4728A] text-white" size="lg">
+              <div className="mt-auto border-t p-4 flex flex-col gap-2">
+                <Button
+                  asChild
+                  variant="outline"
+                  className="w-full gap-2 rounded-full border-[#D4849A] text-[#D4849A] hover:bg-[#FAF0F3] hover:text-[#C4728A] hover:border-[#C4728A]"
+                  size="lg"
+                >
+                  <Link href="/login" onClick={() => setIsOpen(false)}>
+                    <UserCircle className="size-4" />
+                    Войти / Личный кабинет
+                  </Link>
+                </Button>
+                <Button asChild className="w-full gap-2 bg-[#D4849A] hover:bg-[#C4728A] text-white rounded-full" size="lg">
                   <Link href="/donate" onClick={() => setIsOpen(false)}>
                     <Heart className="size-4" />
                     Помочь сейчас

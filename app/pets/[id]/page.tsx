@@ -64,14 +64,18 @@ type Props = { params: Promise<{ id: string }> }
 
 export async function generateMetadata({ params }: Props) {
   const { id } = await params
+
   const { data } = await supabase
     .from("animals")
-    .select("name")
+    .select("name, description")
     .eq("id", Number(id))
     .single()
 
   return {
     title: data ? `${data.name} | Добрые лапки` : "Животное | Добрые лапки",
+    description: data?.description
+      ? data.description.slice(0, 160)
+      : "Страница животного приюта «Добрые лапки»",
   }
 }
 
