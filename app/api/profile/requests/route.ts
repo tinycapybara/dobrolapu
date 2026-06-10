@@ -25,7 +25,7 @@ export async function GET(req: Request) {
     type: r.type,
     created_at: r.created_at,
     status_id: r.status_id,
-    status: (r.request_statuses as { status: string } | null)?.status ?? "—",
+    status: (r.request_statuses as unknown as { status: string } | null)?.status ?? "—",
   }))
 
   const hasApproved = requests.some((r) => r.status_id === 2)

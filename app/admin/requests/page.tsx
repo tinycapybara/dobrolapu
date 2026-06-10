@@ -39,7 +39,7 @@ async function getRequests(showAll: boolean): Promise<AdoptionRequest[]> {
     email: r.email,
     message: r.message,
     status_id: r.status_id,
-    status: (r.request_statuses as { status: string } | null)?.status ?? "—",
+    status: (r.request_statuses as unknown as { status: string } | null)?.status ?? "—",
     user_id: r.user_id,
     created_at: r.created_at,
   }))

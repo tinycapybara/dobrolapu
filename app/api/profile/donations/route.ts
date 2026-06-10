@@ -25,7 +25,7 @@ export async function GET(req: Request) {
     comment: d.comment,
     created_at: d.created_at,
     status: d.status,
-    treatment_name: (d.treatments as { disease: string } | null)?.disease ?? null,
+    treatment_name: (d.treatments as unknown as { disease: string } | null)?.disease ?? null,
   }))
 
   const total = donations
