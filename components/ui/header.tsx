@@ -14,7 +14,6 @@ import {
 import {
   PawPrint,
   Menu,
-  Home,
   Heart,
   Gift,
   Users,
@@ -30,7 +29,6 @@ import { supabase } from "@/lib/supabase"
 import type { User } from "@supabase/supabase-js"
 
 const navItems = [
-  { href: "/", label: "Главная", icon: Home },
   { href: "/pets", label: "Наши питомцы", icon: PawPrint },
   { href: "/treatments", label: "Срочные сборы", icon: Pill },
   { href: "/about", label: "О приюте", icon: Users },
