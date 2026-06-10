@@ -35,30 +35,35 @@ export async function updateRequestStatus(id: number, statusId: number, userId: 
 
   // При одобрении создаём чек-лист для пользователя (если авторизован и чек-листа ещё нет)
   if (statusId === 2 && userId) {
-    const { count } = await supabaseAdmin
+    const { data: request } = await supabaseAdmin
+      .from("adoption_requests")
+      .select("animal_id, animals(animal_types(type))")
+      .eq("id", id)
+      .single()
+
+    const animalType: string =
+      (request?.animals as unknown as { animal_types: { type: string } } | null)?.animal_types?.type ?? ""
+    const isCat = animalType.toLowerCase().includes("кошк") || animalType.toLowerCase().includes("кот")
+
+    const { data: existing } = await supabaseAdmin
       .from("adoption_checklist")
-      .select("*", { count: "exact", head: true })
+      .select("item_name")
       .eq("user_id", userId)
 
-    if (count === 0) {
-      // Определяем тип животного по заявке
-      const { data: request } = await supabaseAdmin
-        .from("adoption_requests")
-        .select("animal_id, animals(animal_types(type))")
-        .eq("id", id)
-        .single()
+    const existingNames = new Set((existing ?? []).map((i) => i.item_name))
 
-      const animalType: string =
-        (request?.animals as unknown as { animal_types: { type: string } } | null)?.animal_types?.type ?? ""
-      const isCat = animalType.toLowerCase().includes("кошк") || animalType.toLowerCase().includes("кот")
-
+    if (existingNames.size === 0) {
       const itemNames = isCat ? [...BASE_ITEMS, ...CAT_ITEMS] : BASE_ITEMS
-      const items = itemNames.map((item_name) => ({
-        user_id: userId,
-        item_name,
-        completed: false,
-      }))
-      await supabaseAdmin.from("adoption_checklist").insert(items)
+      await supabaseAdmin.from("adoption_checklist").insert(
+        itemNames.map((item_name) => ({ user_id: userId, item_name, completed: false }))
+      )
+    } else if (isCat) {
+      const missing = CAT_ITEMS.filter((name) => !existingNames.has(name))
+      if (missing.length > 0) {
+        await supabaseAdmin.from("adoption_checklist").insert(
+          missing.map((item_name) => ({ user_id: userId, item_name, completed: false }))
+        )
+      }
     }
   }
 
