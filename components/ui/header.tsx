@@ -119,17 +119,9 @@ export function Header() {
 
         {/* Войти / Кабинет + кнопка "Помочь сейчас" - десктоп */}
         <div className="hidden lg:flex items-center gap-2">
-          {/* Пока сессия не проверена — невидимая заглушка нужного размера */}
-          {user === undefined ? (
-            <Button
-              variant="outline"
-              className="gap-2 rounded-full border-[#D4849A] text-[#D4849A] invisible pointer-events-none"
-              tabIndex={-1}
-            >
-              <UserCircle className="size-4" />
-              Войти
-            </Button>
-          ) : user ? (
+          {/* Фиксированная ширина — кнопка не прыгает при смене состояния */}
+          <div className="w-[200px] flex justify-end items-center gap-1">
+          {user === undefined ? null : user ? (
             <>
               <Button
                 asChild
@@ -163,6 +155,7 @@ export function Header() {
               </Link>
             </Button>
           )}
+          </div>
           <Button asChild className="gap-2 bg-[#D4849A] hover:bg-[#C4728A] text-white rounded-full">
             <Link href="/donate">
               <Heart className="size-4" />
