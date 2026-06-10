@@ -47,7 +47,7 @@ export function Header() {
   const router = useRouter()
   const [isOpen, setIsOpen] = useState(false)
   const [helpOpen, setHelpOpen] = useState(false)
-  const [user, setUser] = useState<User | null>(null)
+  const [user, setUser] = useState<User | null | undefined>(undefined)
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }) => setUser(user))
@@ -119,7 +119,7 @@ export function Header() {
 
         {/* Войти / Кабинет + кнопка "Помочь сейчас" - десктоп */}
         <div className="hidden lg:flex items-center gap-2">
-          {user ? (
+          {user === undefined ? null : user ? (
             <>
               <Button
                 asChild
@@ -228,7 +228,7 @@ export function Header() {
                 )}
               </nav>
               <div className="mt-auto border-t p-4 flex flex-col gap-2">
-                {user ? (
+                {user === undefined ? null : user ? (
                   <>
                     <Button
                       asChild
