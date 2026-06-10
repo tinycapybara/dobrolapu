@@ -49,7 +49,7 @@ export async function POST(req: Request) {
     name: cleanName,
     phone: cleanPhone,
     email: email ? normalizeText(String(email)) : null,
-    message: message ? normalizeText(String(message)) : null,
+    message: message ? String(message).trim() : null,
     user_id: userId,
   })
 
