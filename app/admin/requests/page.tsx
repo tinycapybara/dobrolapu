@@ -62,7 +62,7 @@ function statusBadge(statusId: number, status: string) {
 function MessageBlock({ message }: { message: string | null }) {
   if (!message) return null
 
-  const lines = message.split("\n").filter(Boolean)
+  const lines = message.split(/\r?\n|\r/).filter(Boolean)
   const isQuestionnaire = lines.some((l) => /^[^:]+:\s/.test(l) && l.indexOf(":") < 30)
 
   if (isQuestionnaire) {
