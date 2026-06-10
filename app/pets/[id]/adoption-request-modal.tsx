@@ -124,15 +124,16 @@ function AdoptionForm({
       if (!session) return
       setAuthToken(session.access_token)
 
-      // Автозаполнение из профиля
-      const { data: profile } = await supabase
-        .from("users")
-        .select("full_name, phone")
-        .eq("id", session.user.id)
-        .single()
+      // Автозаполнение из профиля через API (обходим RLS)
+      const res = await fetch("/api/profile/me", {
+        headers: { Authorization: `Bearer ${session.access_token}` },
+      })
+      if (!res.ok) return
+      const profile = await res.json()
 
-      if (profile?.full_name) setName(profile.full_name)
-      if (profile?.phone) {
+      if (profile.full_name) setName(profile.full_name)
+      if (profile.email) setEmail(profile.email)
+      if (profile.phone) {
         const digits = profile.phone.replace(/\D/g, "")
         const clean = digits.startsWith("7") || digits.startsWith("8") ? digits.slice(1) : digits
         setPhoneDigits(clean.slice(0, 10))
