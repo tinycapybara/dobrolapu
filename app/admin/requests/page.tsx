@@ -1,5 +1,5 @@
 import { supabaseAdmin } from "@/lib/supabase-admin"
-import { ClipboardList } from "lucide-react"
+import { ClipboardList, CalendarDays, Phone, Mail, PawPrint } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { StatusActions } from "./status-actions"
 
@@ -59,6 +59,36 @@ function statusBadge(statusId: number, status: string) {
   return <Badge className={`text-xs ${cls}`}>{status}</Badge>
 }
 
+function MessageBlock({ message }: { message: string | null }) {
+  if (!message) return null
+
+  const lines = message.split("\n").filter(Boolean)
+  const isQuestionnaire = lines.some((l) => /^[^:]+:\s/.test(l) && l.indexOf(":") < 30)
+
+  if (isQuestionnaire) {
+    return (
+      <div className="space-y-1.5">
+        {lines.map((line, i) => {
+          const colonIdx = line.indexOf(": ")
+          if (colonIdx > 0 && colonIdx < 30) {
+            const label = line.slice(0, colonIdx)
+            const value = line.slice(colonIdx + 2)
+            return (
+              <div key={i} className="flex gap-2 text-sm">
+                <span className="text-stone-400 shrink-0 min-w-[140px]">{label}</span>
+                <span className="text-stone-700 font-medium">{value}</span>
+              </div>
+            )
+          }
+          return <p key={i} className="text-sm text-stone-600">{line}</p>
+        })}
+      </div>
+    )
+  }
+
+  return <p className="text-sm text-stone-600 whitespace-pre-wrap">{message}</p>
+}
+
 export default async function AdminRequestsPage({ searchParams }: Props) {
   const { show } = await searchParams
   const showAll = show === "all"
@@ -87,62 +117,66 @@ export default async function AdminRequestsPage({ searchParams }: Props) {
         </div>
       </div>
 
-      <div className="rounded-2xl bg-white border border-stone-100 shadow-sm overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm min-w-[800px]">
-            <thead>
-              <tr className="border-b border-stone-100 bg-stone-50">
-                <th className="text-left px-4 py-3 font-semibold text-stone-500">Дата</th>
-                <th className="text-left px-4 py-3 font-semibold text-stone-500">Тип</th>
-                <th className="text-left px-4 py-3 font-semibold text-stone-500">Питомец</th>
-                <th className="text-left px-4 py-3 font-semibold text-stone-500">Имя</th>
-                <th className="text-left px-4 py-3 font-semibold text-stone-500">Телефон</th>
-                <th className="text-left px-4 py-3 font-semibold text-stone-500">Email</th>
-                <th className="text-left px-4 py-3 font-semibold text-stone-500">Комментарий</th>
-                <th className="text-left px-4 py-3 font-semibold text-stone-500">Статус</th>
-                <th className="px-4 py-3"></th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-stone-50">
-              {requests.map((r) => (
-                <tr key={r.id} className={`hover:bg-stone-50/50 transition-colors ${r.status_id !== 1 ? "opacity-60" : ""}`}>
-                  <td className="px-4 py-3 text-stone-500 whitespace-nowrap">{formatDate(r.created_at)}</td>
-                  <td className="px-4 py-3">
-                    {r.type === "guardian"
-                      ? <Badge className="bg-purple-100 text-purple-600 hover:bg-purple-100 border-0 text-xs">Опекун</Badge>
-                      : <Badge className="bg-rose-100 text-rose-600 hover:bg-rose-100 border-0 text-xs">Забрать домой</Badge>
-                    }
-                  </td>
-                  <td className="px-4 py-3 text-stone-700">{r.animal_name ?? "—"}</td>
-                  <td className="px-4 py-3 font-medium text-stone-800">{r.name}</td>
-                  <td className="px-4 py-3 whitespace-nowrap">
-                    <a href={`tel:${r.phone}`} className="text-[#D4849A] hover:underline">{r.phone}</a>
-                  </td>
-                  <td className="px-4 py-3 text-stone-600">
-                    {r.email
-                      ? <a href={`mailto:${r.email}`} className="hover:text-[#D4849A] hover:underline transition-colors">{r.email}</a>
-                      : <span className="text-stone-300">—</span>
-                    }
-                  </td>
-                  <td className="px-4 py-3 text-stone-500 max-w-xs">
-                    <p className="line-clamp-2">{r.message ?? "—"}</p>
-                  </td>
-                  <td className="px-4 py-3">{statusBadge(r.status_id, r.status)}</td>
-                  <td className="px-4 py-3">
-                    <StatusActions id={r.id} statusId={r.status_id} userId={r.user_id} />
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+      {requests.length === 0 ? (
+        <div className="rounded-2xl bg-white border border-stone-100 shadow-sm py-16 text-center text-stone-400">
+          <ClipboardList className="size-8 mx-auto mb-3 text-stone-200" />
+          <p>{showAll ? "Заявок нет" : "Новых заявок нет"}</p>
         </div>
-        {requests.length === 0 && (
-          <div className="py-16 text-center text-stone-400">
-            <ClipboardList className="size-8 mx-auto mb-3 text-stone-200" />
-            <p>{showAll ? "Заявок нет" : "Новых заявок нет"}</p>
-          </div>
-        )}
-      </div>
+      ) : (
+        <div className="flex flex-col gap-4">
+          {requests.map((r) => (
+            <div
+              key={r.id}
+              className={`rounded-2xl bg-white border border-stone-100 shadow-sm p-5 transition-opacity ${r.status_id !== 1 ? "opacity-70" : ""}`}
+            >
+              {/* Шапка карточки */}
+              <div className="flex flex-wrap items-start justify-between gap-3">
+                <div className="flex flex-wrap items-center gap-2">
+                  {r.type === "guardian"
+                    ? <Badge className="bg-purple-100 text-purple-600 hover:bg-purple-100 border-0 text-xs">Опекун</Badge>
+                    : <Badge className="bg-rose-100 text-rose-600 hover:bg-rose-100 border-0 text-xs">Забрать домой</Badge>
+                  }
+                  {statusBadge(r.status_id, r.status)}
+                  {r.animal_name && (
+                    <span className="flex items-center gap-1 text-sm text-stone-500">
+                      <PawPrint className="size-3.5" />
+                      {r.animal_name}
+                    </span>
+                  )}
+                </div>
+                <span className="flex items-center gap-1 text-xs text-stone-400 whitespace-nowrap">
+                  <CalendarDays className="size-3.5" />
+                  {formatDate(r.created_at)}
+                </span>
+              </div>
+
+              {/* Контакты + кнопки действий */}
+              <div className="mt-3 flex flex-wrap items-center justify-between gap-4">
+                <div className="flex flex-wrap gap-x-6 gap-y-1">
+                  <span className="font-semibold text-stone-800">{r.name}</span>
+                  <a href={`tel:${r.phone}`} className="flex items-center gap-1 text-sm text-[#D4849A] hover:underline">
+                    <Phone className="size-3.5" />{r.phone}
+                  </a>
+                  {r.email && (
+                    <a href={`mailto:${r.email}`} className="flex items-center gap-1 text-sm text-stone-500 hover:text-[#D4849A] hover:underline transition-colors">
+                      <Mail className="size-3.5" />{r.email}
+                    </a>
+                  )}
+                </div>
+                <StatusActions id={r.id} statusId={r.status_id} userId={r.user_id} />
+              </div>
+
+              {/* Анкета / комментарий */}
+              {r.message && (
+                <div className="mt-3 pt-3 border-t border-stone-100">
+                  <p className="text-xs font-semibold text-stone-400 uppercase tracking-wide mb-2">Анкета / комментарий</p>
+                  <MessageBlock message={r.message} />
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   )
 }
