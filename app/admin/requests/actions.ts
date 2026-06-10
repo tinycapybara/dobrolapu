@@ -49,7 +49,7 @@ export async function updateRequestStatus(id: number, statusId: number, userId: 
         .single()
 
       const animalType: string =
-        (request?.animals as { animal_types: { type: string } } | null)?.animal_types?.type ?? ""
+        (request?.animals as unknown as { animal_types: { type: string } } | null)?.animal_types?.type ?? ""
       const isCat = animalType.toLowerCase().includes("кошк") || animalType.toLowerCase().includes("кот")
 
       const itemNames = isCat ? [...BASE_ITEMS, ...CAT_ITEMS] : BASE_ITEMS
