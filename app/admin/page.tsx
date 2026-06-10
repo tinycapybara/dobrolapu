@@ -12,7 +12,7 @@ async function getStats() {
   ] = await Promise.all([
     supabaseAdmin.from("animals").select("*", { count: "exact", head: true }),
     supabaseAdmin.from("treatments").select("*", { count: "exact", head: true }).eq("is_active", true),
-    supabaseAdmin.from("adoption_requests").select("*", { count: "exact", head: true }).eq("is_processed", false),
+    supabaseAdmin.from("adoption_requests").select("*", { count: "exact", head: true }).eq("status_id", 1),
     supabaseAdmin.from("volunteer_requests").select("*", { count: "exact", head: true }).eq("is_processed", false),
     supabaseAdmin.from("donations").select("amount").eq("status", "completed"),
   ])
@@ -32,7 +32,7 @@ async function getRecentRequests() {
   const { data } = await supabaseAdmin
     .from("adoption_requests")
     .select("id, name, animal_name, type, created_at")
-    .eq("is_processed", false)
+    .eq("status_id", 1)
     .order("created_at", { ascending: false })
     .limit(5)
   return data ?? []
@@ -42,7 +42,7 @@ async function getRecentVolunteers() {
   const { data } = await supabaseAdmin
     .from("volunteer_requests")
     .select("id, name, activities, created_at")
-    .eq("is_processed", false)
+    .eq("is_processed", false)  // volunteer_requests сохраняет is_processed
     .order("created_at", { ascending: false })
     .limit(5)
   return data ?? []

@@ -1,3 +1,4 @@
+import { supabase } from "@/lib/supabase"
 import { supabaseAdmin } from "@/lib/supabase-admin"
 
 function normalizeText(s: string): string {
@@ -32,6 +33,15 @@ export async function POST(req: Request) {
     return Response.json({ error: "Проверьте телефон" }, { status: 400 })
   }
 
+  // Если пользователь авторизован — привязываем заявку к его аккаунту
+  let userId: string | null = null
+  const authHeader = req.headers.get("Authorization")
+  if (authHeader?.startsWith("Bearer ")) {
+    const token = authHeader.replace("Bearer ", "")
+    const { data: { user } } = await supabase.auth.getUser(token)
+    if (user) userId = user.id
+  }
+
   const { error } = await supabaseAdmin.from("adoption_requests").insert({
     animal_id: Number(animal_id),
     animal_name: animal_name ? normalizeText(String(animal_name)) : null,
@@ -40,6 +50,7 @@ export async function POST(req: Request) {
     phone: cleanPhone,
     email: email ? normalizeText(String(email)) : null,
     message: message ? normalizeText(String(message)) : null,
+    user_id: userId,
   })
 
   if (error) {

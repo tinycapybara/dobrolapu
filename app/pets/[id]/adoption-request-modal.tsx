@@ -1,10 +1,11 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Heart, X, Loader2, CheckCircle2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { supabase } from "@/lib/supabase"
 
 type RequestType = "guardian" | "adopt"
 
@@ -75,6 +76,13 @@ function AdoptionForm({
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [done, setDone] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [authToken, setAuthToken] = useState<string | null>(null)
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setAuthToken(session?.access_token ?? null)
+    })
+  }, [])
 
   const canSubmit = name.trim().length > 0 && phoneDigits.length === 10 && !isSubmitting
 
@@ -106,9 +114,12 @@ function AdoptionForm({
     setIsSubmitting(true)
     setError(null)
     try {
+      const headers: Record<string, string> = { "Content-Type": "application/json" }
+      if (authToken) headers["Authorization"] = `Bearer ${authToken}`
+
       const res = await fetch("/api/adoption-request", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers,
         body: JSON.stringify({
           animal_id: animalId,
           animal_name: animalName,

@@ -1,7 +1,8 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import {
   Sheet,
@@ -23,7 +24,10 @@ import {
   ShoppingCart,
   ChevronDown,
   UserCircle,
+  LogOut,
 } from "lucide-react"
+import { supabase } from "@/lib/supabase"
+import type { User } from "@supabase/supabase-js"
 
 const navItems = [
   { href: "/", label: "Главная", icon: Home },
@@ -42,8 +46,25 @@ const helpSubItems = [
 ]
 
 export function Header() {
+  const router = useRouter()
   const [isOpen, setIsOpen] = useState(false)
   const [helpOpen, setHelpOpen] = useState(false)
+  const [user, setUser] = useState<User | null>(null)
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data: { user } }) => setUser(user))
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_, session) => {
+      setUser(session?.user ?? null)
+    })
+    return () => subscription.unsubscribe()
+  }, [])
+
+  async function handleLogout() {
+    await supabase.auth.signOut()
+    router.push("/")
+    router.refresh()
+  }
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -98,18 +119,42 @@ export function Header() {
           </div>
         </nav>
 
-        {/* Войти + кнопка "Помочь сейчас" - десктоп */}
+        {/* Войти / Кабинет + кнопка "Помочь сейчас" - десктоп */}
         <div className="hidden lg:flex items-center gap-2">
-          <Button
-            asChild
-            variant="outline"
-            className="gap-2 rounded-full border-[#D4849A] text-[#D4849A] hover:bg-[#FAF0F3] hover:text-[#C4728A] hover:border-[#C4728A]"
-          >
-            <Link href="/login">
-              <UserCircle className="size-4" />
-              Войти
-            </Link>
-          </Button>
+          {user ? (
+            <>
+              <Button
+                asChild
+                variant="outline"
+                className="gap-2 rounded-full border-[#D4849A] text-[#D4849A] hover:bg-[#FAF0F3] hover:text-[#C4728A] hover:border-[#C4728A]"
+              >
+                <Link href="/profile">
+                  <UserCircle className="size-4" />
+                  Личный кабинет
+                </Link>
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={handleLogout}
+                className="rounded-full text-stone-400 hover:text-red-500"
+                title="Выйти"
+              >
+                <LogOut className="size-4" />
+              </Button>
+            </>
+          ) : (
+            <Button
+              asChild
+              variant="outline"
+              className="gap-2 rounded-full border-[#D4849A] text-[#D4849A] hover:bg-[#FAF0F3] hover:text-[#C4728A] hover:border-[#C4728A]"
+            >
+              <Link href="/login">
+                <UserCircle className="size-4" />
+                Войти
+              </Link>
+            </Button>
+          )}
           <Button asChild className="gap-2 bg-[#D4849A] hover:bg-[#C4728A] text-white rounded-full">
             <Link href="/donate">
               <Heart className="size-4" />
@@ -185,17 +230,42 @@ export function Header() {
                 )}
               </nav>
               <div className="mt-auto border-t p-4 flex flex-col gap-2">
-                <Button
-                  asChild
-                  variant="outline"
-                  className="w-full gap-2 rounded-full border-[#D4849A] text-[#D4849A] hover:bg-[#FAF0F3] hover:text-[#C4728A] hover:border-[#C4728A]"
-                  size="lg"
-                >
-                  <Link href="/login" onClick={() => setIsOpen(false)}>
-                    <UserCircle className="size-4" />
-                    Войти / Личный кабинет
-                  </Link>
-                </Button>
+                {user ? (
+                  <>
+                    <Button
+                      asChild
+                      variant="outline"
+                      className="w-full gap-2 rounded-full border-[#D4849A] text-[#D4849A] hover:bg-[#FAF0F3] hover:text-[#C4728A] hover:border-[#C4728A]"
+                      size="lg"
+                    >
+                      <Link href="/profile" onClick={() => setIsOpen(false)}>
+                        <UserCircle className="size-4" />
+                        Личный кабинет
+                      </Link>
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="lg"
+                      onClick={() => { setIsOpen(false); handleLogout() }}
+                      className="w-full gap-2 rounded-full text-stone-500 hover:text-red-500"
+                    >
+                      <LogOut className="size-4" />
+                      Выйти
+                    </Button>
+                  </>
+                ) : (
+                  <Button
+                    asChild
+                    variant="outline"
+                    className="w-full gap-2 rounded-full border-[#D4849A] text-[#D4849A] hover:bg-[#FAF0F3] hover:text-[#C4728A] hover:border-[#C4728A]"
+                    size="lg"
+                  >
+                    <Link href="/login" onClick={() => setIsOpen(false)}>
+                      <UserCircle className="size-4" />
+                      Войти / Зарегистрироваться
+                    </Link>
+                  </Button>
+                )}
                 <Button asChild className="w-full gap-2 bg-[#D4849A] hover:bg-[#C4728A] text-white rounded-full" size="lg">
                   <Link href="/donate" onClick={() => setIsOpen(false)}>
                     <Heart className="size-4" />
