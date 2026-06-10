@@ -119,7 +119,17 @@ export function Header() {
 
         {/* Войти / Кабинет + кнопка "Помочь сейчас" - десктоп */}
         <div className="hidden lg:flex items-center gap-2">
-          {user === undefined ? null : user ? (
+          {/* Пока сессия не проверена — невидимая заглушка нужного размера */}
+          {user === undefined ? (
+            <Button
+              variant="outline"
+              className="gap-2 rounded-full border-[#D4849A] text-[#D4849A] invisible pointer-events-none"
+              tabIndex={-1}
+            >
+              <UserCircle className="size-4" />
+              Войти
+            </Button>
+          ) : user ? (
             <>
               <Button
                 asChild
