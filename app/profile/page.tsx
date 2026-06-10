@@ -16,12 +16,14 @@ import {
   PawPrint,
   CheckCircle2,
   Circle,
+  ArrowRight,
 } from "lucide-react"
 
 type Tab = "requests" | "donations" | "checklist"
 
 type AdoptionRequest = {
   id: number
+  animal_id: number | null
   animal_name: string | null
   type: string
   created_at: string
@@ -66,10 +68,20 @@ function StatusBadge({ statusId, status }: { statusId: number; status: string })
   )
 }
 
+function getInitials(name: string | null, email: string | null | undefined): string {
+  if (name) {
+    const parts = name.trim().split(/\s+/)
+    if (parts.length >= 2) return (parts[0][0] + parts[1][0]).toUpperCase()
+    return parts[0][0].toUpperCase()
+  }
+  return email?.[0]?.toUpperCase() ?? "?"
+}
+
 export default function ProfilePage() {
   const router = useRouter()
   const [user, setUser] = useState<User | null>(null)
   const [authLoading, setAuthLoading] = useState(true)
+  const [profileName, setProfileName] = useState<string | null>(null)
   const [tab, setTab] = useState<Tab>("requests")
 
   const [requests, setRequests] = useState<AdoptionRequest[]>([])
@@ -99,10 +111,11 @@ export default function ProfilePage() {
 
       const headers = { Authorization: `Bearer ${token}` }
 
-      const [reqRes, donRes, chkRes] = await Promise.all([
+      const [reqRes, donRes, chkRes, meRes] = await Promise.all([
         fetch("/api/profile/requests", { headers }),
         fetch("/api/profile/donations", { headers }),
         fetch("/api/profile/checklist", { headers }),
+        fetch("/api/profile/me", { headers }),
       ])
 
       if (reqRes.ok) {
@@ -119,6 +132,10 @@ export default function ProfilePage() {
         const data = await chkRes.json()
         setChecklist(data.checklist ?? [])
       }
+      if (meRes.ok) {
+        const data = await meRes.json()
+        setProfileName(data.full_name ?? null)
+      }
     } finally {
       setDataLoading(false)
     }
@@ -133,7 +150,6 @@ export default function ProfilePage() {
     const token = sessionData.session?.access_token
     if (!token) return
 
-    // Оптимистичное обновление
     setChecklist((prev) =>
       prev.map((i) => (i.id === item.id ? { ...i, completed: !i.completed } : i))
     )
@@ -148,7 +164,6 @@ export default function ProfilePage() {
     })
 
     if (!res.ok) {
-      // Откат при ошибке
       setChecklist((prev) =>
         prev.map((i) => (i.id === item.id ? { ...i, completed: item.completed } : i))
       )
@@ -177,15 +192,23 @@ export default function ProfilePage() {
     { key: "checklist", label: "Чек-лист подготовки", icon: CheckSquare },
   ]
 
+  const displayName = profileName || user?.email?.split("@")[0] || "Пользователь"
+  const initials = getInitials(profileName, user?.email)
+
   return (
     <>
       <Header />
-      <main className="container mx-auto max-w-3xl px-4 py-10 flex flex-col gap-8">
+      <main className="container mx-auto max-w-5xl px-4 py-10 flex flex-col gap-8">
         {/* Шапка профиля */}
-        <div className="flex items-center justify-between flex-wrap gap-4">
-          <div>
-            <h1 className="text-2xl font-bold text-stone-800">Личный кабинет</h1>
-            <p className="text-sm text-stone-400 mt-0.5">{user?.email}</p>
+        <div className="rounded-2xl bg-white border border-stone-100 shadow-sm p-6 flex items-center justify-between gap-4 flex-wrap">
+          <div className="flex items-center gap-5">
+            <div className="size-16 rounded-full bg-[#FAF0F3] flex items-center justify-center shrink-0">
+              <span className="text-2xl font-bold text-[#D4849A]">{initials}</span>
+            </div>
+            <div className="flex flex-col gap-0.5">
+              <h1 className="text-2xl font-bold text-stone-800 leading-tight">{displayName}</h1>
+              <p className="text-sm text-stone-400">{user?.email}</p>
+            </div>
           </div>
           <Button
             variant="outline"
@@ -241,18 +264,43 @@ export default function ProfilePage() {
                   <div className="divide-y divide-stone-50">
                     {requests.map((r) => (
                       <div key={r.id} className="flex items-center justify-between gap-4 px-5 py-4">
-                        <div className="flex flex-col gap-0.5 min-w-0">
+                        <div className="flex flex-col gap-1.5 min-w-0">
                           <div className="flex items-center gap-2 flex-wrap">
-                            <span className="font-semibold text-stone-800 truncate">
-                              {r.animal_name ?? "Животное не указано"}
-                            </span>
-                            <span className="text-xs text-stone-400 shrink-0">
+                            <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
+                              r.type === "guardian"
+                                ? "bg-purple-100 text-purple-700"
+                                : "bg-rose-100 text-rose-700"
+                            }`}>
                               {r.type === "guardian" ? "Опекунство" : "Забрать домой"}
                             </span>
+                            <StatusBadge statusId={r.status_id} status={r.status} />
+                          </div>
+                          <div className="flex items-center gap-1.5">
+                            <PawPrint className="size-3.5 text-stone-300 shrink-0" />
+                            {r.animal_id ? (
+                              <Link
+                                href={`/pets/${r.animal_id}`}
+                                className="font-semibold text-stone-800 hover:text-[#D4849A] transition-colors truncate"
+                              >
+                                {r.animal_name ?? "Животное не указано"}
+                              </Link>
+                            ) : (
+                              <span className="font-semibold text-stone-800 truncate">
+                                {r.animal_name ?? "Животное не указано"}
+                              </span>
+                            )}
                           </div>
                           <span className="text-xs text-stone-400">{formatDate(r.created_at)}</span>
                         </div>
-                        <StatusBadge statusId={r.status_id} status={r.status} />
+                        {r.animal_id && (
+                          <Link
+                            href={`/pets/${r.animal_id}`}
+                            className="shrink-0 flex items-center gap-1 text-xs text-[#D4849A] hover:underline"
+                          >
+                            Страница питомца
+                            <ArrowRight className="size-3" />
+                          </Link>
+                        )}
                       </div>
                     ))}
                   </div>
@@ -360,7 +408,6 @@ export default function ProfilePage() {
                       </div>
                     </div>
 
-                    {/* Прогресс */}
                     <div className="rounded-2xl bg-white border border-stone-100 shadow-sm px-5 py-4 flex flex-col gap-2">
                       <div className="flex items-center justify-between text-sm">
                         <span className="text-stone-600">Готовность</span>

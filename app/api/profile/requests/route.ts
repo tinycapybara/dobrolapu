@@ -10,7 +10,7 @@ export async function GET(req: Request) {
 
   const { data, error: dbError } = await supabaseAdmin
     .from("adoption_requests")
-    .select("id, animal_name, type, created_at, status_id, request_statuses(status)")
+    .select("id, animal_id, animal_name, type, created_at, status_id, request_statuses(status)")
     .eq("user_id", user.id)
     .order("created_at", { ascending: false })
 
@@ -21,6 +21,7 @@ export async function GET(req: Request) {
 
   const requests = (data ?? []).map((r) => ({
     id: r.id,
+    animal_id: r.animal_id,
     animal_name: r.animal_name,
     type: r.type,
     created_at: r.created_at,
