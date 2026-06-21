@@ -44,43 +44,39 @@ export default async function ReportsPage() {
               <p className="text-stone-400 text-sm mt-1">Заходите позже</p>
             </div>
           ) : (
-            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="flex flex-col gap-3">
               {reports.map((r) => (
-                <article key={r.id} className="rounded-2xl bg-white border border-stone-100 shadow-sm p-5 flex flex-col gap-3">
-                  <div className="flex items-start justify-between gap-2">
-                    <div className="size-10 rounded-xl bg-[#FAF0F3] flex items-center justify-center shrink-0">
-                      <FileText className="size-5 text-[#D4849A]" />
-                    </div>
-                    {r.document_url && (
-                      <a
-                        href={r.document_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        title="Открыть документ"
-                        className="flex items-center gap-1 rounded-lg border border-stone-200 px-2.5 py-1.5 text-xs text-stone-500 hover:border-[#D4849A] hover:text-[#D4849A] transition-colors shrink-0"
-                      >
-                        <ExternalLink className="size-3" />
-                        Документ
-                      </a>
-                    )}
+                <article key={r.id} className="rounded-2xl bg-white border border-stone-100 shadow-sm px-5 py-4 flex gap-4 items-start">
+                  <div className="size-10 rounded-xl bg-[#FAF0F3] flex items-center justify-center shrink-0 mt-0.5">
+                    <FileText className="size-5 text-[#D4849A]" />
                   </div>
 
-                  <div className="flex-1">
-                    <h2 className="font-semibold text-stone-800 leading-snug">{r.title}</h2>
-                    <div className="flex flex-wrap gap-x-3 gap-y-0.5 mt-1.5">
-                      {r.period && (
-                        <span className="text-xs text-stone-400">{r.period}</span>
-                      )}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex flex-wrap items-baseline gap-x-3 gap-y-0.5">
+                      <h2 className="font-semibold text-stone-800">{r.title}</h2>
+                      {r.period && <span className="text-sm text-stone-400">{r.period}</span>}
                       {r.amount !== null && (
-                        <span className="text-xs font-semibold text-[#D4849A]">{formatAmount(r.amount)}</span>
+                        <span className="text-sm font-semibold text-[#D4849A]">{formatAmount(r.amount)}</span>
                       )}
                     </div>
                     {r.description && (
-                      <p className="mt-2.5 text-sm text-stone-500 leading-relaxed line-clamp-4 whitespace-pre-line">
+                      <p className="mt-1.5 text-sm text-stone-500 leading-relaxed whitespace-pre-line">
                         {r.description}
                       </p>
                     )}
                   </div>
+
+                  {r.document_url && (
+                    <a
+                      href={r.document_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="shrink-0 flex items-center gap-1.5 rounded-lg border border-stone-200 px-3 py-1.5 text-xs text-stone-500 hover:border-[#D4849A] hover:text-[#D4849A] transition-colors mt-0.5"
+                    >
+                      <ExternalLink className="size-3" />
+                      Документ
+                    </a>
+                  )}
                 </article>
               ))}
             </div>
