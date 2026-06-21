@@ -1,5 +1,7 @@
 import { supabaseAdmin } from "@/lib/supabase-admin"
 import { FileText, ExternalLink } from "lucide-react"
+import { Header } from "@/components/ui/header"
+import { Footer } from "@/components/ui/footer"
 
 export const dynamic = "force-dynamic"
 
@@ -21,7 +23,9 @@ export default async function ReportsPage() {
     .order("created_at", { ascending: false })
 
   return (
-    <main className="min-h-screen bg-stone-50 py-12 px-4">
+    <>
+      <Header />
+      <main className="min-h-screen bg-stone-50 py-12 px-4">
       <div className="container mx-auto max-w-3xl">
         <div className="mb-10">
           <h1 className="text-3xl font-bold text-stone-800">Отчёты о расходах</h1>
@@ -72,5 +76,7 @@ export default async function ReportsPage() {
         )}
       </div>
     </main>
+      <Footer />
+    </>
   )
 }
