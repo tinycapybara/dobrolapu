@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Heart, PawPrint, Pill, Home, Loader2 } from "lucide-react"
+import { supabase } from "@/lib/supabase"
 
 const PRESETS = [200, 500, 1000, 2000]
 
@@ -72,9 +73,15 @@ export function DonateForm({ recentDonations, treatmentId, treatmentLabel }: Don
     setIsSubmitting(true)
     setServerError(null)
     try {
+      const { data: sessionData } = await supabase.auth.getSession()
+      const token = sessionData.session?.access_token ?? null
+
       const res = await fetch("/api/robokassa", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
         body: JSON.stringify({
           amount: numAmount,
           donor_name: donorName.trim() || null,

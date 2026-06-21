@@ -16,7 +16,7 @@ type AnimalPayload = {
   description: string | null
 }
 
-export async function createAnimal(payload: AnimalPayload) {
+export async function createAnimal(payload: AnimalPayload): Promise<number> {
   const { data, error } = await supabaseAdmin
     .from("animals")
     .insert(payload)
@@ -26,7 +26,7 @@ export async function createAnimal(payload: AnimalPayload) {
   if (error) throw new Error(error.message)
 
   revalidatePath("/admin/animals")
-  redirect(`/admin/animals/${data.id}`)
+  return data.id
 }
 
 export async function updateAnimal(id: number, payload: AnimalPayload) {

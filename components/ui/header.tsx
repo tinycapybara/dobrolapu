@@ -121,7 +121,7 @@ export function Header() {
         <div className="hidden lg:flex items-center gap-2">
           {/* Фиксированная ширина — кнопка не прыгает при смене состояния */}
           <div className="w-[200px] flex justify-end items-center gap-1">
-          {user === undefined ? null : user ? (
+          {user ? (
             <>
               <Button
                 asChild
@@ -231,7 +231,7 @@ export function Header() {
                 )}
               </nav>
               <div className="mt-auto border-t p-4 flex flex-col gap-2">
-                {user === undefined ? null : user ? (
+                {user ? (
                   <>
                     <Button
                       asChild

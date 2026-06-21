@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useTransition } from "react"
+import { useRouter } from "next/navigation"
 import { Loader2, Save } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -69,6 +70,7 @@ export function AnimalForm({
   statuses: LookupItem[]
   guardianships: LookupItem[]
 }) {
+  const router = useRouter()
   const [isPending, startTransition] = useTransition()
   const [error, setError] = useState<string | null>(null)
   const [saved, setSaved] = useState(false)
@@ -111,7 +113,8 @@ export function AnimalForm({
           await updateAnimal(animal.id, payload)
           setSaved(true)
         } else {
-          await createAnimal(payload)
+          const newId = await createAnimal(payload)
+          router.push(`/admin/animals/${newId}`)
         }
       } catch (err) {
         setError(String(err).replace("Error: ", ""))

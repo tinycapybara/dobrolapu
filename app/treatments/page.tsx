@@ -6,6 +6,8 @@ import { Header } from "@/components/ui/header"
 import { Footer } from "@/components/ui/footer"
 import { TreatmentCard } from "@/app/home-carousels"
 
+export const dynamic = "force-dynamic"
+
 export const metadata = {
   title: "Срочные сборы | Добрые лапки",
   description: "Животные, которым нужна помощь прямо сейчас",

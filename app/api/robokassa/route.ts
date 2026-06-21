@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server"
 import crypto from "crypto"
+import { supabase } from "@/lib/supabase"
 import { supabaseAdmin } from "@/lib/supabase-admin"
 
 // ── Нормализация текста ───────────────────────────────────────────────────────
@@ -40,6 +41,15 @@ export async function POST(req: Request) {
       { error: "Слишком много запросов. Попробуйте через минуту." },
       { status: 429 }
     )
+  }
+
+  // Получаем user_id из токена авторизации (если пользователь залогинен)
+  const authHeader = req.headers.get("Authorization")
+  let userId: string | null = null
+  if (authHeader?.startsWith("Bearer ")) {
+    const token = authHeader.slice(7)
+    const { data: { user } } = await supabase.auth.getUser(token)
+    userId = user?.id ?? null
   }
 
   const raw = await req.json()
@@ -88,6 +98,7 @@ export async function POST(req: Request) {
     comment: comment || null,
     status: "pending",
     treatment_id: treatment_id,
+    user_id: userId,
   })
 
   if (error) {

@@ -2,6 +2,8 @@ import Link from "next/link"
 import { supabaseAdmin } from "@/lib/supabase-admin"
 import { PawPrint, Pill, ClipboardList, Users, Heart, ArrowRight } from "lucide-react"
 
+export const dynamic = "force-dynamic"
+
 async function getStats() {
   const [
     { count: animals },
