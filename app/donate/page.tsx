@@ -1,6 +1,7 @@
 export const dynamic = "force-dynamic"
 
-import { Heart } from "lucide-react"
+import Link from "next/link"
+import { Heart, FileText } from "lucide-react"
 import { supabaseAdmin } from "@/lib/supabase-admin"
 import { Header } from "@/components/ui/header"
 import { Footer } from "@/components/ui/footer"
@@ -58,6 +59,13 @@ export default async function DonatePage({ searchParams }: Props) {
             <p className="mt-2 text-stone-500 max-w-md mx-auto">
               Любая сумма помогает нашим питомцам получить заботу, лечение и шанс найти дом
             </p>
+            <Link
+              href="/reports"
+              className="inline-flex items-center gap-1.5 mt-4 text-sm text-[#D4849A] hover:text-[#C4728A] hover:underline underline-offset-2 transition-colors"
+            >
+              <FileText className="size-4" />
+              Смотреть отчёты о расходовании средств
+            </Link>
           </div>
 
           <DonateForm
