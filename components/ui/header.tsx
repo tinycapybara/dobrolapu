@@ -76,7 +76,7 @@ export function Header() {
         </Link>
 
         {/* Десктопная навигация */}
-        <nav className="hidden items-center gap-1 lg:flex">
+        <nav className="hidden items-center gap-1 xl:flex">
           {navItems.map((item) => (
             <Link
               key={item.href}
@@ -118,7 +118,7 @@ export function Header() {
         </nav>
 
         {/* Войти / Кабинет + кнопка "Помочь сейчас" - десктоп */}
-        <div className="hidden lg:flex items-center gap-2">
+        <div className="hidden xl:flex items-center gap-2">
           {user ? (
             <>
               <Button
@@ -163,7 +163,7 @@ export function Header() {
 
         {/* Мобильное меню */}
         <Sheet open={isOpen} onOpenChange={setIsOpen}>
-          <SheetTrigger asChild className="lg:hidden">
+          <SheetTrigger asChild className="xl:hidden">
             <Button variant="ghost" size="icon">
               <Menu className="size-5" />
               <span className="sr-only">Открыть меню</span>
