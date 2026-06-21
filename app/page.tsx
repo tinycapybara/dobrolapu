@@ -45,6 +45,7 @@ async function getPageData() {
       .from("treatments")
       .select("id, disease, description, goal_amount, animals!animal_id(id, name, animal_photos(photo_url, is_main))")
       .eq("is_active", true)
+      .order("created_at", { ascending: false })
       .limit(6),
     supabase
       .from("animals")
@@ -95,6 +96,8 @@ async function getPageData() {
     foundHomeAnimals: (fh.data ?? []) as unknown as SimpleAnimal[],
   }
 }
+
+export const dynamic = "force-dynamic"
 
 export const metadata = {
   title: "Добрые лапки — Городской приют для животных",
