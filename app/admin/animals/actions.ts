@@ -74,13 +74,16 @@ export async function setMainPhoto(photoId: number, animalId: number) {
 export async function markFoundHome(animalId: number) {
   const { error } = await supabaseAdmin
     .from("animals")
-    .update({ adopted_at: new Date().toISOString() })
+    .update({ status_id: 2, adopted_at: new Date().toISOString() })
     .eq("id", animalId)
 
   if (error) throw new Error(error.message)
 
   revalidatePath("/admin/animals")
+  revalidatePath(`/admin/animals/${animalId}`)
+  revalidatePath("/pets")
   revalidatePath(`/pets/${animalId}`)
+  revalidatePath("/adopted")
 }
 
 export async function deleteAnimal(animalId: number) {
