@@ -119,8 +119,6 @@ export function Header() {
 
         {/* Войти / Кабинет + кнопка "Помочь сейчас" - десктоп */}
         <div className="hidden lg:flex items-center gap-2">
-          {/* Фиксированная ширина — кнопка не прыгает при смене состояния */}
-          <div className="w-[200px] flex justify-end items-center gap-1">
           {user ? (
             <>
               <Button
@@ -155,7 +153,6 @@ export function Header() {
               </Link>
             </Button>
           )}
-          </div>
           <Button asChild className="gap-2 bg-[#D4849A] hover:bg-[#C4728A] text-white rounded-full">
             <Link href="/donate">
               <Heart className="size-4" />
