@@ -28,7 +28,7 @@ export function Footer() {
               </div>
               <span className="text-xl font-bold">Добрые лапки</span>
             </Link>
-            <p className="text-sm text-stone-400 max-w-xs">
+            <p className="text-sm text-white/60 max-w-xs">
               Городской приют для кошек и собак. Помогаем найти дом с 2018 года.
             </p>
           </div>
@@ -38,7 +38,7 @@ export function Footer() {
               <Link
                 key={link.href}
                 href={link.href}
-                className="text-sm text-stone-400 hover:text-white transition-colors"
+                className="text-sm text-white/70 hover:text-white transition-colors"
               >
                 {link.label}
               </Link>
@@ -46,8 +46,8 @@ export function Footer() {
           </nav>
         </div>
 
-        <div className="mt-8 pt-6 border-t border-[#6B2038] flex flex-col sm:flex-row items-center justify-between gap-3">
-          <p className="text-sm text-stone-500">
+        <div className="mt-8 pt-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3">
+          <p className="text-sm text-white/50">
             © {new Date().getFullYear()} Добрые лапки. Все права защищены.
           </p>
           <div className="flex flex-wrap gap-x-6 gap-y-1">
@@ -55,7 +55,7 @@ export function Footer() {
               <Link
                 key={link.href}
                 href={link.href}
-                className="text-xs text-stone-500 hover:text-stone-300 transition-colors underline underline-offset-2"
+                className="text-xs text-white/50 hover:text-white/80 transition-colors underline underline-offset-2"
               >
                 {link.label}
               </Link>
