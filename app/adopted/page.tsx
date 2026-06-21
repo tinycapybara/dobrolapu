@@ -54,7 +54,7 @@ export default async function AdoptedPage() {
             <h1 className="text-3xl lg:text-4xl font-bold text-stone-800">Уже нашли дом</h1>
             <p className="mt-2 text-stone-500 max-w-md mx-auto">
               {animals.length > 0
-                ? `${animals.length} ${plural(animals.length)} обрели любящих хозяев — и ты можешь стать чьим-то!`
+                ? `${animals.length} питомцев обрели семью — подари дом ещё одному`
                 : "Истории питомцев, которые нашли свою семью"}
             </p>
           </div>
