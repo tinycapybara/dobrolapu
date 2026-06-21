@@ -26,21 +26,17 @@ export default async function ReportsPage() {
     <div className="min-h-screen bg-[#FDF8F9] flex flex-col">
       <Header />
 
-      {/* Hero */}
-      <section className="bg-gradient-to-br from-[#FDF8F3] via-[#FAF0F3] to-[#FAE8DC] py-14 px-4">
-        <div className="container mx-auto max-w-5xl text-center">
-          <div className="inline-flex size-14 items-center justify-center rounded-full bg-white/60 mb-5">
-            <FileText className="size-7 text-[#D4849A]" />
-          </div>
-          <h1 className="text-3xl lg:text-4xl font-bold text-stone-800">Отчёты о расходах</h1>
-          <p className="mt-3 text-stone-500 text-lg max-w-xl mx-auto leading-relaxed">
-            Рассказываем, на что идут ваши пожертвования — прозрачно и подробно
-          </p>
-        </div>
-      </section>
-
       <main className="flex-1 py-12 px-4">
         <div className="container mx-auto max-w-5xl">
+          <div className="mb-10 text-center">
+            <div className="inline-flex size-14 items-center justify-center rounded-full bg-[#FAF0F3] mb-4">
+              <FileText className="size-7 text-[#D4849A]" />
+            </div>
+            <h1 className="text-3xl lg:text-4xl font-bold text-stone-800">Отчёты о расходах</h1>
+            <p className="mt-2 text-stone-500 max-w-md mx-auto">
+              Рассказываем, на что идут ваши пожертвования
+            </p>
+          </div>
           {!reports || reports.length === 0 ? (
             <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-stone-200 bg-white py-24 text-center">
               <FileText className="size-12 text-stone-300 mb-4" />
