@@ -23,8 +23,10 @@ export function Footer() {
         <div className="flex flex-col sm:flex-row items-start justify-between gap-10">
           <div className="flex flex-col gap-3">
             <Link href="/" className="flex items-center gap-2 text-white">
-              <PawPrint className="size-6 text-[#D4849A]" />
-              <span className="text-lg font-bold">Добрые лапки</span>
+              <div className="flex size-9 items-center justify-center rounded-full bg-white/20">
+                <PawPrint className="size-5 text-white" />
+              </div>
+              <span className="text-xl font-bold">Добрые лапки</span>
             </Link>
             <p className="text-sm text-stone-400 max-w-xs">
               Городской приют для кошек и собак. Помогаем найти дом с 2018 года.
