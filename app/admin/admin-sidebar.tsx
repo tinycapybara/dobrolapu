@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
-import { PawPrint, ClipboardList, Users, Heart, LogOut, Pill, LayoutDashboard } from "lucide-react"
+import { PawPrint, ClipboardList, Users, Heart, LogOut, Pill, LayoutDashboard, FileText } from "lucide-react"
 
 const navItems = [
   { href: "/admin", label: "Обзор", icon: LayoutDashboard },
@@ -11,6 +11,7 @@ const navItems = [
   { href: "/admin/requests", label: "Заявки", icon: ClipboardList },
   { href: "/admin/volunteers", label: "Волонтёры", icon: Users },
   { href: "/admin/donations", label: "Пожертвования", icon: Heart },
+  { href: "/admin/reports", label: "Отчёты", icon: FileText },
 ]
 
 export function AdminSidebar() {

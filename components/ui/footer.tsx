@@ -8,6 +8,7 @@ const navLinks = [
   { href: "/about", label: "О приюте" },
   { href: "/donate", label: "Помочь" },
   { href: "/contacts", label: "Контакты" },
+  { href: "/reports", label: "Отчёты" },
 ]
 
 const legalLinks = [
