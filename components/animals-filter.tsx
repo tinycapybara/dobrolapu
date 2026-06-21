@@ -30,11 +30,10 @@ type AnimalsFilterProps = {
 
 const ageOptions = [
   { value: "all", label: "Любой возраст" },
-  { value: "0-6", label: "До 6 месяцев" },
-  { value: "6-12", label: "6-12 месяцев" },
-  { value: "12-36", label: "1-3 года" },
-  { value: "36-84", label: "3-7 лет" },
-  { value: "84+", label: "Старше 7 лет" },
+  { value: "0-12", label: "До года" },
+  { value: "13-36", label: "1–3 года" },
+  { value: "37-84", label: "3–7 лет" },
+  { value: "85+", label: "Старше 7 лет" },
 ]
 
 const sizeOptions = [

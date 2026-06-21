@@ -21,8 +21,7 @@ const defaultFilters: FilterValues = {
 
 function parseAgeRange(ageValue: string): { min: number; max: number } | null {
   if (ageValue === "all") return null
-  if (ageValue === "84+") return { min: 84, max: Infinity }
-  
+  if (ageValue.endsWith("+")) return { min: Number(ageValue.slice(0, -1)), max: Infinity }
   const [min, max] = ageValue.split("-").map(Number)
   return { min, max }
 }
@@ -32,11 +31,13 @@ export function AnimalsGrid({
   sickAnimalIds,
   initialFilters,
   fromQuiz,
+  isSpecial,
 }: {
   animals: Animal[]
   sickAnimalIds: number[]
   initialFilters?: Partial<FilterValues>
   fromQuiz?: boolean
+  isSpecial?: boolean
 }) {
   const [filters, setFilters] = useState<FilterValues>({ ...defaultFilters, ...initialFilters })
   const [quizBannerDismissed, setQuizBannerDismissed] = useState(false)
@@ -46,6 +47,13 @@ export function AnimalsGrid({
   // Фильтрация животных
   const filteredAnimals = useMemo(() => {
     return animals.filter((animal) => {
+      // Спецрежим «особенно нужен»: пожилые (≥85 мес) ИЛИ болеющие
+      if (isSpecial) {
+        const isOld = animal.age !== null && animal.age >= 85
+        const isSick = sickAnimalIds.includes(animal.id)
+        return isOld || isSick
+      }
+
       // Поиск по кличке
       if (filters.search && !animal.name.toLowerCase().includes(filters.search.toLowerCase())) {
         return false
@@ -89,7 +97,7 @@ export function AnimalsGrid({
 
       return true
     })
-  }, [animals, filters])
+  }, [animals, filters, isSpecial, sickAnimalIds])
 
   // Видимые животные
   const visibleAnimals = filteredAnimals.slice(0, visibleCount)

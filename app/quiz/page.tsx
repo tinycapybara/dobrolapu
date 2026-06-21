@@ -84,8 +84,10 @@ function buildUrl(answers: Answers): string {
   const params = new URLSearchParams()
   params.set("quiz", "1")
 
-  // При "особенно нужен" — показываем всех, без фильтра по типу
-  if (answers.goal !== "special") {
+  if (answers.goal === "special") {
+    // Спецрежим: показываем пожилых и болеющих
+    params.set("special", "1")
+  } else {
     // Q2 — главный сигнал (вес 3), Q5 и Q6 — дополнительные (вес 1)
     let catScore = 0
     let dogScore = 0
@@ -100,18 +102,20 @@ function buildUrl(answers: Answers): string {
     else if (dogScore > catScore) params.set("type", "Собака")
   }
 
-  // Размер из вопроса 1
-  if (answers.home === "small") params.set("size", "small")
+  // Размер из вопроса 1 (только вне спецрежима)
+  if (answers.goal !== "special" && answers.home === "small") params.set("size", "small")
 
-  // Возраст: опыт перекрывает темперамент
-  if (answers.experience === "ready") {
-    params.set("age", "0-6")
-  } else if (answers.experience === "first") {
-    params.set("age", "36-84") // первый питомец → спокойный взрослый
-  } else if (answers.energy === "calm") {
-    params.set("age", "36-84")
-  } else if (answers.energy === "active") {
-    params.set("age", "12-36")
+  // Возраст: опыт перекрывает темперамент; только вне спецрежима
+  if (answers.goal !== "special") {
+    if (answers.experience === "ready") {
+      params.set("age", "0-12")
+    } else if (answers.experience === "first") {
+      params.set("age", "37-84")
+    } else if (answers.energy === "calm") {
+      params.set("age", "37-84")
+    } else if (answers.energy === "active") {
+      params.set("age", "13-36")
+    }
   }
 
   return `/pets?${params.toString()}`
@@ -312,10 +316,10 @@ export default function QuizPage() {
                     </div>
                     <div className="flex flex-col gap-1.5">
                       <p className="font-semibold text-stone-800 text-sm">
-                        Мы покажем всех — и тех, кто давно ждёт дом
+                        Показываем тех, кому труднее всего найти дом
                       </p>
                       <p className="text-xs text-stone-500 leading-relaxed">
-                        Ты сказал(а), что хочешь помочь тому, кому труднее всего. Мы не применяем фильтр по типу — пусть сам питомец выберет тебя.
+                        Пожилые питомцы (старше 7 лет) и те, кто сейчас проходит лечение — они ждут дольше всех и нуждаются в особой заботе.
                       </p>
                       <Link
                         href="/treatments"

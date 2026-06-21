@@ -19,6 +19,7 @@ type SearchParams = Promise<{
   age?: string
   health?: string
   quiz?: string
+  special?: string
 }>
 
 async function getAnimals(): Promise<Animal[]> {
@@ -59,6 +60,7 @@ async function getSickAnimalIds(): Promise<number[]> {
 export default async function PetsPage({ searchParams }: { searchParams?: SearchParams }) {
   const sp = searchParams ? await searchParams : {}
   const fromQuiz = sp.quiz === "1"
+  const isSpecial = sp.special === "1"
 
   const initialFilters: Partial<FilterValues> = {}
   if (sp.type) initialFilters.type = sp.type
@@ -109,6 +111,7 @@ export default async function PetsPage({ searchParams }: { searchParams?: Search
             sickAnimalIds={sickAnimalIds}
             initialFilters={initialFilters}
             fromQuiz={fromQuiz}
+            isSpecial={isSpecial}
           />
         </div>
       </main>
