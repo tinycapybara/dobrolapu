@@ -161,7 +161,7 @@ export function FoundHomeCard({ animal }: { animal: SimpleAnimal }) {
   const photo = photos.find((p) => p.is_main) ?? photos[0] ?? null
 
   return (
-    <div className="group flex flex-col gap-2">
+    <Link href={`/pets/${animal.id}`} className="group flex flex-col gap-2">
       <div className="relative aspect-square rounded-2xl overflow-hidden bg-stone-100">
         {photo ? (
           <Image
@@ -178,7 +178,7 @@ export function FoundHomeCard({ animal }: { animal: SimpleAnimal }) {
         )}
       </div>
       <div>
-        <p className="text-base font-bold text-stone-800">{animal.name}</p>
+        <p className="text-base font-bold text-stone-800 group-hover:text-[#D4849A] transition-colors">{animal.name}</p>
         <p className="text-sm font-medium text-[#D4849A]">Забрали домой</p>
         {animal.adopted_at && (
           <p className="text-sm text-stone-500">
@@ -190,7 +190,7 @@ export function FoundHomeCard({ animal }: { animal: SimpleAnimal }) {
           </p>
         )}
       </div>
-    </div>
+    </Link>
   )
 }
 

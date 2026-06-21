@@ -215,7 +215,7 @@ export default async function AnimalPage({ params }: Props) {
               )}
 
               {/* Блок лечения */}
-              {treatment && (
+              {!isAdopted && treatment && (
                 <div className="rounded-2xl border border-[#D4849A]/20 bg-[#FAF0F3] p-5 flex flex-col gap-3">
                   <div className="flex items-center gap-2">
                     <Pill className="size-4 text-[#D4849A]" />
@@ -247,7 +247,7 @@ export default async function AnimalPage({ params }: Props) {
               )}
 
               {/* История болезней */}
-              {pastTreatments.length > 0 && (
+              {!isAdopted && pastTreatments.length > 0 && (
                 <div className="rounded-2xl bg-white border border-stone-100 shadow-sm p-5 flex flex-col gap-3">
                   <h2 className="text-sm font-semibold text-stone-400 uppercase tracking-widest">
                     История здоровья
@@ -268,7 +268,7 @@ export default async function AnimalPage({ params }: Props) {
               )}
 
               {/* Блок здоровья без истории болезней */}
-              {pastTreatments.length === 0 && !treatment && (
+              {!isAdopted && pastTreatments.length === 0 && !treatment && (
                 <div className="rounded-2xl bg-white border border-stone-100 shadow-sm p-5 flex flex-col gap-2">
                   <h2 className="text-sm font-semibold text-stone-400 uppercase tracking-widest mb-1">
                     История здоровья
