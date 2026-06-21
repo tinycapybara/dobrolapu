@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { AnimalCard, type Animal } from "@/components/animal-card"
 import { AnimalsFilter, type FilterValues } from "@/components/animals-filter"
 import { Button } from "@/components/ui/button"
@@ -39,6 +40,7 @@ export function AnimalsGrid({
   fromQuiz?: boolean
   isSpecial?: boolean
 }) {
+  const router = useRouter()
   const [filters, setFilters] = useState<FilterValues>({ ...defaultFilters, ...initialFilters })
   const [quizBannerDismissed, setQuizBannerDismissed] = useState(false)
   const [visibleCount, setVisibleCount] = useState(ITEMS_PER_PAGE)
@@ -135,8 +137,14 @@ export function AnimalsGrid({
               <PawPrint className="size-5 text-[#D4849A]" />
             </div>
             <div>
-              <p className="font-semibold text-stone-800 text-sm">Подбор по квизу</p>
-              <p className="text-xs text-stone-500">Показываем питомцев, которые подходят именно тебе. Фильтры можно скорректировать.</p>
+              <p className="font-semibold text-stone-800 text-sm">
+                {isSpecial ? "Особый подбор" : "Подбор по квизу"}
+              </p>
+              <p className="text-xs text-stone-500">
+                {isSpecial
+                  ? "Показываем пожилых питомцев и тех, кто сейчас на лечении. Нажмите × чтобы вернуться к обычному каталогу."
+                  : "Показываем питомцев, которые подходят именно тебе. Фильтры можно скорректировать."}
+              </p>
             </div>
           </div>
           <div className="flex items-center gap-3 shrink-0">
@@ -144,8 +152,9 @@ export function AnimalsGrid({
               Пройти заново
             </Link>
             <button
-              onClick={() => setQuizBannerDismissed(true)}
+              onClick={() => isSpecial ? router.push("/pets") : setQuizBannerDismissed(true)}
               className="text-stone-400 hover:text-stone-600 transition-colors"
+              title={isSpecial ? "Вернуться к обычному каталогу" : "Закрыть"}
             >
               <X className="size-4" />
             </button>

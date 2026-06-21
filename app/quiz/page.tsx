@@ -338,7 +338,7 @@ export default function QuizPage() {
                   className="w-full rounded-xl bg-[#D4849A] hover:bg-[#C4728A] text-white"
                 >
                   <PawPrint className="mr-2 size-5" />
-                  {isSpecial ? "Смотреть всех питомцев" : "Смотреть подходящих питомцев"}
+                  Смотреть подходящих питомцев
                 </Button>
 
                 <button
