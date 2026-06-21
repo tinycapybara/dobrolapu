@@ -31,6 +31,12 @@ async function getAdoptedAnimals(): Promise<AdoptedAnimal[]> {
   return (data ?? []) as unknown as AdoptedAnimal[]
 }
 
+function plural(n: number) {
+  if (n % 10 === 1 && n % 100 !== 11) return "питомец"
+  if (n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20)) return "питомца"
+  return "питомцев"
+}
+
 export default async function AdoptedPage() {
   const animals = await getAdoptedAnimals()
 
@@ -39,7 +45,7 @@ export default async function AdoptedPage() {
       <Header />
 
       <main className="flex-1 py-12 px-4">
-        <div className="container mx-auto max-w-6xl">
+        <div className="container mx-auto max-w-5xl">
 
           <div className="mb-10 text-center">
             <div className="inline-flex size-14 items-center justify-center rounded-full bg-[#FAF0F3] mb-4">
@@ -59,7 +65,7 @@ export default async function AdoptedPage() {
               <p className="text-stone-500 font-medium text-lg">Историй пока нет</p>
             </div>
           ) : (
-            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {animals.map((animal) => {
                 const photos = animal.animal_photos ?? []
                 const photo = photos.find((p) => p.is_main) ?? photos[0] ?? null
@@ -70,43 +76,47 @@ export default async function AdoptedPage() {
                     href={`/pets/${animal.id}`}
                     className="group flex flex-col rounded-2xl bg-white border border-stone-100 shadow-sm overflow-hidden hover:shadow-md transition-shadow"
                   >
-                    <div className="relative aspect-square overflow-hidden bg-stone-100">
+                    {/* Фото */}
+                    <div className="relative aspect-square overflow-hidden bg-stone-100 shrink-0">
                       {photo ? (
                         <Image
                           src={photo.photo_url}
                           alt={animal.name}
                           fill
                           className="object-cover group-hover:scale-105 transition-transform duration-300"
-                          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                         />
                       ) : (
                         <div className="flex size-full items-center justify-center">
                           <PawPrint className="size-10 text-stone-300" />
                         </div>
                       )}
-                      <div className="absolute top-3 left-3">
-                        <span className="inline-flex items-center gap-1 rounded-full bg-green-500 px-2.5 py-1 text-xs font-semibold text-white">
-                          <Home className="size-3" />
-                          Дома
-                        </span>
-                      </div>
                     </div>
 
-                    <div className="p-4 flex flex-col gap-1.5">
+                    {/* Контент */}
+                    <div className="p-4 flex flex-col gap-2">
                       <p className="text-base font-bold text-stone-800 group-hover:text-[#D4849A] transition-colors">
                         {animal.name}
                       </p>
-                      {animal.adopted_at && (
-                        <p className="text-xs text-stone-400">
-                          {new Date(animal.adopted_at).toLocaleDateString("ru-RU", {
-                            day: "numeric",
-                            month: "long",
-                            year: "numeric",
-                          })}
-                        </p>
-                      )}
+
+                      <div className="flex items-center gap-1.5 text-green-600">
+                        <Home className="size-3.5 shrink-0" />
+                        <span className="text-xs font-semibold">
+                          Забрали домой
+                          {animal.adopted_at && (
+                            <span className="font-normal text-stone-400 ml-1.5">
+                              {new Date(animal.adopted_at).toLocaleDateString("ru-RU", {
+                                day: "numeric",
+                                month: "long",
+                                year: "numeric",
+                              })}
+                            </span>
+                          )}
+                        </span>
+                      </div>
+
                       {animal.description && (
-                        <p className="text-sm text-stone-500 leading-relaxed line-clamp-3 mt-0.5">
+                        <p className="text-sm text-stone-500 leading-relaxed line-clamp-3">
                           {animal.description}
                         </p>
                       )}
@@ -123,10 +133,4 @@ export default async function AdoptedPage() {
       <Footer />
     </div>
   )
-}
-
-function plural(n: number) {
-  if (n % 10 === 1 && n % 100 !== 11) return "питомец"
-  if (n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20)) return "питомца"
-  return "питомцев"
 }

@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { AnimalGallery } from "./animal-gallery"
 import { AdoptionButtons } from "./adoption-request-modal"
-import { ArrowLeft, CheckCircle2, Heart, Pill } from "lucide-react"
+import { ArrowLeft, CheckCircle2, Heart, Pill, Home } from "lucide-react"
 
 type Treatment = {
   disease: string
@@ -22,6 +22,8 @@ type AnimalDetail = {
   breed: string | null
   age: number | null
   size: string
+  status_id: number | null
+  adopted_at: string | null
   description: string | null
   animal_photos: { photo_url: string; is_main: boolean }[]
   animal_types: { type: string } | null
@@ -89,7 +91,7 @@ export default async function AnimalPage({ params }: Props) {
     supabase
       .from("animals")
       .select(`
-        id, name, gender, breed, age, size, description,
+        id, name, gender, breed, age, size, status_id, adopted_at, description,
         animal_photos(photo_url, is_main),
         animal_types(type),
         animal_statuses(status),
@@ -116,6 +118,7 @@ export default async function AnimalPage({ params }: Props) {
   const treatment = treatmentData as Treatment | null
   const pastTreatments = (pastTreatmentsData ?? []) as { id: number; disease: string }[]
   const hasGuardian = animal.guardianship_statuses?.guardianship === "Есть опекун"
+  const isAdopted = animal.status_id === 2
 
   const characteristics = [
     { label: "Пол", value: animal.gender },
@@ -135,11 +138,28 @@ export default async function AnimalPage({ params }: Props) {
 
           {/* Навигация */}
           <Button asChild variant="ghost" className="mb-6 -ml-3 gap-2 text-stone-500 hover:text-stone-800">
-            <Link href="/pets">
+            <Link href={isAdopted ? "/adopted" : "/pets"}>
               <ArrowLeft className="size-4" />
-              Назад к списку
+              {isAdopted ? "Назад к историям" : "Назад к списку"}
             </Link>
           </Button>
+
+          {/* Баннер "уже дома" */}
+          {isAdopted && (
+            <div className="mb-6 flex items-center gap-3 rounded-2xl bg-green-50 border border-green-200 px-5 py-4">
+              <div className="size-10 rounded-xl bg-green-100 flex items-center justify-center shrink-0">
+                <Home className="size-5 text-green-600" />
+              </div>
+              <div>
+                <p className="font-semibold text-green-800">Это животное уже нашло дом!</p>
+                <p className="text-sm text-green-600">
+                  {animal.adopted_at
+                    ? `Забрали ${new Date(animal.adopted_at).toLocaleDateString("ru-RU", { day: "numeric", month: "long", year: "numeric" })}`
+                    : "Питомец живёт в любящей семье"}
+                </p>
+              </div>
+            </div>
+          )}
 
           <div className="grid gap-8 lg:grid-cols-[1fr_340px] items-start">
 
@@ -184,13 +204,13 @@ export default async function AnimalPage({ params }: Props) {
                 </dl>
               </div>
 
-              {/* Описание */}
+              {/* Описание / история */}
               {animal.description && (
                 <div className="rounded-2xl bg-white border border-stone-100 shadow-sm p-5">
                   <h2 className="text-sm font-semibold text-stone-400 uppercase tracking-widest mb-3">
-                    О животном
+                    {isAdopted ? "История усыновления" : "О животном"}
                   </h2>
-                  <p className="text-sm text-stone-600 leading-relaxed">{animal.description}</p>
+                  <p className="text-sm text-stone-600 leading-relaxed whitespace-pre-line">{animal.description}</p>
                 </div>
               )}
 
@@ -261,11 +281,20 @@ export default async function AnimalPage({ params }: Props) {
               )}
 
               {/* Кнопки действий */}
-              <AdoptionButtons
-                animalId={animal.id}
-                animalName={animal.name}
-                hasGuardian={hasGuardian}
-              />
+              {isAdopted ? (
+                <Button asChild variant="outline" size="lg" className="w-full rounded-xl border-stone-200 text-stone-500 hover:bg-stone-50">
+                  <Link href="/adopted">
+                    <Home className="mr-2 size-4" />
+                    Смотреть все истории
+                  </Link>
+                </Button>
+              ) : (
+                <AdoptionButtons
+                  animalId={animal.id}
+                  animalName={animal.name}
+                  hasGuardian={hasGuardian}
+                />
+              )}
 
             </div>
           </div>
