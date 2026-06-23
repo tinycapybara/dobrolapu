@@ -10,7 +10,7 @@ export async function GET(req: Request) {
 
   const { data, error: dbError } = await supabaseAdmin
     .from("donations")
-    .select("id, amount, comment, created_at, status, treatment_id, treatments(disease)")
+    .select("id, amount, comment, created_at, status, treatment_id, treatments(disease, animals!animal_id(name))")
     .eq("user_id", user.id)
     .order("created_at", { ascending: false })
 
@@ -25,7 +25,7 @@ export async function GET(req: Request) {
     comment: d.comment,
     created_at: d.created_at,
     status: d.status,
-    treatment_name: (d.treatments as unknown as { disease: string } | null)?.disease ?? null,
+    treatment_name: (d.treatments as unknown as { disease: string; animals: { name: string } | null } | null)?.animals?.name ?? null,
   }))
 
   const total = donations

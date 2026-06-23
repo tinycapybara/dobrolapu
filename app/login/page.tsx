@@ -7,7 +7,7 @@ import { supabase } from "@/lib/supabase"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { PawPrint, Eye, EyeOff, Loader2 } from "lucide-react"
+import { PawPrint, Eye, EyeOff, Loader2, ArrowLeft } from "lucide-react"
 
 export default function LoginPage() {
   const router = useRouter()
@@ -39,6 +39,13 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-stone-50 p-4">
       <div className="w-full max-w-md">
+        <Link
+          href="/"
+          className="inline-flex items-center gap-1.5 text-sm text-stone-400 hover:text-stone-600 transition-colors mb-6"
+        >
+          <ArrowLeft className="size-4" />
+          На главную
+        </Link>
         <div className="flex flex-col items-center gap-2 mb-8">
           <Link href="/" className="flex items-center gap-2">
             <div className="flex size-10 items-center justify-center rounded-full bg-[#D4849A]">
@@ -103,11 +110,6 @@ export default function LoginPage() {
             Ещё нет аккаунта?{" "}
             <Link href="/register" className="text-[#D4849A] hover:underline font-medium">
               Зарегистрироваться
-            </Link>
-          </p>
-          <p className="text-center text-sm mt-3">
-            <Link href="/" className="text-stone-400 hover:text-stone-600 hover:underline">
-              Вернуться на главную
             </Link>
           </p>
         </div>
