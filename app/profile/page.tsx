@@ -91,18 +91,6 @@ export default function ProfilePage() {
   const [hasApproved, setHasApproved] = useState(false)
   const [dataLoading, setDataLoading] = useState(false)
 
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (!session) {
-        router.push("/login")
-        return
-      }
-      setUser(session.user)
-      setAuthLoading(false)
-      fetchData(session.user, session.access_token)
-    })
-  }, [router, fetchData])
-
   const fetchData = useCallback(async (currentUser: User, token: string) => {
     setDataLoading(true)
     try {
@@ -137,6 +125,18 @@ export default function ProfilePage() {
       setDataLoading(false)
     }
   }, [])
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!session) {
+        router.push("/login")
+        return
+      }
+      setUser(session.user)
+      setAuthLoading(false)
+      fetchData(session.user, session.access_token)
+    })
+  }, [router, fetchData])
 
 
   async function toggleChecklist(item: ChecklistItem) {
