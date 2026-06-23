@@ -241,7 +241,7 @@ export default async function AnimalPage({ params }: Props) {
                   <Button asChild className="w-full bg-[#D4849A] hover:bg-[#C4728A] text-white rounded-xl">
                     <Link href={`/donate?for=${treatment.id}`}>
                       <Heart className="mr-2 size-4" />
-                      Помочь {animal.name}
+                      Помочь сейчас
                     </Link>
                   </Button>
                 </div>
