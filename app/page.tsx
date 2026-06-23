@@ -170,6 +170,7 @@ function HeroSection() {
                 src="/cat3.jpg"
                 alt="Кот в приюте"
                 fill
+                sizes="(max-width: 1023px) 0vw, 420px"
                 className="object-cover object-top"
                 priority
               />
