@@ -5,7 +5,22 @@ function normalizeText(s: string): string {
   return s.trim().replace(/\s+/g, " ")
 }
 
+const ipRequests = new Map<string, number[]>()
+
+function isRateLimited(ip: string): boolean {
+  const now = Date.now()
+  const timestamps = (ipRequests.get(ip) ?? []).filter(t => now - t < 60_000)
+  timestamps.push(now)
+  ipRequests.set(ip, timestamps)
+  return timestamps.length > 3
+}
+
 export async function POST(req: Request) {
+  const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown"
+  if (isRateLimited(ip)) {
+    return Response.json({ error: "Слишком много запросов. Попробуйте через минуту." }, { status: 429 })
+  }
+
   let body: unknown
   try {
     body = await req.json()

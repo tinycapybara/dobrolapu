@@ -142,15 +142,24 @@ export function AnimalsGrid({
               </p>
               <p className="text-xs text-stone-500">
                 {isSpecial
-                  ? "Показываем пожилых питомцев и тех, кто сейчас на лечении. Нажмите × чтобы вернуться к обычному каталогу."
+                  ? "Показываем пожилых питомцев и тех, кто сейчас на лечении."
                   : "Показываем питомцев, которые подходят именно тебе. Фильтры можно скорректировать."}
               </p>
             </div>
           </div>
           <div className="flex items-center gap-3 shrink-0">
-            <Link href="/quiz" className="text-xs text-[#D4849A] hover:underline underline-offset-2">
-              Пройти заново
-            </Link>
+            {isSpecial ? (
+              <Link
+                href="/pets"
+                className="text-xs font-semibold text-[#D4849A] border border-[#D4849A]/40 rounded-lg px-3 py-1.5 hover:bg-[#D4849A]/10 transition-colors"
+              >
+                Все питомцы
+              </Link>
+            ) : (
+              <Link href="/quiz" className="text-xs text-[#D4849A] hover:underline underline-offset-2">
+                Пройти заново
+              </Link>
+            )}
             <button
               onClick={() => isSpecial ? router.push("/pets") : setQuizBannerDismissed(true)}
               className="text-stone-400 hover:text-stone-600 transition-colors"
@@ -175,16 +184,26 @@ export function AnimalsGrid({
       {/* Сетка карточек */}
       <div className="flex-1">
         {/* Счётчик */}
-        <div className="mb-4 text-sm text-stone-400 font-medium">
-          Найдено: {filteredAnimals.length} {filteredAnimals.length === 1 ? "питомец" :
-            filteredAnimals.length < 5 ? "питомца" : "питомцев"}
+        <div className="mb-4 flex items-center justify-between">
+          <span className="text-sm text-stone-400 font-medium">
+            Найдено: {filteredAnimals.length} {filteredAnimals.length === 1 ? "питомец" :
+              filteredAnimals.length < 5 ? "питомца" : "питомцев"}
+          </span>
+          {isSpecial && (
+            <Link
+              href="/pets"
+              className="text-sm font-semibold text-[#D4849A] border border-[#D4849A]/40 rounded-lg px-3 py-1.5 hover:bg-[#D4849A]/10 transition-colors"
+            >
+              Все питомцы
+            </Link>
+          )}
         </div>
 
         {filteredAnimals.length === 0 ? (
           <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-stone-200 bg-white py-16 text-center">
-            <p className="text-lg font-semibold text-stone-800">Ничего не найдено</p>
+            <p className="text-lg font-semibold text-stone-800">Хвостик по таким пожеланиям пока не нашёлся</p>
             <p className="mt-1 text-sm text-stone-400">
-              Попробуйте изменить параметры фильтра
+              Попробуйте изменить фильтры или посмотрите всех наших подопечных.
             </p>
             <Button variant="outline" onClick={handleReset} className="mt-4 rounded-xl border-[#D4849A] text-[#D4849A] hover:bg-[#D4849A]/10">
               Сбросить фильтры

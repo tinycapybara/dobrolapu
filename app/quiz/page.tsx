@@ -102,8 +102,12 @@ function buildUrl(answers: Answers): string {
     else if (dogScore > catScore) params.set("type", "Собака")
   }
 
-  // Размер из вопроса 1 (только вне спецрежима)
-  if (answers.goal !== "special" && answers.home === "small") params.set("size", "small")
+  // Размер из вопроса 1 (всегда, вне спецрежима)
+  if (answers.goal !== "special") {
+    if (answers.home === "small") params.set("size", "small")
+    else if (answers.home === "large") params.set("size", "medium")
+    else if (answers.home === "house") params.set("size", "large")
+  }
 
   // Возраст: опыт перекрывает темперамент; только вне спецрежима
   if (answers.goal !== "special") {
@@ -268,45 +272,47 @@ export default function QuizPage() {
                   </p>
                 </div>
 
-                <div className="w-full rounded-xl bg-[#FDF8F9] p-4 flex flex-col gap-2 text-left">
-                  <p className="text-xs font-semibold text-stone-400 uppercase tracking-wider mb-1">
-                    Твои предпочтения
-                  </p>
-                  {typeSummary && (
+                {!isSpecial && (
+                  <div className="w-full rounded-xl bg-[#FDF8F9] p-4 flex flex-col gap-2 text-left">
+                    <p className="text-xs font-semibold text-stone-400 uppercase tracking-wider mb-1">
+                      Твои предпочтения
+                    </p>
+
+                    {/* Тип животного */}
                     <div className="flex items-center gap-2 text-sm text-stone-600">
                       <CheckCircle2 className="size-4 text-[#D4849A] shrink-0" />
-                      {typeSummary}
+                      {typeSummary
+                        ? typeSummary
+                        : "С твоим образом жизни подойдут и кошки, и собаки"}
                     </div>
-                  )}
-                  {answers.home && (
+
+                    {/* Размер — всегда */}
+                    {answers.home && (
+                      <div className="flex items-center gap-2 text-sm text-stone-600">
+                        <CheckCircle2 className="size-4 text-[#D4849A] shrink-0" />
+                        {answers.home === "small"
+                          ? "Небольшая квартира — подбираем компактных питомцев"
+                          : answers.home === "large"
+                          ? "Просторная квартира — подойдут питомцы среднего размера"
+                          : "Свой дом с двором — отлично подойдут крупные питомцы"}
+                      </div>
+                    )}
+
+                    {/* Возраст — всегда */}
                     <div className="flex items-center gap-2 text-sm text-stone-600">
                       <CheckCircle2 className="size-4 text-[#D4849A] shrink-0" />
-                      {answers.home === "small"
-                        ? "Небольшая квартира — подбираем компактных питомцев"
-                        : answers.home === "large"
-                        ? "Просторная квартира"
-                        : "Свой дом с двором"}
+                      {answers.experience === "ready"
+                        ? "Готов(а) к малышу — покажем котят и щенков"
+                        : answers.experience === "first"
+                        ? "Первый питомец — рекомендуем взрослых (3–7 лет)"
+                        : answers.energy === "calm"
+                        ? "Спокойный взрослый питомец (3–7 лет)"
+                        : answers.energy === "active"
+                        ? "Активный молодой питомец (1–3 года)"
+                        : "Тебе подойдёт питомец любого возраста"}
                     </div>
-                  )}
-                  {answers.experience === "first" && (
-                    <div className="flex items-center gap-2 text-sm text-stone-600">
-                      <CheckCircle2 className="size-4 text-[#D4849A] shrink-0" />
-                      Первый питомец — рекомендуем взрослых (1–3 года)
-                    </div>
-                  )}
-                  {answers.experience === "ready" && (
-                    <div className="flex items-center gap-2 text-sm text-stone-600">
-                      <CheckCircle2 className="size-4 text-[#D4849A] shrink-0" />
-                      Готов(а) к малышу — покажем котят и щенков
-                    </div>
-                  )}
-                  {answers.energy === "calm" && answers.experience !== "first" && answers.experience !== "ready" && (
-                    <div className="flex items-center gap-2 text-sm text-stone-600">
-                      <CheckCircle2 className="size-4 text-[#D4849A] shrink-0" />
-                      Спокойный взрослый питомец (3–7 лет)
-                    </div>
-                  )}
-                </div>
+                  </div>
+                )}
 
                 {/* Баннер «особенно нужен» — внутри карточки */}
                 {isSpecial && (
