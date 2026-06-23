@@ -10,6 +10,7 @@ import { AdoptionButtons } from "./adoption-request-modal"
 import { ArrowLeft, CheckCircle2, Heart, Pill, Home } from "lucide-react"
 
 type Treatment = {
+  id: number
   disease: string
   description: string | null
   goal_amount: number | null
@@ -101,7 +102,7 @@ export default async function AnimalPage({ params }: Props) {
       .single(),
     supabase
       .from("treatments")
-      .select("disease, description, goal_amount")
+      .select("id, disease, description, goal_amount")
       .eq("animal_id", numericId)
       .eq("is_active", true)
       .maybeSingle(),
@@ -238,7 +239,7 @@ export default async function AnimalPage({ params }: Props) {
                     </p>
                   )}
                   <Button asChild className="w-full bg-[#D4849A] hover:bg-[#C4728A] text-white rounded-xl">
-                    <Link href="/donate">
+                    <Link href={`/donate?for=${treatment.id}`}>
                       <Heart className="mr-2 size-4" />
                       Помочь {animal.name}
                     </Link>

@@ -92,23 +92,20 @@ export default function ProfilePage() {
   const [dataLoading, setDataLoading] = useState(false)
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data: { user } }) => {
-      if (!user) {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!session) {
         router.push("/login")
-      } else {
-        setUser(user)
-        setAuthLoading(false)
+        return
       }
+      setUser(session.user)
+      setAuthLoading(false)
+      fetchData(session.user, session.access_token)
     })
-  }, [router])
+  }, [router, fetchData])
 
-  const fetchData = useCallback(async (currentUser: User) => {
+  const fetchData = useCallback(async (currentUser: User, token: string) => {
     setDataLoading(true)
     try {
-      const { data: sessionData } = await supabase.auth.getSession()
-      const token = sessionData.session?.access_token
-      if (!token) return
-
       const headers = { Authorization: `Bearer ${token}` }
 
       const [reqRes, donRes, chkRes, meRes] = await Promise.all([
@@ -141,9 +138,6 @@ export default function ProfilePage() {
     }
   }, [])
 
-  useEffect(() => {
-    if (user) fetchData(user)
-  }, [user, fetchData])
 
   async function toggleChecklist(item: ChecklistItem) {
     const { data: sessionData } = await supabase.auth.getSession()
