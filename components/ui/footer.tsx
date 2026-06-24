@@ -29,7 +29,7 @@ export function Footer() {
               <span className="text-xl font-bold">Добрые лапки</span>
             </Link>
             <p className="text-sm text-white/60 max-w-xs">
-              Городской приют для кошек и собак. Помогаем найти дом с 2018 года.
+              Городской приют для кошек и собак. Помогаем найти дом с 2025 года.
             </p>
           </div>
 

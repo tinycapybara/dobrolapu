@@ -282,9 +282,9 @@ function AboutSection() {
   return (
     <section className="py-20 px-4 bg-[#FDF8F9]">
       <div className="container mx-auto">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
-          <div className="flex flex-col gap-6">
-            <div className="flex items-center gap-2">
+        <div className="flex justify-center">
+          <div className="flex flex-col gap-6 max-w-2xl mx-auto text-center">
+            <div className="flex items-center gap-2 justify-center lg:justify-start">
               <div className="w-8 h-0.5 bg-[#D4849A]" />
               <span className="text-sm font-semibold text-[#D4849A] uppercase tracking-widest">
                 О нас
@@ -296,7 +296,7 @@ function AboutSection() {
             <div className="space-y-4 text-stone-600 leading-relaxed">
               <p>
                 Мы — небольшой городской приют, созданный людьми, которые не смогли остаться
-                равнодушными. С 2018 года мы находим дом для кошек и собак, оказавшихся на улице
+                равнодушными. С 2025 года мы находим дом для кошек и собак, оказавшихся на улице
                 или в трудной ситуации.
               </p>
               <p>
@@ -309,7 +309,7 @@ function AboutSection() {
                 поддерживает нас финансово. Вместе мы можем сделать больше.
               </p>
             </div>
-            <div>
+            <div className="flex justify-center lg:justify-start">
               <Button
                 asChild
                 variant="outline"
@@ -317,25 +317,6 @@ function AboutSection() {
               >
                 <Link href="/about">Узнать больше</Link>
               </Button>
-            </div>
-          </div>
-
-          <div className="relative hidden lg:block">
-            <div className="relative aspect-[4/3] rounded-[32px] overflow-hidden shadow-xl">
-              <Image
-                src="https://picsum.photos/seed/dobryelapki-about/700/525"
-                alt="Наш приют"
-                fill
-                className="object-cover"
-              />
-            </div>
-            <div className="absolute -bottom-5 -right-5 w-36 h-36 rounded-[24px] overflow-hidden shadow-lg border-4 border-white hidden sm:block">
-              <Image
-                src="https://picsum.photos/seed/dobryelapki-about2/200/200"
-                alt="Питомцы"
-                fill
-                className="object-cover"
-              />
             </div>
           </div>
         </div>

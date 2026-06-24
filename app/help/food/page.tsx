@@ -117,7 +117,7 @@ export default function FoodPage() {
               </p>
               <div className="rounded-xl bg-amber-50 border border-amber-100 p-4 flex flex-col gap-1">
                 <p className="text-sm font-semibold text-stone-800">Адрес приюта</p>
-                <p className="text-sm text-stone-600">г. Москва, ул. Примерная, д. 1</p>
+                <p className="text-sm text-stone-600">г. Санкт-Петербург, ул. Животноводческая, д. 12</p>
                 <p className="text-sm text-stone-500">Пн–Вс, 10:00 – 18:00</p>
               </div>
             </div>

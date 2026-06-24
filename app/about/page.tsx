@@ -1,4 +1,3 @@
-import Image from "next/image"
 import Link from "next/link"
 import { Heart, PawPrint, Users, Home, Shield, ArrowRight } from "lucide-react"
 import { Header } from "@/components/ui/header"
@@ -56,10 +55,10 @@ const values = [
 ]
 
 const team = [
-  { name: "Анна Соколова", role: "Основатель и директор", years: "с 2018 года" },
-  { name: "Мария Петрова", role: "Главный ветеринар", years: "с 2019 года" },
-  { name: "Дмитрий Козлов", role: "Координатор волонтёров", years: "с 2020 года" },
-  { name: "Елена Новикова", role: "Куратор по усыновлению", years: "с 2021 года" },
+  { name: "Анна Соколова", role: "Основатель и директор", years: "с 2025 года" },
+  { name: "Мария Петрова", role: "Главный ветеринар", years: "с 2025 года" },
+  { name: "Дмитрий Козлов", role: "Координатор волонтёров", years: "с 2025 года" },
+  { name: "Елена Новикова", role: "Куратор по усыновлению", years: "с 2025 года" },
 ]
 
 export default async function AboutPage() {
@@ -82,7 +81,7 @@ export default async function AboutPage() {
             </h1>
             <p className="text-stone-500 text-lg leading-relaxed max-w-2xl mx-auto">
               Мы — небольшой городской приют, созданный людьми, которые не смогли остаться
-              равнодушными. С 2018 года мы находим дом для кошек и собак, оказавшихся
+              равнодушными. С 2025 года мы находим дом для кошек и собак, оказавшихся
               на улице или в трудной ситуации.
             </p>
           </div>
@@ -108,10 +107,10 @@ export default async function AboutPage() {
               </div>
               <div className="rounded-2xl bg-[#F0F5FA] p-6">
                 <p className="text-4xl lg:text-5xl font-bold text-[#7A9FD4] tabular-nums">
-                  6
+                  1
                 </p>
-                <p className="text-stone-600 font-semibold mt-1">лет работы</p>
-                <p className="text-stone-400 text-sm">с 2018 года</p>
+                <p className="text-stone-600 font-semibold mt-1">год работы</p>
+                <p className="text-stone-400 text-sm">с 2025 года</p>
               </div>
             </div>
           </div>
@@ -119,40 +118,28 @@ export default async function AboutPage() {
 
         {/* История */}
         <section className="py-20 px-4 bg-[#FDF8F9]">
-          <div className="container mx-auto max-w-5xl">
-            <div className="grid lg:grid-cols-2 gap-12 items-center">
-              <div className="flex flex-col gap-5">
-                <div className="flex items-center gap-2">
-                  <div className="w-8 h-0.5 bg-[#D4849A]" />
-                  <span className="text-sm font-semibold text-[#D4849A] uppercase tracking-widest">Наша история</span>
-                </div>
-                <h2 className="text-3xl font-bold text-stone-800">Как всё начиналось</h2>
-                <div className="space-y-4 text-stone-600 leading-relaxed">
-                  <p>
-                    В 2018 году несколько неравнодушных жителей города объединились, чтобы помочь
-                    бездомным животным. Всё началось с небольшого арендованного помещения и
-                    десяти кошек, которым было некуда идти.
-                  </p>
-                  <p>
-                    Постепенно приют рос. Появились волонтёры, постоянные жертвователи и опекуны.
-                    Сегодня мы помогаем кошкам и собакам получить ветеринарную помощь, пережить
-                    трудные времена и найти любящую семью.
-                  </p>
-                  <p>
-                    За шесть лет работы через наш приют прошли сотни животных. Каждая история —
-                    это спасённая жизнь и счастливая семья.
-                  </p>
-                </div>
+          <div className="container mx-auto max-w-3xl">
+            <div className="flex flex-col gap-5">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-0.5 bg-[#D4849A]" />
+                <span className="text-sm font-semibold text-[#D4849A] uppercase tracking-widest">Наша история</span>
               </div>
-              <div className="relative hidden lg:block">
-                <div className="relative aspect-[4/3] rounded-[32px] overflow-hidden shadow-xl">
-                  <Image
-                    src="https://picsum.photos/seed/shelter-history/700/525"
-                    alt="История приюта"
-                    fill
-                    className="object-cover"
-                  />
-                </div>
+              <h2 className="text-3xl font-bold text-stone-800">Как всё начиналось</h2>
+              <div className="space-y-4 text-stone-600 leading-relaxed">
+                <p>
+                  В 2025 году несколько неравнодушных жителей Санкт-Петербурга объединились, чтобы помочь
+                  бездомным животным. Всё началось с небольшого арендованного помещения и
+                  десяти кошек, которым было некуда идти.
+                </p>
+                <p>
+                  Постепенно приют рос. Появились волонтёры, постоянные жертвователи и опекуны.
+                  Сегодня мы помогаем кошкам и собакам получить ветеринарную помощь, пережить
+                  трудные времена и найти любящую семью.
+                </p>
+                <p>
+                  За год работы через наш приют прошли десятки животных. Каждая история —
+                  это спасённая жизнь и счастливая семья.
+                </p>
               </div>
             </div>
           </div>

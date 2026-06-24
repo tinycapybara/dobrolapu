@@ -13,7 +13,7 @@ const contacts = [
   {
     icon: MapPin,
     title: "Адрес",
-    lines: ["ул. Животноводческая, 12", "г. Москва, 123456"],
+    lines: ["ул. Животноводческая, 12", "г. Санкт-Петербург, 196105"],
     bg: "bg-[#FAF0F3]",
     iconColor: "text-[#D4849A]",
   },
@@ -100,53 +100,37 @@ export default function ContactsPage() {
           </div>
         </section>
 
-        {/* Карта-заглушка + как добраться */}
+        {/* Как добраться */}
         <section className="py-16 px-4 bg-[#FDF8F9]">
-          <div className="container mx-auto max-w-5xl">
-            <div className="grid lg:grid-cols-2 gap-10 items-start">
-
-              {/* Карта */}
-              <div className="rounded-2xl overflow-hidden border border-stone-100 shadow-sm aspect-[4/3] bg-stone-100 flex items-center justify-center">
-                <div className="text-center flex flex-col items-center gap-3 text-stone-400 p-8">
-                  <MapPin className="size-10 text-[#D4849A]/40" />
-                  <p className="font-semibold text-stone-500">ул. Животноводческая, 12</p>
-                  <p className="text-sm">г. Москва</p>
-                  <a
-                    href="https://yandex.ru/maps"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="mt-2 text-sm text-[#D4849A] underline underline-offset-2 hover:text-[#C4728A]"
-                  >
-                    Открыть на Яндекс Картах
-                  </a>
+          <div className="container mx-auto max-w-3xl">
+            <h2 className="text-2xl font-bold text-stone-800 mb-8 text-center">Как добраться</h2>
+            <div className="rounded-2xl bg-white border border-stone-100 shadow-sm p-6 flex flex-col gap-2 mb-6 text-center">
+              <div className="size-12 rounded-full bg-[#FAF0F3] flex items-center justify-center mx-auto mb-1">
+                <MapPin className="size-6 text-[#D4849A]" />
+              </div>
+              <p className="font-bold text-stone-800 text-lg">ул. Животноводческая, 12</p>
+              <p className="text-stone-500">г. Санкт-Петербург, 196105</p>
+            </div>
+            <div className="flex flex-col gap-4">
+              <div className="rounded-2xl bg-white border border-stone-100 shadow-sm p-5 flex gap-4">
+                <div className="size-10 rounded-full bg-[#FAF0F3] flex items-center justify-center shrink-0 text-lg font-bold text-[#D4849A]">М</div>
+                <div>
+                  <p className="font-semibold text-stone-800">На метро</p>
+                  <p className="text-sm text-stone-500 mt-0.5">Станция «Электросила», затем 10 минут пешком по ул. Животноводческой</p>
                 </div>
               </div>
-
-              {/* Как добраться */}
-              <div className="flex flex-col gap-5">
-                <h2 className="text-2xl font-bold text-stone-800">Как добраться</h2>
-                <div className="flex flex-col gap-4">
-                  <div className="rounded-2xl bg-white border border-stone-100 shadow-sm p-5 flex gap-4">
-                    <div className="size-10 rounded-full bg-[#FAF0F3] flex items-center justify-center shrink-0 text-lg font-bold text-[#D4849A]">М</div>
-                    <div>
-                      <p className="font-semibold text-stone-800">На метро</p>
-                      <p className="text-sm text-stone-500 mt-0.5">Станция «Сокольники», затем 10 минут пешком по ул. Животноводческой в сторону парка</p>
-                    </div>
-                  </div>
-                  <div className="rounded-2xl bg-white border border-stone-100 shadow-sm p-5 flex gap-4">
-                    <div className="size-10 rounded-full bg-[#F0F5FA] flex items-center justify-center shrink-0 text-lg font-bold text-[#7A9FD4]">А</div>
-                    <div>
-                      <p className="font-semibold text-stone-800">На автобусе</p>
-                      <p className="text-sm text-stone-500 mt-0.5">Автобусы № 14, 37, 141 — остановка «Животноводческая улица»</p>
-                    </div>
-                  </div>
-                  <div className="rounded-2xl bg-white border border-stone-100 shadow-sm p-5 flex gap-4">
-                    <div className="size-10 rounded-full bg-[#F0FAF5] flex items-center justify-center shrink-0 text-lg font-bold text-[#6BBF9A]">П</div>
-                    <div>
-                      <p className="font-semibold text-stone-800">На машине</p>
-                      <p className="text-sm text-stone-500 mt-0.5">Бесплатная парковка во дворе. Въезд со стороны ул. Животноводческой</p>
-                    </div>
-                  </div>
+              <div className="rounded-2xl bg-white border border-stone-100 shadow-sm p-5 flex gap-4">
+                <div className="size-10 rounded-full bg-[#F0F5FA] flex items-center justify-center shrink-0 text-lg font-bold text-[#7A9FD4]">А</div>
+                <div>
+                  <p className="font-semibold text-stone-800">На автобусе</p>
+                  <p className="text-sm text-stone-500 mt-0.5">Автобусы № 14, 37, 141 — остановка «Животноводческая улица»</p>
+                </div>
+              </div>
+              <div className="rounded-2xl bg-white border border-stone-100 shadow-sm p-5 flex gap-4">
+                <div className="size-10 rounded-full bg-[#F0FAF5] flex items-center justify-center shrink-0 text-lg font-bold text-[#6BBF9A]">П</div>
+                <div>
+                  <p className="font-semibold text-stone-800">На машине</p>
+                  <p className="text-sm text-stone-500 mt-0.5">Бесплатная парковка во дворе. Въезд со стороны ул. Животноводческой</p>
                 </div>
               </div>
             </div>
